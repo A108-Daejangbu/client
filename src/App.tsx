@@ -1,10 +1,22 @@
-function App() {
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
+import MainPage from "./pages/MainPage";
+import ReportPage from "./pages/ReportPage";
+import ManagePage from "./pages/ManagePage";
+import Header from "./layout/Header";
+
+const App = () => {
   return (
-    <>
-        <h1>Hello World!!!</h1>
-    </>
-  )
-}
+    <Router>
+      <Header />
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+        <Route path="/report" element={<ReportPage />} />
+        <Route path="/manage" element={<ManagePage />} />
+      </Routes>
+    </Router>
+  );
+};
 
-export default App
+export default App;

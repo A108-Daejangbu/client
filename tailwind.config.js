@@ -1,9 +1,32 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [],
+  content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        black: "#000000",
+        gray: "#888888",
+        lightgray: "#BEBEBE",
+      },
+      fontFamily: {
+        "pre-bold": ["Pretendard-Bold", "sans-serif"],
+        "pre-medium": ["Pretendard-Medium", "sans-serif"],
+        "pre-regular": ["Pretendard-Regular", "sans-serif"],
+        "pre-light": ["Pretendard-Light", "sans-serif"],
+      },
+      fontSize: {
+        10: "10px",
+        12: "12px",
+        16: "16px",
+        14: "14px",
+        20: "20px",
+        24: "24px",
+      },
+      borderWidth: {
+        0.2: "0.2px",
+        0.5: "0.5px",
+      },
+    },
   },
   plugins: [],
-}
-
+};
