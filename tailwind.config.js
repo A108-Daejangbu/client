@@ -5,8 +5,12 @@ export default {
     extend: {
       colors: {
         black: "#000000",
-        gray: "#888888",
-        lightgray: "#BEBEBE",
+        purple: "#7953FF",
+        blue: "#3E6FFA",
+        main200: "1E1E1E",
+        main100: "242C6C",
+        gray200: "BFBFBF",
+        gray100: "D2D2D2",
       },
       fontFamily: {
         "pre-bold": ["Pretendard-Bold", "sans-serif"],
