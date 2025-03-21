@@ -1,67 +1,92 @@
-import React from "react";
+import React, { useState } from "react";
+import LoginModal from "../features/Landing/LoginModal";
+import RegisterModal from "../features/Landing/RegisterModal";
+import ShieldIcon from "../assets/ShieldLogo.png";
+import WaveIcon from "../assets/LandingVector.png";
+
 
 function LandingPage() {
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+
+  const handleRegisterClick = () => {
+    setIsLoginModalOpen(false);
+    setIsRegisterModalOpen(true);
+  };
+
+  const handleLoginClick = () => {
+    setIsRegisterModalOpen(false);
+    setIsLoginModalOpen(true);
+  };
+
   return (
-    <div className="app w-full max-w-[1440px] h-[calc(100vh)] mx-auto flex flex-col items-center justify-center relative overflow-x-hidden">
-      <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-br from-white to-[#f5f5ff] relative overflow-hidden w-full">
-        {/* Background Wave */}
-        <div 
-          className="absolute bottom-0 left-0 w-full h-full z-[1] opacity-30 bg-no-repeat bg-bottom"
-          style={{ backgroundImage: "url('/wave-bg.svg')" }}
-        />
+    <div className="w-[90%] max-w-[1440px] h-[90vh] mx-auto flex flex-col items-center justify-center relative overflow-hidden">
+      <div className="flex flex-col items-center justify-center w-full h-full bg-white relative">
+
 
         {/* Content Wrapper */}
-        <div className="content flex flex-col items-center text-center z-[2] px-12 md:px-[50px] w-full max-w-[1440px]">
-          {/* Title */}
-          <h1 
-            className="text-5xl font-pre-bold mb-12 leading-normal py-1"
-            style={{
-              background: "linear-gradient(90deg, #4169E1, #9370DB)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent"
-            }}
-          >
-            Daejangbu
-          </h1>
+        <div className="relative z-[2] flex flex-col items-center text-center w-[90%] max-w-[1440px] px-4 md:px-12">
 
-          {/* Shield Icon */}
-          <div 
-            className="w-20 h-20 mb-5 bg-no-repeat bg-center"
-            style={{ backgroundImage: "url('/shield-icon.svg')" }}
-          />
+          <img src={ShieldIcon} alt="Shield" className="w-20 h-25 bg-center bg-no-repeat"/>
+          <img src={WaveIcon} alt="Wave" className="w-80 h-8 bg-center bg-no-repeat mb-1.5 -mt-3" />
 
-          {/* Wave Icon */}
-          <div 
-            className="w-[180px] h-[30px] mb-5 bg-no-repeat bg-center"
-            style={{ backgroundImage: "url('/wave-icon.svg')" }}
-          />
 
           {/* Main Text */}
-          <div className="mb-10">
-            <h2 className="text-[26px] text-[#6269e3] mb-2.5 font-pre-medium">
-              투명한 공급 관리,
+          <div className="mb-12 text-center">
+            <h2 
+              className="text-5xl font-pre-bold mb-1 leading-tight tracking-[-0.75px]"
+              style={{
+                background: "linear-gradient(90deg, #191FD9 0%, #3E6FFA 34%, #7953FF 61%, #2F007B 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text"
+              }}
+            >
+              이제 대장부로 투명하게
             </h2>
-            <h3 className="text-[32px] font-pre-bold text-[#333] mb-5">
-              계좌를 연결하고 거래를 공개해요
+            <h3 className="text-5xl font-pre-bold text-[#121212] mb-6 leading-tight tracking-[-0.75px]">
+              계좌를 연결하고 거래 내역을 공유해요
             </h3>
-            <p className="text-base text-[#666] leading-relaxed max-w-[600px] font-pre-light">
+            <p className="text-lg text-[#595959] font-pre-medium tracking-[-0.75px]">
               모든 거래 내역이 투명하게 공개되어 누구나 안심하고 확인할 수 있어요.
               <br />
-              블록체인을 활용해 조작 불가능한 거래 내역으로 안전하게 관리하세요. 지금 바로 시작해볼까요?
+              조작 불가능한 거래 내역으로 안전하게 관리하세요. 지금 바로 시작해보세요!
             </p>
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-5 mt-5">
-            <button className="px-8 py-3 rounded-full border border-[#6269e3] bg-white text-[#6269e3] text-base cursor-pointer transition-all duration-300 hover:bg-[#f0f0ff] font-pre-medium">
+          <div className="flex gap-7">
+            <button 
+              onClick={() => setIsLoginModalOpen(true)}
+              className="w-36 h-10 rounded-full border border-[#7953FF] bg-white text-[#4E00CB] text-base font-pre-medium cursor-pointer transition-all duration-300 hover:bg-[#f0f0ff] shadow-md text-[#2F007B] shadow-[#4A3AFF]/30 tracking-[-0.75px]"
+            >
               로그인하기
             </button>
-            <button className="px-8 py-3 rounded-full border-none bg-gradient-to-r from-[#6269e3] to-[#9370DB] text-white text-base cursor-pointer transition-all duration-300 hover:opacity-90 font-pre-medium">
+            <button 
+              onClick={() => setIsRegisterModalOpen(true)}  
+              className="w-36 h-10 rounded-full bg-gradient-to-r from-[#7953FF] to-[#4E00CB] text-white text-base font-pre-medium cursor-pointer transition-all duration-300 hover:opacity-90 shadow-md text-[#FFFFFF] shadow-[#4A3AFF]/30 tracking-[-0.75px]"
+            >
               회원가입하기
             </button>
           </div>
         </div>
       </div>
+
+      {/* Login Modal */}
+      {isLoginModalOpen && (
+        <LoginModal 
+          onClose={() => setIsLoginModalOpen(false)}
+          onRegisterClick={handleRegisterClick}
+        />
+      )}
+
+      {/* Register Modal */}
+      {isRegisterModalOpen && (
+        <RegisterModal 
+          onClose={() => setIsRegisterModalOpen(false)}
+          onLoginClick={handleLoginClick}
+        />
+      )}
     </div>
   );
 }

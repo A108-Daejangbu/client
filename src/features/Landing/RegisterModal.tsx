@@ -1,0 +1,59 @@
+import React from 'react';
+import '../../styles/global.css';
+import GoogleLogo from '../../assets/GoogleLogo.png';
+import LoginLogo from '../../assets/LoginLogo.png';
+
+interface RegisterModalProps {
+  onClose: () => void;
+  onLoginClick: () => void;
+}
+
+const RegisterModal = ({ onClose, onLoginClick }: RegisterModalProps) => {
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-2xl p-8 w-full max-w-[340px] relative h-[50vh] justify-center items-center flex flex-col tracking-[-0.75px]">
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray hover:text-black"
+        >
+          ✕
+        </button>
+        <div>
+        <h2 className="text-2xl font-pre-bold mb-8 text-center flex items-center justify-center">
+            <span className="text-blue-500">대장부</span>
+            <span>에 오신것을 환영합니다</span>
+        </h2>
+          <div className="flex items-center justify-center mb-8">
+            <img src={LoginLogo} alt="Logo" className="w-32 h-28" />
+          </div>
+        </div>
+        
+        <div>
+          <button 
+            className="w-full py-2 px-4 border border-[#e0e0e0] rounded-lg flex items-center justify-center gap-3 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
+          >
+            <img 
+              src={GoogleLogo}
+              alt="Google" 
+              className="w-5 h-5"
+            />
+            <span className="font-pre-medium text-[#333] text-base">
+              Google 계정으로 회원가입
+            </span>
+          </button>
+        </div>
+        <div className="flex items-center justify-center gap-2 mt-4 font-pre-medium">
+            <span className="text-gray-500 text-sm">이미 회원이신가요?</span>
+            <button 
+              onClick={onLoginClick} 
+              className="text-blue-500 font-pre-medium text-sm hover:text-blue-600"
+            >
+              로그인
+            </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default RegisterModal;
