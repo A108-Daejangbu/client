@@ -1,9 +1,6 @@
-// RegistrationForm.tsx
 import React, { useState } from "react";
 
-// RegistrationForm 컴포넌트 정의
 const RegistrationForm = () => {
-  // 상태 변수 설정
   const [accountName, setAccountName] = useState(""); // 계좌명 상태
   const [bankSelection, setBankSelection] = useState(""); // 은행 선택 상태
   const [accountNumber, setAccountNumber] = useState(""); // 계좌번호 상태
@@ -13,17 +10,15 @@ const RegistrationForm = () => {
 
   // 폼 제출 처리 함수
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // 폼 제출 후 페이지 리로드 방지 (기본 동작 방지)
-    // 여기에서 폼 제출 후 필요한 처리 로직을 추가할 수 있습니다.
+    e.preventDefault(); // 폼 제출 후 페이지 리로드 방지
     console.log("폼이 제출되었습니다.");
   };
 
-  // 컴포넌트 렌더링
   return (
     <div className="w-full sm:max-w-lg lg:max-w-xl mx-auto text-sm font-pre-medium text-gray200 whitespace-nowrap">
       <h2 className="text-2xl font-pre-bold text-left mb-[20px]">계좌등록</h2>
-      <div className="mb-[25px] border-b"></div>
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <div className="mb-[40px] border-b"></div>
+      <form onSubmit={handleSubmit} className="space-y-6">
         {/* 계좌명 입력 필드 */}
         <div className="flex items-center gap-4">
           <label className="w-1/4">계좌명</label>
@@ -121,7 +116,7 @@ const RegistrationForm = () => {
           <label className="w-1/4 invisible"></label>
           <button
             type="submit"
-            className="w-full py-2 mt-4 rounded-[6.013px] bg-gradient-to-r from-[#7953FF] to-[#4E00CB] shadow-[0px_6.013px_6.239px_0px_rgba(74,58,255,0.28)] text-white"
+            className="w-full py-2 mt-6 rounded-[6.013px] bg-gradient-to-r from-[#7953FF] to-[#4E00CB] shadow-[0px_6.013px_6.239px_0px_rgba(74,58,255,0.28)] text-white"
           >
             등록
           </button>
