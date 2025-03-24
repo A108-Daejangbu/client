@@ -28,6 +28,36 @@ input:-webkit-autofill:active {
   src: url("../assets/fonts/Pretendard-Light.woff") format("woff");
 }
 
+@font-face {
+  font-family: "Pretendard-Black";
+  src: url("../assets/fonts/Pretendard-Black.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Pretendard-ExtraBold";
+  src: url("../assets/fonts/Pretendard-ExtraBold.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Pretendard-ExtraLight";
+  src: url("../assets/fonts/Pretendard-ExtraLight.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Pretendard-Regular";
+  src: url("../assets/fonts/Pretendard-Regular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Pretendard-SemiBold";
+  src: url("../assets/fonts/Pretendard-SemiBold.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Pretendard-Thin";
+  src: url("../assets/fonts/Pretendard-Thin.woff") format("woff");
+}
+
 /* 모바일 화면에서 실제 높이를 계산하여 사용하는 방법 */
 :root {
   --vh: 100%; /* --vh라는 변수를 선언하고 100%로 설정 */
@@ -101,4 +131,9 @@ body {
 .modal {
   border-radius: 16px;
   box-shadow: 1.44px 2.16px 20.14px rgba(0, 0, 0, 0.2);
+}
+
+#root {
+  width: 100%;
+  justify-items: center;
 }
