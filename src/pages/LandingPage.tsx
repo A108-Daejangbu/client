@@ -34,7 +34,7 @@ function LandingPage() {
           {/* Main Text */}
           <div className="mb-12 text-center">
             <h2 
-              className="text-5xl font-pre-bold mb-1 leading-tight tracking-[-0.75px]"
+              className="text-5xl font-pre-semibold mb-1 leading-tight tracking-[-0.75px]"
               style={{
                 background: "linear-gradient(90deg, #191FD9 0%, #3E6FFA 34%, #7953FF 61%, #2F007B 100%)",
                 WebkitBackgroundClip: "text",
@@ -44,10 +44,10 @@ function LandingPage() {
             >
               이제 대장부로 투명하게
             </h2>
-            <h3 className="text-5xl font-pre-bold text-[#121212] mb-6 leading-tight tracking-[-0.75px]">
+            <h3 className="text-5xl font-pre-semibold text-[#121212] mb-6 leading-tight tracking-[-0.75px]">
               계좌를 연결하고 거래 내역을 공유해요
             </h3>
-            <p className="text-lg text-[#595959] font-pre-medium tracking-[-0.75px]">
+            <p className="text-lg text-[#595959] font-pre-regular tracking-[-0.75px]">
               모든 거래 내역이 투명하게 공개되어 누구나 안심하고 확인할 수 있어요.
               <br />
               조작 불가능한 거래 내역으로 안전하게 관리하세요. 지금 바로 시작해보세요!

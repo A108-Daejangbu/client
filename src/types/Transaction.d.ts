@@ -1,12 +1,14 @@
 // 거래내역 [5]
 interface Transaction{
   id: number;                        // 거래내역 ID
-  transactionTime: string;           // 거래날짜 (ex. '20250313)
+  transactionDate: string;           // 거래날짜 (ex. '20250313)
+  transactionTime: string;           // 거래시간 (ex. '20250313)
   transactionType: '1' | '2';        // 거래종류('1': 입금, '2':출금)
   transactionBalance: number;        // 거래 금액
   transactionAfterBalance: number;   // 잔액
   passStatus: 'N' | 'P' | 'W' | 'F'; // 'N': 미등록, 'P': 금액 일치, 'W': OCR 오류, 'F': 금액 불일치
   categoryId: number;                // 카테고리 ID
+  categoryName: string;              // 카테고리명
   transactionSummary: string;        // 거래내역 입출금자명(상호명)
   detail: string;                    // 비고
 }
