@@ -3,7 +3,7 @@ import './styles/global.css';
 
 import MainPage from "./pages/MainPage";
 import ReportPage from "./pages/ReportPage";
-import ManagePage from "./pages/ManagePage";
+// import ManagePage from "./pages/ManagePage";
 import LandingPage from "./pages/LandingPage";
 import Header from "./layout/Header";
 
@@ -19,7 +19,7 @@ const AppLayout = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/main" element={<MainPage />} />
         <Route path="/report" element={<ReportPage />} />
-        <Route path="/manage" element={<ManagePage />} />
+        {/* <Route path="/manage" element={<ManagePage />} /> */}
       </Routes>
     </>
   );
