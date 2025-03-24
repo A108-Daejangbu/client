@@ -17,9 +17,9 @@ const Header = () => {
     <header className="header">
       <div className="flex space-x-8">
         <span
-          onClick={() => handleNavigate("/")}
+          onClick={() => handleNavigate("/main")}
           className={`font-pre-medium text-14 cursor-pointer  ${
-            isCurrentPage("/") ? "text-purple-600" : "text-black"
+            isCurrentPage("/main") ? "text-purple-600" : "text-black"
           }`}
         >
           장부 현황
