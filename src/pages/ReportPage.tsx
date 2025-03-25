@@ -1,22 +1,19 @@
 import React, { useState, useCallback } from "react";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+// 데이터 import
+import { 
+  DataItem, 
+  initialData, 
+  initialColumns, 
+  fieldMapping, 
+  columnWidths 
+} from '../dummy/reportData';
 
 // 타입 정의
 interface ColumnItem {
   index: number;
   type: 'COLUMN';
-}
-
-interface DataItem {
-  id: number;
-  category: string;
-  date: string;
-  content: string;
-  deposit: string;
-  withdraw: string;
-  balance: string;
-  note: string;
 }
 
 // 드래그 가능한 칼럼 헤더 컴포넌트
@@ -110,119 +107,13 @@ const TableCell = ({
 );
 
 function ReportPage() {
-  const initialData: DataItem[] = [
-    {
-      id: 1,
-      category: 'MT',
-      date: '2025.03.13',
-      content: 'MT 간식',
-      deposit: '-',
-      withdraw: '156,000',
-      balance: '3,857,300',
-      note: '여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.'
-    },
-    {
-      id: 2,
-      category: 'MT',
-      date: '2025.03.13',
-      content: 'MT 숙소',
-      deposit: '800,000,000',
-      withdraw: '-',
-      balance: '3,057,300',
-      note: ''
-    },
-    {
-      id: 3,
-      category: 'MT',
-      date: '2025.03.13',
-      content: 'MT 준비물품',
-      deposit: '-',
-      withdraw: '120,000',
-      balance: '2,937,300',
-      note: ''
-    },
-    {
-      id: 4,
-      category: '개강총회',
-      date: '2025.03.13',
-      content: 'MT 준비물품',
-      deposit: '-',
-      withdraw: '156,000',
-      balance: '3,857,300',
-      note: ''
-    },
-    {
-      id: 5,
-      category: '개강총회',
-      date: '2025.03.13',
-      content: 'MT 준비물품',
-      deposit: '-',
-      withdraw: '156,000',
-      balance: '3,857,300',
-      note: ''
-    },
-    {
-      id: 6,
-      category: '축제',
-      date: '2025.03.13',
-      content: 'MT 간식',
-      deposit: '-',
-      withdraw: '156,000',
-      balance: '3,857,300',
-      note: ''
-    },
-    {
-      id: 7,
-      category: '축제',
-      date: '2025.03.13',
-      content: 'MT 간식',
-      deposit: '-',
-      withdraw: '156,000',
-      balance: '3,857,300',
-      note: ''
-    },
-    {
-      id: 8,
-      category: '축제',
-      date: '2025.03.13',
-      content: 'MT 간식',
-      deposit: '-',
-      withdraw: '156,000',
-      balance: '3,857,300',
-      note: ''
-    },
-    {
-      id: 9,
-      category: '축제',
-      date: '2025.03.13',
-      content: 'MT 간식',
-      deposit: '-',
-      withdraw: '156,000',
-      balance: '3,857,300',
-      note: ''
-    }
-  ];
-
-  // 초기 칼럼 이름과 상태 설정
-  const initialColumns = ['카테고리', '날짜', '내용', '입금', '출금', '잔액', '비고'];
+  // initialData를 import해서 사용
   const [columns, setColumns] = useState<string[]>(initialColumns);
   const [tableData] = useState<DataItem[]>(initialData);
 
-  // 필드 매핑 객체
-  const fieldMapping: Record<string, keyof DataItem> = {
-    '카테고리': 'category',
-    '날짜': 'date',
-    '내용': 'content',
-    '입금': 'deposit',
-    '출금': 'withdraw',
-    '잔액': 'balance',
-    '비고': 'note'
-  };
-
-  // 열 너비 매핑
-  const columnWidths = ['12%', '12%', '14%', '14%', '14%', '14%', '20%'];
-
-  // 칼럼 순서 변경 함수
+  // fieldMapping과 columnWidths는 import해서 사용
+  
+  // 컬럼 순서 변경 함수
   const moveColumn = useCallback((fromIndex: number, toIndex: number) => {
     setColumns(prevColumns => {
       const newColumns = [...prevColumns];
@@ -235,7 +126,7 @@ function ReportPage() {
   // 컬럼 너비 얻기
   const getColumnWidth = (column: string): string => {
     const index = initialColumns.indexOf(column);
-    return index !== -1 ? columnWidths[index] : '14%'; // 기본값 설정
+    return index !== -1 ? columnWidths[index] : '14%';
   };
 
   return (
