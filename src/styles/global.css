@@ -137,22 +137,3 @@ body {
   width: 100%;
   justify-items: center;
 }
-
-.table-scroll::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-.table-scroll::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
-}
-
-.table-scroll::-webkit-scrollbar-thumb {
-  background: #d2d2d2;
-  border-radius: 4px;
-}
-
-.table-scroll::-webkit-scrollbar-thumb:hover {
-  background: #bfbfbf;
-}

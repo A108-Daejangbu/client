@@ -76,6 +76,39 @@ const DraggableColumnHeader = ({ column, index, moveColumn }: {
   );
 };
 
+// 툴팁 컴포넌트 분리
+const NoteTooltip = ({ content }: { content: string }) => (
+  <div 
+    className="fixed group-hover:block hidden bg-white p-4 min-w-[200px] max-w-[400px] z-[9999] rounded-lg"
+    style={{ 
+      top: 'calc(var(--mouse-y) + 10px)',
+      left: 'calc(var(--mouse-x) + 10px)',
+      border: '1px solid transparent',
+      backgroundImage: 'linear-gradient(white, white), linear-gradient(to right, #3E6FFA, #7953FF)',
+      backgroundOrigin: 'border-box',
+      backgroundClip: 'padding-box, border-box'
+    }}
+  >
+    <p className="text-14 font-pre-regular text-main200 whitespace-normal break-words">
+      {content}
+    </p>
+  </div>
+);
+
+// 테이블 셀 컴포넌트 분리
+const TableCell = ({ 
+  column, 
+  content, 
+}: { 
+  column: string;
+  content: string;
+}) => (
+  <td className={`px-4 py-4 text-center whitespace-nowrap font-pre-regular text-14 text-main200 truncate ${column === '비고' ? 'relative group' : ''}`}>
+    {content}
+    {column === '비고' && content && <NoteTooltip content={content} />}
+  </td>
+);
+
 function ReportPage() {
   const initialData: DataItem[] = [
     {
@@ -86,7 +119,7 @@ function ReportPage() {
       deposit: '-',
       withdraw: '156,000',
       balance: '3,857,300',
-      note: '여기는 영수증 비고 내용이 들어갈 곳입니다'
+      note: '여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.'
     },
     {
       id: 2,
@@ -280,13 +313,11 @@ function ReportPage() {
                         {columns.map((column, index) => {
                           const field = fieldMapping[column];
                           return (
-                            <td 
-                              key={`${item.id}-${index}`} 
-                              className="px-4 py-4 text-center whitespace-nowrap font-pre-regular text-14 text-main200 truncate" 
-                              title={String(item[field])}
-                            >
-                              {item[field]}
-                            </td>
+                            <TableCell
+                              key={`${item.id}-${index}`}
+                              column={column}
+                              content={String(item[field])}
+                            />
                           );
                         })}
                       </tr>
