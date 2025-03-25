@@ -52,54 +52,66 @@ const TransactionFiltering = ({categories}: TransactionFilteringProps) => {
     <>
       <div className="flex justify-between pt-3 items-end px-1">
         {/* 선택된 카테고리들 */}
-        <div className="flex flex-wrap gap-2 max-w-[75%]">
+        <div className="flex flex-wrap gap-2 md:max-w-[75%] max-w-[65%]">
           {selectedCategories.map(cat => (
             <CategoryCard key={cat.categoryId} category={cat} onDelete={() => toggleCategory(cat)} onSelected={true} isInline={true} />
           ))}
         </div>
 
         {/* 검색 필터링 */}
-        <div className="flex items-center gap-2 text-[#707070] text-[14px] cursor-default font-pre-extralight">
-          <span>{selectOptions.period}</span>
-          <span>{selectOptions.type}</span>
-          <span>{selectOptions.order}</span>
-          <IoMdOptions onClick={(e) => {
-            e.stopPropagation()
-            setIsFilterModalOpen(!isFilterModalOpen)
-            }} className="cursor-pointer" />
+        <div className="flex relative  gap-2 text-[#707070] text-10 md:text-[14px] cursor-default font-pre-extralight"
+        onClick={(e) => {
+          e.stopPropagation()
+          setIsFilterModalOpen(!isFilterModalOpen)
+          }}>
+            <div className="flex items-center gap-2 h-auto">
+              <span>{selectOptions.period}</span>
+              <span>{selectOptions.type}</span>
+              <span>{selectOptions.order}</span>
+              <IoMdOptions className="cursor-pointer"/>
+            </div>
+      
+          {/* 필터링 모달 */}
+          {isFilterModalOpen && (
+            // <div className="p-4 border-gray300 max-w-80 border rounded-md mt-1 justify-self-end" ref={filterModalRef}>
+            <div
+              className="absolute top-full right-0 p-4 border-gray300 w-80 border rounded-md bg-white shadow-lg z-50 whitespace-nowrap"
+              ref={filterModalRef}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <div className="justify-self-end text-gray200 text-20 cursor-pointer" 
+                onClick={() => setIsFilterModalOpen(false)}>
+                <IoClose />
+              </div>
+              <div>
+                {/* 조회기간 설정 */}
+                <FilterPeriod setSelectOptions={setSelectOptions} dateRange={dateRange} setDateRange={setDateRange} formatDate={formatDate} period={selectOptions.period} />
+              </div> 
+              <div>
+                {/* 거래 유형 설정 */}
+                <FilterTransaction type={'유형'} title={'거래 유형'} setSelectOptions={setSelectOptions} selectType={selectOptions.type} />
+              </div>
+              <div>
+                {/* 거래 정렬 설정 */}
+                <FilterTransaction type={'정렬'} title={'거래 내역 정렬'} setSelectOptions={setSelectOptions} selectOrder={selectOptions.order} />
+              </div>
+              <div>
+                {/* 거래 금액 설정 */}
+                <FilterMoney moneyMinMax={moneyMinMax} setMoneyMinMax={setMoneyMinMax} />
+              </div>
+              <div>
+                {/* 카테고리 설정 */}
+                <FilterCategory unselectedCategories={unselectedCategories} selectedCategories={selectedCategories} toggleCategory={toggleCategory} />
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      <hr className="bg-[#707070] w-full my-1.5" />
+      <hr className="bg-[#707070] opacity-20 w-full my-1.5 h-[0.5px]" />
 
-      {/* 필터링 모달 */}
-      {isFilterModalOpen && (
-        <div className="p-4 border-gray300 max-w-80 border rounded-md mt-1 justify-self-end" ref={filterModalRef}>
-          <div className="justify-self-end text-gray200 text-20 cursor-pointer" onClick={() => setIsFilterModalOpen(!isFilterModalOpen)}>
-            <IoClose />
-          </div>
-          <div>
-            {/* 조회기간 설정 */}
-            <FilterPeriod setSelectOptions={setSelectOptions} dateRange={dateRange} setDateRange={setDateRange} formatDate={formatDate} />
-          </div> 
-          <div>
-            {/* 거래 유형 설정 */}
-            <FilterTransaction type={'유형'} title={'거래 유형'} setSelectOptions={setSelectOptions} />
-          </div>
-          <div>
-            {/* 거래 정렬 설정 */}
-            <FilterTransaction type={'정렬'} title={'거래 내역 정렬'} setSelectOptions={setSelectOptions} />
-          </div>
-          <div>
-            {/* 거래 금액 설정 */}
-            <FilterMoney moneyMinMax={moneyMinMax} setMoneyMinMax={setMoneyMinMax} />
-          </div>
-          <div>
-            {/* 카테고리 설정 */}
-            <FilterCategory unselectedCategories={unselectedCategories} selectedCategories={selectedCategories} toggleCategory={toggleCategory} />
-          </div>
-        </div>
-      )}
     </>
   )
 }

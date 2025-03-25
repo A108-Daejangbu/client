@@ -4,11 +4,13 @@ interface FilterTransactionProps {
   title: string;
   type: string;
   setSelectOptions: React.Dispatch<React.SetStateAction<SelectOptions>>;
+  selectType?: string;
+  selectOrder?: string;
 }
 
-const FilterTransaction = ({title, type, setSelectOptions}:FilterTransactionProps) => {
-  const [typeOption, setTypeOption] = useState('전체')
-  const [orderOption, setOrderOption] = useState('최신순')
+const FilterTransaction = ({title, type, setSelectOptions, selectType, selectOrder}:FilterTransactionProps) => {
+  const [typeOption, setTypeOption] = useState(selectType)
+  const [orderOption, setOrderOption] = useState(selectOrder)
 
   const optionList = type==='유형' ? ['전체', '입금만', '출금만'] : ['최신순', '과거순'];
   const option = type==='유형' ? typeOption : orderOption;

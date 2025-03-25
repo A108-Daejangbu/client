@@ -3,9 +3,10 @@ import CategoryCard from "./CategoryCard";
 
 interface TransactionProp {
   transaction: Transaction;
+  isInline?: boolean;
 }
 
-const TransactionCard = ({transaction}:TransactionProp) => {
+const TransactionCard = ({transaction, isInline}:TransactionProp) => {
 
   const calcTransactionDate = (date: string): string => {
     return `${date.substring(2,4)}.${date.substring(4,6)}.${date.substring(6, 8)}`;
@@ -30,21 +31,26 @@ const TransactionCard = ({transaction}:TransactionProp) => {
   }
 
   return (
-    <div className='border p-4 rounded-xl border-[#E0E8F2] border-opacity-60'>
+    <div className='border md:p-4 p-2 rounded-xl border-[#E0E8F2] border-opacity-60 md:w-[40em] w-full'>
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          <div className="font-pre-extrabold text-16 pr-2 line-clamp-1 text-ellipsis">{transaction.transactionSummary}</div>
-          <div className="flex gap-1 text-12 text-[#26273A] text-opacity-60">
+          <div className="font-pre-extrabold md:text-16 text-10 pr-2 line-clamp-1 text-ellipsis">{transaction.transactionSummary}</div>
+          {/* <div className="flex gap-1 text-[10px] text-[#26273A] text-opacity-60 font-pre-medium">
             <div>{calcTransactionDate(transaction.transactionDate)}</div>
             <div>{calcTransactipnTime(transaction.transactionDate)}</div>
-          </div>
+          </div> */}
         </div>
-        <div className="font-pre-bold text-16">{calcBalance(transaction.transactionBalance, transaction.transactionType)}</div>
+        <div className="font-pre-bold md:text-16 text-10">{calcBalance(transaction.transactionBalance, transaction.transactionType)}</div>
       </div>
-      <div className="pt-1 whitespace-pre-line text-start text-12">{transaction.detail}</div>
-      <div className="flex justify-between pt-1 items-center">
+      <div className="flex gap-1 md:text-10 text-8 text-[#26273A] text-opacity-60 font-pre-regular">
+        <div>{calcTransactionDate(transaction.transactionDate)}</div>
+        <div>{calcTransactipnTime(transaction.transactionDate)}</div>
+      </div>
+      <div className="md:pt-1 pt-0 whitespace-pre-line text-start md:text-12 text-10 font-pre-regular">{transaction.detail}</div>
+      <div className="flex justify-between md:pt-1 pt-0 items-center">
         <div className="pe-3">
-          <CategoryCard category={category} />
+          {isInline ? <CategoryCard category={category}  isInline={true} /> : 
+          <CategoryCard category={category} />}
         </div>
         <div className="items-end"><CiReceipt className="h-5 w-5" /></div>
       </div>

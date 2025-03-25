@@ -23,8 +23,6 @@ const SearchBar = () => {
   const setDrop = (selectedMenu: {label: string, value: string}) => {
     setDropMenu(selectedMenu);
     setIsDropOpen(!isDropOpen);
-
-    console.log("selected: " + selectedMenu.value)
   }
 
   return (
