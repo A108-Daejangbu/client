@@ -10,27 +10,24 @@ const ModifyModal = ({ onClose }: ModifyModalProps) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
-  const [emptyFields, setEmptyFields] = useState(false); // 하나라도 비어있으면 true
+  const [emptyFields, setEmptyFields] = useState(false); // 입력필드 하나라도 비어있으면 true
 
   const handleSubmit = () => {
-    // 비어있는 필드 확인
     const isEmpty =
       !accountName.trim() || !password.trim() || !confirmPassword.trim();
 
     setEmptyFields(isEmpty);
 
-    // 하나라도 비어있으면 비밀번호 검사는 하지 않음
+    // 입력필드 하나라도 비어있으면 비밀번호 검사는 하지 않음
     if (isEmpty) {
       return;
     }
 
-    // 비밀번호 확인
     if (password !== confirmPassword) {
       setPasswordMatch(false);
       return;
     }
 
-    // 모든 검사를 통과하면 성공
     setPasswordMatch(true);
     console.log("정보 변경 완료:", accountName, password);
     onClose();
@@ -51,7 +48,7 @@ const ModifyModal = ({ onClose }: ModifyModalProps) => {
             계좌 정보 변경
           </h2>
           <button
-            onClick={onClose} // onClose prop을 사용해 모달 닫기
+            onClick={onClose} // onClose prop 사용해 모달 닫기
           >
             <img src={CloseIcon} alt="CloseIcon" />
           </button>
@@ -119,8 +116,8 @@ const ModifyModal = ({ onClose }: ModifyModalProps) => {
             onClick={handleSubmit}
             className="w-1/2 px-4 py-2 text-white rounded-lg"
             style={{
-              background: "linear-gradient(180deg, #7953FF 0%, #4E00CB 100%)", // 버튼 배경
-              borderRadius: "8px", // border-radius 설정
+              background: "linear-gradient(180deg, #7953FF 0%, #4E00CB 100%)",
+              borderRadius: "8px",
             }}
           >
             확인

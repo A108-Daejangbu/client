@@ -1,7 +1,7 @@
 import CloseIcon from "../../../assets/CloseIcons.svg";
 
 interface DeleteModalProps {
-  onClose: () => void; // 모달을 닫을 때 사용할 onClose prop 정의
+  onClose: () => void;
 }
 
 const DeleteModal = ({ onClose }: DeleteModalProps) => {
@@ -19,7 +19,7 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
           <div className="w-[15px]"></div>
           <h2 className="text-lg font-pre-medium text-center">계좌 삭제</h2>
           <button
-            onClick={onClose} // onClose prop을 사용해 모달 닫기
+            onClick={onClose} // onClose prop 사용해 모달 닫기
           >
             <img src={CloseIcon} alt="CloseIcon" />
           </button>
@@ -33,19 +33,19 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
           <button
             className="w-1/2 px-4 py-2 text-white rounded-lg"
             style={{
-              background: "linear-gradient(180deg, #7953FF 0%, #4E00CB 100%)", // 버튼 배경
+              background: "linear-gradient(180deg, #7953FF 0%, #4E00CB 100%)",
               borderRadius: "8px",
             }}
             onClick={() => {
               alert("계좌가 삭제되었습니다.");
-              onClose(); // 모달을 닫는 함수 호출
+              onClose();
             }}
           >
             확인
           </button>
           <button
             className="w-1/2 px-4 py-2 text-[#4E00CB] border border-[#4E00CB] rounded-lg hover:bg-gray-100 ml-2"
-            onClick={onClose} // onClose prop을 사용해 모달 닫기
+            onClick={onClose}
           >
             취소
           </button>
