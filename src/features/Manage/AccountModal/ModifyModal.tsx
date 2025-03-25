@@ -19,6 +19,7 @@ const ModifyModal = ({ onClose }: ModifyModalProps) => {
 
     // 계좌 정보 변경 로직
     console.log("정보 변경 완료:", accountName, password);
+    onClose();
   };
 
   return (
@@ -31,8 +32,10 @@ const ModifyModal = ({ onClose }: ModifyModalProps) => {
         onClick={(e) => e.stopPropagation()} // 모달 본체 클릭 시, 이벤트 전파를 막아 닫히지 않도록 처리
       >
         {/* 모달 헤더 */}
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg font-semibold">계좌 정보 변경</h2>
+        <div className="flex justify-between items-center mb-6 w-full">
+          <h2 className="text-lg font-semibold text-black flex-grow text-center">
+            계좌 정보 변경
+          </h2>
           <button
             onClick={onClose} // onClose prop을 사용해 모달 닫기
           >

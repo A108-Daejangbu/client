@@ -1,20 +1,24 @@
 import editIcon from "../../assets/pencil-edit.svg";
 import deleteIcon from "../../assets/trash.svg";
 import DeleteModal from "../../features/Manage/AccountModal/DeletModal";
-import ModifyModal from "./AccountModal/ModifyModal";
+import ModifyModal from "../../features/Manage/AccountModal/ModifyModal";
 import { useRef } from "react";
 import useDetectClose from "../../hooks/useDetectClose";
 
 const AccountCard = () => {
   // useDetectClose는 모달의 상태를 관리
-  const modalRef = useRef<HTMLDivElement>(null!); // null을 초기값으로 설정하되, 타입은 HTMLDivElement로 설정
-  // useDetectClose 훅을 사용하여 모달 열기/닫기 상태를 관리
-  const [isModalOpen, setIsModalOpen] = useDetectClose(modalRef, false);
+  const modifyModalRef = useRef<HTMLDivElement>(null!); //초기에는 null이지만, 반드시 이후에 값이 할당될 것
+  const delelteModalRef = useRef<HTMLDivElement>(null!);
 
-  // 모달 닫기
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+  // useDetectClose 훅을 사용하여 모달 열기/닫기 상태를 관리
+  const [isModifyModalOpen, setIsModifyModalOpen] = useDetectClose(
+    modifyModalRef,
+    false
+  );
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useDetectClose(
+    delelteModalRef,
+    false
+  );
 
   return (
     <div className="max-w-sm sm:max-w-sm md:max-w-md lg:max-w-lg p-4 bg-gradient-to-r from-teal-400 to-green-500 text-white rounded-2xl shadow-lg relative">
@@ -23,7 +27,7 @@ const AccountCard = () => {
         <button
           onClick={(e) => {
             e.stopPropagation();
-            setIsModalOpen(true);
+            setIsModifyModalOpen(true);
           }}
         >
           <img src={editIcon} alt="editIcon" />
@@ -32,7 +36,7 @@ const AccountCard = () => {
         <button
           onClick={(e) => {
             e.stopPropagation();
-            setIsModalOpen(true);
+            setIsDeleteModalOpen(true);
           }}
         >
           <img src={deleteIcon} alt="deleteIcon" />
@@ -53,10 +57,17 @@ const AccountCard = () => {
         미완료 영수증: <span className="font-semibold">7개</span>
       </p>
 
-      {/* 모달 창 */}
-      {isModalOpen && (
-        <div ref={modalRef}>
-          <DeleteModal onClose={closeModal} /> {/* 모달 닫기 처리 */}
+      {/* 수정 모달 */}
+      {isModifyModalOpen && (
+        <div ref={modifyModalRef}>
+          <ModifyModal onClose={() => setIsModifyModalOpen(false)} />
+        </div>
+      )}
+
+      {/* 삭제 모달 */}
+      {isDeleteModalOpen && (
+        <div ref={delelteModalRef}>
+          <DeleteModal onClose={() => setIsDeleteModalOpen(false)} />
         </div>
       )}
     </div>

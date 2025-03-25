@@ -1,6 +1,5 @@
 import CloseIcon from "../../../assets/CloseIcons.svg";
 
-// AccountDeleteModal 컴포넌트에서 onClose prop을 받도록 수정
 interface DeleteModalProps {
   onClose: () => void; // 모달을 닫을 때 사용할 onClose prop 정의
 }
@@ -16,8 +15,10 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
         onClick={(e) => e.stopPropagation()} // 모달 본체 클릭 시, 이벤트 전파를 막아 닫히지 않도록 처리>
       >
         {/* 모달 헤더 */}
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-lg font-semibold">계좌 삭제</h2>
+        <div className="flex justify-between items-center mb-4 w-full">
+          <h2 className="text-lg font-semibold text-black flex-grow text-center">
+            계좌 삭제
+          </h2>
           <button
             onClick={onClose} // onClose prop을 사용해 모달 닫기
           >
@@ -36,7 +37,7 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
             className="w-1/2 px-4 py-2 text-white rounded-lg"
             style={{
               background: "linear-gradient(180deg, #7953FF 0%, #4E00CB 100%)", // 버튼 배경
-              borderRadius: "8px", // border-radius 설정
+              borderRadius: "8px",
             }}
             onClick={() => {
               alert("계좌가 삭제되었습니다.");
