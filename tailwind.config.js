@@ -11,6 +11,7 @@ export default {
         main100: "#242C6C",
         gray200: "#BFBFBF",
         gray100: "#D2D2D2",
+        gray300: '#D9D9D9'
       },
       fontFamily: {
         "pre-black": ["Pretendard-Black", "sans-serif"],

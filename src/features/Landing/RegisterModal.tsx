@@ -2,6 +2,7 @@ import React from 'react';
 import '../../styles/global.css';
 import GoogleLogo from '../../assets/GoogleLogo.png';
 import LoginLogo from '../../assets/LoginLogo.png';
+// import { useDetectClose } from '../../hooks/useDetectClose';
 
 interface RegisterModalProps {
   onClose: () => void;
