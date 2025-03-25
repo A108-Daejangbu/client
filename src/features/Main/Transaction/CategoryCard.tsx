@@ -1,8 +1,11 @@
 interface CategoryCardProp {
   category: Category;
+  onDelete?: (category:Category) => void;
+  onSelected?: boolean;
+  isInline?: boolean;
 }
 
-const CategoryCard = ({category}: CategoryCardProp) => {
+const CategoryCard = ({category, onDelete, onSelected, isInline}: CategoryCardProp) => {
   const ColorPallete = [
     {bgColor: '#00FF94', textColor: '#5DC486'},
     {bgColor: '#0042FF', textColor: '#5B75BF'},
@@ -15,7 +18,7 @@ const CategoryCard = ({category}: CategoryCardProp) => {
     {bgColor: '#FF85D0', textColor: '#CE64AD'},
   ]
 
-  const idx = (category.accountId + new Date().getDate() + new Date().getMonth()) % ColorPallete.length;
+  const idx = (category.categoryId + new Date().getDate() + new Date().getMonth()) % ColorPallete.length;
   const BgColor = ColorPallete[idx].bgColor;
   const TextColor = ColorPallete[idx].textColor;
 
@@ -28,10 +31,30 @@ const CategoryCard = ({category}: CategoryCardProp) => {
   
   const BgColorWithAlpha = hexToRgba(BgColor, 0.2);
 
+  const handleCardClick = () => {
+    if (!onSelected) {
+      onDelete?.(category);
+    }
+  };
+
   return (
-    <div className="px-4 pl-2 rounded"
-    style={{"backgroundColor": BgColorWithAlpha, "color": TextColor}}>
-      <span className="font-pre-extrabold text-8 text-ellipsis line-clamp-1">#  {category.categoryName}</span>
+    <div className={`relative px-2 rounded min-h-4 content-center ${!onSelected ? 'cursor-pointer' : ''}`}
+    style={{"backgroundColor": BgColorWithAlpha, "color": TextColor}}
+    onClick={handleCardClick}>
+      <span className={`font-pre-extrabold text-12 text-ellipsis line-clamp-1 ${
+      isInline ? "max-w-[150px]" : ""
+    }`}><span className="mr-2">#</span>{category.categoryName}</span>
+
+      {/* X 버튼 */}
+      {onSelected && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete?.(category)}}
+          className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-red-400 text-white text-[12px] flex items-center justify-center p-0 cursor-pointer">
+          <span className="translate-y-[0.5px] self-end">x</span>
+        </button>
+      )}
     </div>
   )
 }
