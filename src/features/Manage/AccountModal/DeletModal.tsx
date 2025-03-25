@@ -11,14 +11,13 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
       onClick={onClose} // 배경을 클릭하면 모달이 닫히도록 설정
     >
       <div
-        className="bg-white p-6 rounded-lg shadow-lg w-80 sm:w-96"
+        className="bg-white p-6 rounded-lg shadow-lg w-80 sm:w-96 font-pre-regular text-main200"
         onClick={(e) => e.stopPropagation()} // 모달 본체 클릭 시, 이벤트 전파를 막아 닫히지 않도록 처리>
       >
         {/* 모달 헤더 */}
-        <div className="flex justify-between items-center mb-4 w-full">
-          <h2 className="text-lg font-semibold text-black flex-grow text-center">
-            계좌 삭제
-          </h2>
+        <div className="flex items-center justify-between mb-6 w-full">
+          <div className="w-[15px]"></div>
+          <h2 className="text-lg font-pre-medium text-center">계좌 삭제</h2>
           <button
             onClick={onClose} // onClose prop을 사용해 모달 닫기
           >
@@ -27,12 +26,10 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
         </div>
 
         {/* 모달 본문 */}
-        <p className="text-gray-600 text-center">
-          해당 계좌를 삭제하시겠습니까?
-        </p>
+        <p className="text-center">해당 계좌를 삭제하시겠습니까?</p>
 
         {/* 모달 버튼 */}
-        <div className="mt-6 flex justify-between">
+        <div className="mt-6 flex justify-between font-pre-medium">
           <button
             className="w-1/2 px-4 py-2 text-white rounded-lg"
             style={{
