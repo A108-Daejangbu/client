@@ -33,13 +33,13 @@ const SearchBar = () => {
         {/* 드롭다운 */}
         <button
           onClick={() => setIsDropOpen(!isDropOpen)}
-          className="border rounded-md px-3 py-1 border-gray w-32 max-w-36 text-12 flex justify-between items-center"
+          className="border rounded-md px-3 py-1 border-gray300 w-32 max-w-36 text-12 flex justify-between items-center"
         >
           {dropMenu.label}
-          {!isDropOpen ? <FiChevronDown className="text-gray-500" /> : <FiChevronUp className="text-gray-500" />}
+          {!isDropOpen ? <FiChevronDown /> : <FiChevronUp />}
         </button>
         {isDropOpen && (
-          <ul className="absolute left-0 mt-1 bg-white border border-gray rounded-md w-32 max-w-36 shadow-md z-10 text-12 top-full">
+          <ul className="absolute left-0 mt-1 bg-white border border-gray300 rounded-md w-32 max-w-36 shadow-md z-10 text-12 top-full">
             {dropMenuList.map((value, idx) => (
               <li
                 key={idx}
