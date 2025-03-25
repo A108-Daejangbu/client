@@ -38,3 +38,14 @@ interface SetCategoryReq{
   transactionId: number;
   categoryId: number;
 }
+
+interface SelectOptions {
+  period: string;
+  type: string;
+  order: string;
+}
+
+interface SelectDate {
+  startPeriod:string; 
+  endPeriod: string;
+}

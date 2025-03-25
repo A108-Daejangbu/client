@@ -25,7 +25,7 @@ const TransactionCard = ({transaction}:TransactionProp) => {
   }
 
   const category:Category = {
-    accountId: transaction.categoryId,
+    categoryId: transaction.categoryId,
     categoryName: transaction.categoryName
   }
 
