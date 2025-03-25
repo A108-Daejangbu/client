@@ -3,6 +3,7 @@ import LoginModal from "../features/Landing/LoginModal";
 import RegisterModal from "../features/Landing/RegisterModal";
 import ShieldIcon from "../assets/ShieldLogo.png";
 import WaveIcon from "../assets/LandingVector.png";
+// import { useDetectClose } from "../hooks/useDetectClose";
 
 
 function LandingPage() {
