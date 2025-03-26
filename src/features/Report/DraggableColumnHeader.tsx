@@ -122,6 +122,29 @@ const DraggableColumnHeader: React.FC<DraggableColumnHeaderProps> = ({
     [drag, drop]
   );
 
+  // 드롭다운 위치 계산을 위한 함수 추가
+  const updateDropdownPosition = () => {
+    if (headerRef.current && isDropdownOpen) {
+      const rect = headerRef.current.getBoundingClientRect();
+      document.documentElement.style.setProperty('--dropdown-top', `${rect.bottom}px`);
+      document.documentElement.style.setProperty('--dropdown-left', `${rect.left}px`);
+    }
+  };
+
+  // 드롭다운이 열릴 때마다 위치 업데이트
+  useEffect(() => {
+    if (isDropdownOpen) {
+      updateDropdownPosition();
+      window.addEventListener('scroll', updateDropdownPosition);
+      window.addEventListener('resize', updateDropdownPosition);
+    }
+
+    return () => {
+      window.removeEventListener('scroll', updateDropdownPosition);
+      window.removeEventListener('resize', updateDropdownPosition);
+    };
+  }, [isDropdownOpen]);
+
   // 렌더링
   return (
     <th 

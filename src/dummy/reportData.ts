@@ -173,7 +173,6 @@ export const dropdownSections: Record<string, DropdownSection[]> = {
     {
       title: '입금 설정',
       options: [
-        { label: '전체' },
         { label: '입금이 "-" 인 거래내역 숨기기' },
         { label: '입금 열 삭제' }
       ]
@@ -183,7 +182,6 @@ export const dropdownSections: Record<string, DropdownSection[]> = {
     {
       title: '출금 설정',
       options: [
-        { label: '전체' },
         { label: '출금이 "-" 인 거래내역 숨기기' },
         { label: '출금 열 삭제' }
       ]
