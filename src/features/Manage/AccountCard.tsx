@@ -9,7 +9,7 @@ import { accountInfo } from "../../dummy/accountInfo";
 
 const AccountCard = () => {
   // 더미 데이터 사용(잊지말고 001코드 1로 바꿔두기)
-  const account = accountInfo[0];
+  const account = accountInfo[16];
 
   // 해당 은행 정보 가져오기
   const bankInfo = bankData.find((bank) => bank.bankCode === account.bankCode)!;
