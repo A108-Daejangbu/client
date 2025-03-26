@@ -21,7 +21,7 @@ const RegisterModal = ({ onClose, onLoginClick }: RegisterModalProps) => {
         </button>
         <div>
         <h2 className="text-2xl font-pre-bold mb-8 text-center flex items-center justify-center">
-            <span className="text-blue-500">대장부</span>
+            <span className="text-blue">대장부</span>
             <span>에 오신것을 환영합니다</span>
         </h2>
           <div className="flex items-center justify-center mb-8">
@@ -47,7 +47,7 @@ const RegisterModal = ({ onClose, onLoginClick }: RegisterModalProps) => {
             <span className="text-gray-500 text-sm">이미 회원이신가요?</span>
             <button 
               onClick={onLoginClick} 
-              className="text-blue-500 font-pre-medium text-sm hover:text-blue-600"
+              className="text-blue font-pre-medium text-sm hover:text-blue-600"
             >
               로그인
             </button>

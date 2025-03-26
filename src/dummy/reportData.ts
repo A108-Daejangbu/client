@@ -25,7 +25,7 @@ export const initialData: DataItem[] = [
   {
     id: 2,
     category: 'MT',
-    date: '2025.03.13',
+    date: '2025.03.14',
     content: 'MT 숙소',
     deposit: '800,000,000',
     withdraw: '-',
@@ -35,7 +35,7 @@ export const initialData: DataItem[] = [
   {
     id: 3,
     category: 'MT',
-    date: '2025.03.13',
+    date: '2025.03.15',
     content: 'MT 준비물품',
     deposit: '-',
     withdraw: '120,000',
@@ -45,7 +45,7 @@ export const initialData: DataItem[] = [
   {
     id: 4,
     category: '개강총회',
-    date: '2025.03.13',
+    date: '2025.03.16',
     content: 'MT 준비물품',
     deposit: '-',
     withdraw: '156,000',
@@ -55,7 +55,7 @@ export const initialData: DataItem[] = [
   {
     id: 5,
     category: '개강총회',
-    date: '2025.03.13',
+    date: '2025.03.17',
     content: 'MT 준비물품',
     deposit: '-',
     withdraw: '156,000',
@@ -65,7 +65,7 @@ export const initialData: DataItem[] = [
   {
     id: 6,
     category: '축제',
-    date: '2025.03.13',
+    date: '2025.03.18',
     content: 'MT 간식',
     deposit: '-',
     withdraw: '156,000',
@@ -75,7 +75,7 @@ export const initialData: DataItem[] = [
   {
     id: 7,
     category: '축제',
-    date: '2025.03.13',
+    date: '2025.03.19',
     content: 'MT 간식',
     deposit: '-',
     withdraw: '156,000',
@@ -85,7 +85,7 @@ export const initialData: DataItem[] = [
   {
     id: 8,
     category: '축제',
-    date: '2025.03.13',
+    date: '2025.03.20',
     content: 'MT 간식',
     deposit: '-',
     withdraw: '156,000',
@@ -95,7 +95,7 @@ export const initialData: DataItem[] = [
   {
     id: 9,
     category: '축제',
-    date: '2025.03.13',
+    date: '2025.03.21',
     content: 'MT 간식',
     deposit: '-',
     withdraw: '156,000',
@@ -120,3 +120,85 @@ export const fieldMapping: Record<string, keyof DataItem> = {
 
 // 열 너비 매핑도 export
 export const columnWidths = ['12%', '12%', '14%', '14%', '14%', '14%', '20%'];
+
+// 카테고리 옵션을 initialData에서 추출하는 함수
+const getCategoryOptions = () => {
+  const uniqueCategories = Array.from(
+    new Set(initialData.map(item => item.category))
+  );
+  
+  return [
+    { label: '전체' },
+    ...uniqueCategories.map(category => ({ label: category })),
+    { label: '카테고리 열 삭제' }
+  ];
+};
+
+// 드롭다운 옵션 타입 정의
+export interface DropdownOption {
+  label: string;
+  color?: string; // 태그 색상
+  isSelected?: boolean;
+}
+
+// 드롭다운 섹션 타입 정의
+export interface DropdownSection {
+  title: string;
+  options: DropdownOption[];
+}
+
+// 드롭다운 데이터 구조 수정
+export const dropdownSections: Record<string, DropdownSection[]> = {
+  '카테고리': [
+    {
+      title: '카테고리 설정',
+      options: getCategoryOptions()
+    }
+  ],
+  '날짜': [
+    {
+      title: '날짜 설정',
+      options: [
+        { label: '날짜 열 삭제' }
+      ]
+    }
+  ],
+  '내용': [
+    {
+      title: '내용 설정',
+      options: [{ label: '내용 열 삭제' }]
+    }
+  ],
+  '입금': [
+    {
+      title: '입금 설정',
+      options: [
+        { label: '전체' },
+        { label: '입금이 "-" 인 거래내역 숨기기' },
+        { label: '입금 열 삭제' }
+      ]
+    }
+  ],
+  '출금': [
+    {
+      title: '출금 설정',
+      options: [
+        { label: '전체' },
+        { label: '출금이 "-" 인 거래내역 숨기기' },
+        { label: '출금 열 삭제' }
+      ]
+    }
+  ],
+  '잔액': [
+    {
+      title: '잔액 설정',
+      options: [{ label: '잔액 열 삭제' }]
+    }
+  ],
+  '비고': [
+    {
+      title: '비고 설정',
+      options: [{ label: '비고 열 삭제' }]
+    }
+  ]
+};
