@@ -10,6 +10,7 @@ import {
   columnWidths 
 } from '../dummy/reportData';
 import DraggableColumnHeader from '../features/Report/DraggableColumnHeader';
+import * as XLSX from 'xlsx';
 
 // 타입 정의
 interface ColumnItem {
@@ -215,6 +216,41 @@ function ReportPage() {
 
   const dateRange = getDisplayDateRange();
 
+  // 엑셀 다운로드 함수 수정
+  const handleDownloadExcel = useCallback(() => {
+    // 현재 표시된 데이터와 컬럼을 기반으로 워크시트 데이터 생성
+    const worksheetData = tableData.map(item => {
+      const row: any = {};
+      columns.forEach(column => {
+        const field = fieldMapping[column];
+        row[column] = item[field];
+      });
+      return row;
+    });
+
+    // 워크북 생성
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+
+    // 열 너비 설정
+    const columnWidths = columns.map(column => ({
+      wch: column === '비고' ? 30 : 15 // 비고 열은 더 넓게, 나머지는 15
+    }));
+    worksheet['!cols'] = columnWidths;
+
+    // 워크시트를 워크북에 추가
+    XLSX.utils.book_append_sheet(workbook, worksheet, '거래내역');
+
+    // 파일 이름 생성 (거래내역 조회기간 기준)
+    const range = getDisplayDateRange();
+    const fileName = range 
+      ? `대장부_거래내역_보고서_${range.from}_${range.to}.xlsx`
+      : `대장부_거래내역_보고서.xlsx`;
+
+    // 엑셀 파일 다운로드
+    XLSX.writeFile(workbook, fileName);
+  }, [tableData, columns, fieldMapping, getDisplayDateRange]);
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="content bg-white flex justify-center">
@@ -241,7 +277,10 @@ function ReportPage() {
               </div>
             </div>
             
-            <button className="bg-gradient-to-r from-blue to-purple hover:opacity-80 text-white px-6 py-2 rounded-lg flex items-center gap-2 font-pre-bold text-14">
+            <button 
+              onClick={handleDownloadExcel}
+              className="bg-gradient-to-r from-blue to-purple hover:opacity-80 text-white px-6 py-2 rounded-lg flex items-center gap-2 font-pre-bold text-14"
+            >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
               </svg>
