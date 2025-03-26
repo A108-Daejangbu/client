@@ -172,17 +172,17 @@ function ReportPage() {
     setTableData(initialData);
   }, []);
 
-  // 날짜 포맷팅 함수
+  // 날짜 포맷팅 함수 수정
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString('ko-KR', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
-    }).replace(/\. /g, '.').replace('.', '');
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}.${month}.${day}`;
   };
 
-  // 현재 필터링된 날짜 범위 또는 전체 데이터의 날짜 범위 계산
+  // getDisplayDateRange 함수 수정
   const getDisplayDateRange = useCallback(() => {
+    // 선택된 날짜 범위가 있는 경우
     if (selectedDateRange) {
       return {
         from: formatDate(selectedDateRange.from),
@@ -190,8 +190,9 @@ function ReportPage() {
       };
     }
 
-    // 전체 데이터에서 최소/최대 날짜 찾기
+    // 전체 데이터의 날짜 범위 계산
     const dates = tableData.map(item => {
+      // YYYY.MM.DD 형식의 문자열을 Date 객체로 변환
       const [year, month, day] = item.date.split('.').map(Number);
       return new Date(year, month - 1, day);
     });
