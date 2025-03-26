@@ -7,12 +7,13 @@ interface FilterPeriodProps{
   dateRange: SelectDate;
   setDateRange: React.Dispatch<React.SetStateAction<SelectDate>>
   formatDate: (date: Date) => string;
+  period: string;
 }
 
-const FilterPeriod = ({setSelectOptions, dateRange, setDateRange, formatDate}:FilterPeriodProps) => {
+const FilterPeriod = ({setSelectOptions, dateRange, setDateRange, formatDate, period}:FilterPeriodProps) => {
   const today = new Date();
 
-  const [periodOption, setPeriodOption] = useState('이번달')
+  const [periodOption, setPeriodOption] = useState(period)
 
   const handlePeriodClick = (label: string) => {
     if(label === '3개월'){
