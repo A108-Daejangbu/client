@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from "react";
-import { DndProvider, useDrag, useDrop } from "react-dnd";
+import React, { useState, useCallback, useEffect } from "react";
+import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 // 데이터 import
 import { 
@@ -9,69 +9,13 @@ import {
   fieldMapping, 
   columnWidths 
 } from '../dummy/reportData';
+import DraggableColumnHeader from '../features/Report/DraggableColumnHeader';
 
 // 타입 정의
 interface ColumnItem {
   index: number;
   type: 'COLUMN';
 }
-
-// 드래그 가능한 칼럼 헤더 컴포넌트
-const DraggableColumnHeader = ({ column, index, moveColumn }: { 
-  column: string; 
-  index: number; 
-  moveColumn: (fromIndex: number, toIndex: number) => void 
-}) => {
-  const [{ isDragging }, drag] = useDrag({
-    type: 'COLUMN',
-    item: (): ColumnItem => ({
-      index,
-      type: 'COLUMN'
-    }),
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging()
-    })
-  });
-
-  const [{ isOver, canDrop }, drop] = useDrop({
-    accept: 'COLUMN',
-    canDrop: (item: ColumnItem) => item.index !== index,
-    drop: (item: ColumnItem) => {
-      if (item.index !== index) {
-        moveColumn(item.index, index);
-      }
-    },
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-      canDrop: monitor.canDrop()
-    })
-  });
-
-  const opacity = isDragging ? 0.5 : 1;
-  const backgroundColor = isOver && canDrop ? 'rgba(0, 0, 0, 0.1)' : 'white';
-
-  return (
-    <th 
-      ref={(node) => {
-        drag(drop(node));
-      }}
-      className={`px-6 pt-5 pb-3 text-center`}
-      style={{ 
-        cursor: 'move',
-        opacity,
-        backgroundColor,
-        transition: 'background-color 0.2s ease'
-      }}
-    >
-      <div className="w-full text-center whitespace-nowrap text-14 font-pre-light text-main200 hover:text-purple">
-        {column}
-        <svg className="w-4 h-4 ml-1 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
-      </div>
-    </th>
-  );
-};
 
 // 툴팁 컴포넌트 분리
 const NoteTooltip = ({ content }: { content: string }) => (
@@ -107,9 +51,14 @@ const TableCell = ({
 );
 
 function ReportPage() {
-  // initialData를 import해서 사용
   const [columns, setColumns] = useState<string[]>(initialColumns);
-  const [tableData] = useState<DataItem[]>(initialData);
+  const [tableData, setTableData] = useState<DataItem[]>(initialData);
+  const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({
+    '입금': [],
+    '출금': []
+  });
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedDateRange, setSelectedDateRange] = useState<{from: Date; to: Date} | null>(null);
 
   // fieldMapping과 columnWidths는 import해서 사용
   
@@ -123,11 +72,143 @@ function ReportPage() {
     });
   }, []);
 
+  // 컬럼 삭제 함수 추가
+  const handleColumnDelete = useCallback((columnName: string) => {
+    setColumns(prevColumns => prevColumns.filter(col => col !== columnName));
+  }, []);
+
   // 컬럼 너비 얻기
   const getColumnWidth = (column: string): string => {
     const index = initialColumns.indexOf(column);
     return index !== -1 ? columnWidths[index] : '14%';
   };
+
+  // 필터링된 데이터를 계산하는 함수
+  const getFilteredData = useCallback((baseData: DataItem[]) => {
+    let filteredData = [...baseData];
+
+    // 날짜 필터 적용
+    if (selectedDateRange) {
+      const parseDate = (dateStr: string) => {
+        const [year, month, day] = dateStr.split('.').map(Number);
+        return new Date(year, month - 1, day);
+      };
+
+      filteredData = filteredData.filter(item => {
+        const itemDate = parseDate(item.date);
+        return itemDate >= selectedDateRange.from && itemDate <= selectedDateRange.to;
+      });
+    }
+
+    // 카테고리 필터 적용
+    if (selectedCategories.length > 0) {
+      filteredData = filteredData.filter(item => 
+        selectedCategories.includes(item.category)
+      );
+    }
+
+    // 입금/출금 필터 적용
+    Object.entries(selectedFilters).forEach(([column, filters]) => {
+      if (filters.length > 0) {
+        if (column === '입금' && filters.includes('입금이 "-" 인 거래내역 숨기기')) {
+          filteredData = filteredData.filter(item => item.deposit !== '-');
+        }
+        if (column === '출금' && filters.includes('출금이 "-" 인 거래내역 숨기기')) {
+          filteredData = filteredData.filter(item => item.withdraw !== '-');
+        }
+      }
+    });
+
+    return filteredData;
+  }, [selectedDateRange, selectedCategories, selectedFilters]);
+
+  // 필터링 처리 함수 수정
+  const handleFilter = useCallback((columnName: string, option: string) => {
+    if (option === '전체') {
+      setSelectedFilters(prev => ({ ...prev, [columnName]: [] }));
+    } else {
+      setSelectedFilters(prev => {
+        const newFilters = { ...prev };
+        const filterOption = option;
+        
+        // 이미 선택된 옵션이면 제거, 아니면 추가
+        newFilters[columnName] = prev[columnName]?.includes(filterOption)
+          ? []  // 선택 해제시 빈 배열로 초기화
+          : [filterOption];  // 선택시 해당 옵션만 배열에 추가
+        
+        return newFilters;
+      });
+    }
+  }, []);
+
+  // 카테고리 필터링 함수 수정
+  const handleCategoryFilter = useCallback((category: string) => {
+    if (category === '전체') {
+      setSelectedCategories([]);
+    } else {
+      setSelectedCategories(prev => {
+        const newCategories = prev.includes(category)
+          ? prev.filter(c => c !== category)
+          : [...prev, category];
+        return newCategories;
+      });
+    }
+  }, []);
+
+  // 날짜 필터링 함수 수정
+  const handleDateFilter = useCallback(({ from, to }: { from: Date; to: Date }) => {
+    setSelectedDateRange({ from, to });
+  }, []);
+
+  // 필터 변경시 데이터 업데이트
+  useEffect(() => {
+    const filteredData = getFilteredData(initialData);
+    setTableData(filteredData);
+  }, [selectedDateRange, selectedCategories, selectedFilters, getFilteredData]);
+
+  // 필터 초기화 함수
+  const handleResetFilter = useCallback((columnName: string) => {
+    setSelectedFilters(prev => ({ ...prev, [columnName]: [] }));
+    setTableData(initialData);
+  }, []);
+
+  // 날짜 포맷팅 함수 수정
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}.${month}.${day}`;
+  };
+
+  // getDisplayDateRange 함수 수정
+  const getDisplayDateRange = useCallback(() => {
+    // 선택된 날짜 범위가 있는 경우
+    if (selectedDateRange) {
+      return {
+        from: formatDate(selectedDateRange.from),
+        to: formatDate(selectedDateRange.to)
+      };
+    }
+
+    // 전체 데이터의 날짜 범위 계산
+    const dates = tableData.map(item => {
+      // YYYY.MM.DD 형식의 문자열을 Date 객체로 변환
+      const [year, month, day] = item.date.split('.').map(Number);
+      return new Date(year, month - 1, day);
+    });
+    
+    if (dates.length === 0) return null;
+
+    const minDate = new Date(Math.min(...dates.map(d => d.getTime())));
+    const maxDate = new Date(Math.max(...dates.map(d => d.getTime())));
+
+    return {
+      from: formatDate(minDate),
+      to: formatDate(maxDate)
+    };
+  }, [selectedDateRange, tableData]);
+
+  const dateRange = getDisplayDateRange();
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -143,9 +224,15 @@ function ReportPage() {
             <div>
               <h2 className="font-pre-semibold text-20 text-main200">Preview</h2>
               <div className="flex items-center gap-2 text-gray200 font-pre-bold text-10">
-                <span>2025. 03. 01</span>
-                <span>~</span>
-                <span>2025. 03. 18</span>
+                {dateRange ? (
+                  <>
+                    <span>{dateRange.from}</span>
+                    <span>~</span>
+                    <span>{dateRange.to}</span>
+                  </>
+                ) : (
+                  <span>데이터 없음</span>
+                )}
               </div>
             </div>
             
@@ -177,7 +264,15 @@ function ReportPage() {
                           key={`${column}-${index}`} 
                           column={column} 
                           index={index} 
-                          moveColumn={moveColumn} 
+                          moveColumn={moveColumn}
+                          onDelete={handleColumnDelete}
+                          onFilter={handleFilter}
+                          onResetFilter={handleResetFilter}
+                          onCategoryFilter={handleCategoryFilter}
+                          selectedCategories={selectedCategories}
+                          onDateFilter={handleDateFilter}
+                          selectedDateRange={selectedDateRange}
+                          selectedFilters={selectedFilters}
                         />
                       ))}
                     </tr>
@@ -189,7 +284,7 @@ function ReportPage() {
               </div>
               
               {/* 데이터 영역 - 스크롤 가능 */}
-              <div className="overflow-y-auto" style={{ maxHeight: '400px' }}>
+              <div className="overflow-y-auto h-[400px]">
                 <table className="w-full border-collapse" style={{ tableLayout: 'fixed' }}>
                   <colgroup>
                     {columns.map((column, index) => (
