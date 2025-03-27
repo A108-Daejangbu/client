@@ -17,7 +17,7 @@
 
 export const bankData = [
   {
-    bankCode: "1",
+    bankCode: "001",
     bankName: "한국은행",
     logo: "/banks/hanguk.svg",
     color1: "#95D4E8", // 위쪽 색상
@@ -131,14 +131,14 @@ export const bankData = [
   {
     bankCode: "090",
     bankName: "카카오뱅크",
-    logo: "/banks/kakako.svg",
+    logo: "/banks/kakao.svg",
     color1: "#F9E000",
     color2: "#FAC759",
   },
   {
     bankCode: "999",
     bankName: "싸피은행",
-    logo: "/images/banks/ssafy.svg",
+    logo: "/banks/ssafy.svg",
     color1: "#9AD2EA",
     color2: "#0091D0",
   },
