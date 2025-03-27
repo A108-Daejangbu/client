@@ -1,22 +1,28 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import '../../styles/global.css';
-import GoogleLogo from '../../assets/GoogleLogo.png';
 import LoginLogo from '../../assets/LoginLogo.png';
 import useDetectClose from '../../hooks/useDetectClose';
 
-interface RegisterModalProps {
+interface ViewerEntryModalProps {
   onClose: () => void;
 }
 
-const RegisterModal = ({ onClose }: RegisterModalProps) => {
+const ViewerEntryModal = ({ onClose }: ViewerEntryModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useDetectClose(modalRef, true);
+  const [password, setPassword] = useState('');
 
   useEffect(() => {
     if (!isOpen) {
       onClose();
     }
   }, [isOpen, onClose]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // 여기에 비밀번호 검증 로직 추가
+    console.log('Password submitted:', password);
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -32,31 +38,32 @@ const RegisterModal = ({ onClose }: RegisterModalProps) => {
         </button>
         <div className="flex flex-col items-center">
           <h2 className="text-xl md:text-2xl font-pre-bold mb-3 md:mb-6 text-center">
-            <span className="text-blue">대장부</span>에 오신것을<br />
-            환영합니다
+            <span className="text-blue">입장 비밀번호</span>를<br />
+            입력해주세요
           </h2>
           <div className="flex items-center justify-center mb-3 md:mb-6">
             <img src={LoginLogo} alt="Logo" className="w-20 h-16 md:w-28 md:h-24" />
           </div>
         </div>
         
-        <div className="w-full px-1 md:px-4">
+        <form onSubmit={handleSubmit} className="w-full px-1 md:px-4">
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="비밀번호를 입력하세요"
+            className="w-full py-2 px-3 border border-[#e0e0e0] rounded-lg mb-2 md:mb-3 focus:outline-none focus:border-blue-500 text-sm"
+          />
           <button 
-            className="w-full py-2 px-3 border border-[#e0e0e0] rounded-lg flex items-center justify-center gap-2 md:gap-3 hover:bg-gray-50 transition-all duration-300 shadow-sm hover:shadow"
+            type="submit"
+            className="w-full py-2 px-3 bg-gradient-to-r from-[#7953FF] to-[#4E00CB] text-white rounded-lg font-pre-medium hover:opacity-90 transition-all duration-300 text-sm"
           >
-            <img 
-              src={GoogleLogo}
-              alt="Google" 
-              className="w-4 h-4 md:w-5 md:h-5"
-            />
-            <span className="font-pre-medium text-[#333] text-sm">
-              Google 계정으로 시작하기
-            </span>
+            입장하기
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );
 };
 
-export default RegisterModal;
+export default ViewerEntryModal;

@@ -51,18 +51,20 @@ const Dropdown: React.FC<DropdownProps> = ({
 
   return (
     <div 
-      className="absolute top-full left-0 mt-1 bg-white shadow-lg rounded-lg border border-gray-200 z-20 py-1"
+      className="fixed mt-2 bg-white rounded-lg z-50 py-2 border border-gray-300"
       style={{ 
         fontSize: '0.8rem',
         transform: column === '날짜' ? 'scale(1)' : 'none',
-        transformOrigin: 'top left'
+        transformOrigin: 'top left',
+        top: 'var(--dropdown-top)',
+        left: 'var(--dropdown-left)'
       }}
       onClick={(e) => e.stopPropagation()}
     >
       {column === '날짜' ? (
-        <div className="p-1">
-          <div className="text-12 font-pre-light text-main200 mb-1 p-1">
-            <span className="text-blue">날짜 설정</span>
+        <div className="p-2">
+          <div className="text-12 font-pre-medium text-main200 mb-2 px-2">
+            <span className="text-main200">날짜 설정</span>
             {selectedDateRange && (
               <span className="ml-2 text-11 text-gray-500">
                 {formatDateRange()}
@@ -74,7 +76,7 @@ const Dropdown: React.FC<DropdownProps> = ({
             selected={dateRange}
             onSelect={setDateRange}
             numberOfMonths={1}
-            className="rounded-md border"
+            className="rounded-md"
             classNames={{
               months: "space-y-2",
               month: "space-y-2",
@@ -98,9 +100,9 @@ const Dropdown: React.FC<DropdownProps> = ({
               day_hidden: "invisible",
             }}
           />
-          <div className="mt-2 flex justify-between px-2">
+          <div className="mt-3 flex justify-between px-3">
             <div 
-              className="text-11 font-pre-light text-red-500 cursor-pointer hover:opacity-80"
+              className="text-11 font-pre-light text-red-500 cursor-pointer hover:opacity-80 transition-opacity"
               onClick={() => {
                 onSelect('날짜 열 삭제');
                 onClose();
@@ -115,7 +117,7 @@ const Dropdown: React.FC<DropdownProps> = ({
                   onClose();
                 }
               }} 
-              className="bg-gradient-to-r from-blue to-purple text-xs py-1 px-3 h-6"
+              className="bg-gradient-to-r from-blue to-purple text-xs py-1 px-4 h-7 rounded-md hover:opacity-90 transition-opacity"
             >
               적용
             </Button>
@@ -123,9 +125,11 @@ const Dropdown: React.FC<DropdownProps> = ({
         </div>
       ) : (
         sections.map((section, sectionIndex) => (
-          <div key={sectionIndex} className="w-[200px]">
-            <div className="text-12 font-pre-light mb-1 px-1 text-blue">
-              {section.title}
+          <div key={sectionIndex} className="w-[190px]">
+            <div className="text-12 font-pre-medium mb-2 px-3">
+              <span className="text-main200">
+                {section.title}
+              </span>
             </div>
             {section.options.map((option, optionIndex) => {
               const isSelected = column === '카테고리' 
@@ -136,7 +140,7 @@ const Dropdown: React.FC<DropdownProps> = ({
               return (
                 <div 
                   key={optionIndex}
-                  className={`px-2 py-1 hover:bg-gray-50 cursor-pointer rounded-md flex items-center gap-2 ${
+                  className={`px-3 py-1 hover:bg-gray-50 cursor-pointer transition-colors flex items-center gap-2 ${
                     option.label.includes('삭제') ? 'text-red-500' : 
                     option.label === '전체' ? 'text-main200' : ''
                   }`}
@@ -148,20 +152,22 @@ const Dropdown: React.FC<DropdownProps> = ({
                   }}
                 >
                   {(!isSpecialOption || option.label.includes('숨기기')) && (
-                    <div className={`w-4 h-4 border rounded ${
-                      isSelected ? 'bg-blue border-blue' : 'border-gray-300'
+                    <div className={`w-4 h-4 rounded transition-all ${
+                      isSelected 
+                        ? 'bg-blue' 
+                        : 'border border-gray-300'
                     } flex items-center justify-center`}>
                       {isSelected && (
-                        <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
                           <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" />
                         </svg>
                       )}
                     </div>
                   )}
-                  <span className={`text-11 font-pre-light ${
-                    option.label.includes('삭제') ? 'text-red-500' : 
+                  <span className={`text-12 font-pre-thin leading-none transition-colors ${
+                    option.label.includes('삭제') ? 'text-red-500 hover:text-red-600' : 
                     option.label === '전체' ? 'text-main200' :
-                    isSelected ? 'text-blue' : 'text-main200'
+                    isSelected ? 'text-blue' : 'text-main200 hover:text-blue'
                   }`}>
                     {option.label}
                   </span>

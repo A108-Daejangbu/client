@@ -102,6 +102,66 @@ export const initialData: DataItem[] = [
     balance: "3,857,300",
     note: "",
   },
+  {
+    id: 10,
+    category: "축제",
+    date: "2025.03.21",
+    content: "MT 간식",
+    deposit: "-",
+    withdraw: "156,000",
+    balance: "3,857,300",
+    note: "",
+  },
+  {
+    id: 11,
+    category: "축제",
+    date: "2025.03.21",
+    content: "MT 간식",
+    deposit: "-",
+    withdraw: "156,000",
+    balance: "3,857,300",
+    note: "",
+  },
+  {
+    id: 12,
+    category: "축제",
+    date: "2025.03.21",
+    content: "MT 간식",
+    deposit: "-",
+    withdraw: "156,000",
+    balance: "3,857,300",
+    note: "",
+  },
+  {
+    id: 13,
+    category: "축제",
+    date: "2025.03.21",
+    content: "MT 간식",
+    deposit: "-",
+    withdraw: "156,000",
+    balance: "3,857,300",
+    note: "",
+  },
+  {
+    id: 14,
+    category: "축제",
+    date: "2025.03.21",
+    content: "MT 간식",
+    deposit: "-",
+    withdraw: "156,000",
+    balance: "3,857,300",
+    note: "",
+  },
+  {
+    id: 15,
+    category: "축제",
+    date: "2025.03.21",
+    content: "MT 간식",
+    deposit: "-",
+    withdraw: "156,000",
+    balance: "3,857,300",
+    note: "",
+  },
 ];
 
 // 초기 컬럼 이름도 함께 export
@@ -179,7 +239,6 @@ export const dropdownSections: Record<string, DropdownSection[]> = {
     {
       title: "입금 설정",
       options: [
-        { label: "전체" },
         { label: '입금이 "-" 인 거래내역 숨기기' },
         { label: "입금 열 삭제" },
       ],
@@ -189,7 +248,6 @@ export const dropdownSections: Record<string, DropdownSection[]> = {
     {
       title: "출금 설정",
       options: [
-        { label: "전체" },
         { label: '출금이 "-" 인 거래내역 숨기기' },
         { label: "출금 열 삭제" },
       ],

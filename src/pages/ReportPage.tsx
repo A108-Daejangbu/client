@@ -10,6 +10,7 @@ import {
   columnWidths 
 } from '../dummy/reportData';
 import DraggableColumnHeader from '../features/Report/DraggableColumnHeader';
+import * as XLSX from 'xlsx';
 
 // 타입 정의
 interface ColumnItem {
@@ -40,13 +41,18 @@ const NoteTooltip = ({ content }: { content: string }) => (
 const TableCell = ({ 
   column, 
   content, 
+  isLastRow,
+  isLastColumn,
 }: { 
   column: string;
   content: string;
+  isLastRow: boolean;
+  isLastColumn: boolean;
 }) => (
-  <td className={`px-4 py-4 text-center whitespace-nowrap font-pre-regular text-14 text-main200 truncate ${column === '비고' ? 'relative group' : ''}`}>
+  <td className={`px-4 py-2 text-center whitespace-nowrap font-pre-regular text-14 text-main200 truncate ${column === '비고' ? 'relative group' : ''}`}>
     {content}
     {column === '비고' && content && <NoteTooltip content={content} />}
+    {isLastRow && isLastColumn && <div className="last-row-cell"></div>}
   </td>
 );
 
@@ -210,6 +216,41 @@ function ReportPage() {
 
   const dateRange = getDisplayDateRange();
 
+  // 엑셀 다운로드 함수 수정
+  const handleDownloadExcel = useCallback(() => {
+    // 현재 표시된 데이터와 컬럼을 기반으로 워크시트 데이터 생성
+    const worksheetData = tableData.map(item => {
+      const row: any = {};
+      columns.forEach(column => {
+        const field = fieldMapping[column];
+        row[column] = item[field];
+      });
+      return row;
+    });
+
+    // 워크북 생성
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+
+    // 열 너비 설정
+    const columnWidths = columns.map(column => ({
+      wch: column === '비고' ? 30 : 15 // 비고 열은 더 넓게, 나머지는 15
+    }));
+    worksheet['!cols'] = columnWidths;
+
+    // 워크시트를 워크북에 추가
+    XLSX.utils.book_append_sheet(workbook, worksheet, '거래내역');
+
+    // 파일 이름 생성 (거래내역 조회기간 기준)
+    const range = getDisplayDateRange();
+    const fileName = range 
+      ? `대장부_거래내역_보고서_${range.from}_${range.to}.xlsx`
+      : `대장부_거래내역_보고서.xlsx`;
+
+    // 엑셀 파일 다운로드
+    XLSX.writeFile(workbook, fileName);
+  }, [tableData, columns, fieldMapping, getDisplayDateRange]);
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="content bg-white flex justify-center">
@@ -220,7 +261,7 @@ function ReportPage() {
           </div>
 
           {/* Preview 섹션과 다운로드 버튼 */}
-          <div className="mx-4 mb-1 flex justify-between items-center">
+          <div className="mx-4 mb-2 flex justify-between items-center">
             <div>
               <h2 className="font-pre-semibold text-20 text-main200">Preview</h2>
               <div className="flex items-center gap-2 text-gray200 font-pre-bold text-10">
@@ -236,7 +277,10 @@ function ReportPage() {
               </div>
             </div>
             
-            <button className="bg-gradient-to-r from-blue to-purple hover:opacity-80 text-white px-6 py-2 rounded-lg flex items-center gap-2 font-pre-bold text-14">
+            <button 
+              onClick={handleDownloadExcel}
+              className="bg-gradient-to-r from-blue to-purple hover:opacity-80 text-white px-6 py-2 rounded-lg flex items-center gap-2 font-pre-bold text-14"
+            >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
               </svg>
@@ -245,8 +289,9 @@ function ReportPage() {
           </div>
 
           {/* 테이블 컨테이너 */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden modal mx-auto">
-            <div className="overflow-x-auto">
+          {/* shadow-[1.44px_2.16px_20.14px_rgba(0,0,0,0.2)] */}
+          <div className="bg-white rounded-xl overflow-hidden mx-auto border border-gray-200">
+            <div className="overflow-hidden rounded-xl">
               {/* 헤더 영역 - 스크롤과 관계없이 고정 */}
               <div className="sticky top-0 z-10 bg-white">
                 <table className="w-full border-collapse" style={{ tableLayout: 'fixed' }}>
@@ -257,8 +302,8 @@ function ReportPage() {
                   </colgroup>
                   
                   {/* 테이블 헤더 - 드래그 가능 */}
-                  <thead>
-                    <tr>
+                  <thead className="rounded-xl">
+                    <tr className="rounded-xl">
                       {columns.map((column, index) => (
                         <DraggableColumnHeader 
                           key={`${column}-${index}`} 
@@ -284,8 +329,15 @@ function ReportPage() {
               </div>
               
               {/* 데이터 영역 - 스크롤 가능 */}
-              <div className="overflow-y-auto h-[400px]">
-                <table className="w-full border-collapse" style={{ tableLayout: 'fixed' }}>
+              <div 
+                className="overflow-y-auto h-[400px] relative custom-scrollbar" 
+                style={{ 
+                  borderBottomLeftRadius: '0.75rem', 
+                  borderBottomRightRadius: '0.75rem' 
+                }}
+              >
+                <div className="absolute inset-0 pointer-events-none rounded-b-xl bg-white" style={{ zIndex: -1 }}></div>
+                <table className="w-full border-collapse relative" style={{ tableLayout: 'fixed' }}>
                   <colgroup>
                     {columns.map((column, index) => (
                       <col key={index} style={{ width: getColumnWidth(column) }} />
@@ -294,8 +346,8 @@ function ReportPage() {
                   
                   {/* 데이터 행 */}
                   <tbody className="bg-white">
-                    {tableData.map((item) => (
-                      <tr key={item.id} className="hover:bg-gray-50">
+                    {tableData.map((item, idx) => (
+                      <tr key={item.id} className={`hover:bg-gray-50 ${idx === tableData.length - 1 ? 'last-row' : ''}`}>
                         {columns.map((column, index) => {
                           const field = fieldMapping[column];
                           return (
@@ -303,6 +355,8 @@ function ReportPage() {
                               key={`${item.id}-${index}`}
                               column={column}
                               content={String(item[field])}
+                              isLastRow={idx === tableData.length - 1}
+                              isLastColumn={index === columns.length - 1}
                             />
                           );
                         })}
