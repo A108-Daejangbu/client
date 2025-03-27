@@ -12,6 +12,7 @@ import ManagePage from "./pages/ManagePage";
 import LandingPage from "./pages/LandingPage";
 import Header from "./layout/Header";
 import AccountPage from "./pages/AccountPage";
+import EmptyAccount from "./features/Manage/EmptyAccount";
 
 // Header를 조건부로 렌더링하는 컴포넌트
 const AppLayout = () => {
@@ -27,6 +28,7 @@ const AppLayout = () => {
         <Route path="/report" element={<ReportPage />} />
         <Route path="/manage" element={<ManagePage />} />
         <Route path="/account" element={<AccountPage />} />
+        <Route path="/empty" element={<EmptyAccount />} />
       </Routes>
     </>
   );

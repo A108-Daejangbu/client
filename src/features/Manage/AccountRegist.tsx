@@ -15,7 +15,7 @@ const RegistrationForm = () => {
   };
 
   return (
-    <div className="w-full sm:max-w-lg lg:max-w-xl mx-auto text-sm font-pre-medium text-gray200 whitespace-nowrap">
+    <div className="w-full sm:max-w-lg lg:max-w-xl mx-auto text-sm font-pre-medium text-main200 whitespace-nowrap">
       <h2 className="text-2xl font-pre-bold text-left mb-[20px]">계좌등록</h2>
       <div className="mb-[40px] border-b"></div>
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -24,7 +24,7 @@ const RegistrationForm = () => {
           <label className="w-1/4">계좌명</label>
           <input
             type="text"
-            className="block w-full px-4 py-2 border border-gray-300 rounded-lg"
+            className="block w-full px-4 py-2 border border-main200 rounded-lg"
             placeholder="2자 이상의 한글, 영문 대소문자만 가능합니다"
             value={accountName}
             onChange={(e) => setAccountName(e.target.value)}

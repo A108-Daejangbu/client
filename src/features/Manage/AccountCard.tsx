@@ -4,21 +4,13 @@ import DeleteModal from "../../features/Manage/AccountModal/DeletModal";
 import ModifyModal from "../../features/Manage/AccountModal/ModifyModal";
 import { useRef } from "react";
 import useDetectClose from "../../hooks/useDetectClose";
-import { bankData } from "../../constants/bankData";
-import { accountInfo } from "../../dummy/accountInfo";
 
-const AccountCard = () => {
-  // 더미 데이터 사용(잊지말고 001코드 1로 바꿔두기)
-  const account = accountInfo[16];
+interface AccountCardProp {
+  account: Account;
+  bankInfo: BankInfo;
+}
 
-  // 해당 은행 정보 가져오기
-  const bankInfo = bankData.find((bank) => bank.bankCode === account.bankCode)!;
-
-  // bankInfo가 없는 경우 로직 처리
-  if (!bankInfo) {
-    console.log("은행 정보를 찾을 수 없습니다.");
-  }
-
+const AccountCard = ({ account, bankInfo }: AccountCardProp) => {
   // useDetectClose는 모달의 상태를 관리
   const modifyModalRef = useRef<HTMLDivElement>(null!); //초기에는 null이지만, 반드시 이후에 값이 할당될 것
   const delelteModalRef = useRef<HTMLDivElement>(null!);
@@ -62,7 +54,7 @@ const AccountCard = () => {
         </button>
       </div>
       {/* 은행이름 및 계좌번호 */}
-      <div className="text-10 opacity-65 flex gap-1.5">
+      <div className="text-10 opacity-75 text-white flex gap-1.5">
         <h2>{account.bankName}</h2>
         <p>{account.accountNumber}</p>
       </div>
@@ -82,7 +74,7 @@ const AccountCard = () => {
               ? account.accountName.slice(0, 13) + "..."
               : account.accountName}
           </h2>
-          <p className="text-[18PX] text-white">
+          <p className="text-[18px] text-white">
             {account.balance.toLocaleString()}원
           </p>
         </div>
