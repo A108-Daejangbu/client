@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import LoginModal from "../features/Landing/LoginModal";
 import RegisterModal from "../features/Landing/RegisterModal";
 import ShieldIcon from "../assets/ShieldLogo.png";
 import WaveIcon from "../assets/LandingVector.png";
@@ -7,18 +6,7 @@ import WaveIcon from "../assets/LandingVector.png";
 
 
 function LandingPage() {
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
-
-  const handleRegisterClick = () => {
-    setIsLoginModalOpen(false);
-    setIsRegisterModalOpen(true);
-  };
-
-  const handleLoginClick = () => {
-    setIsRegisterModalOpen(false);
-    setIsLoginModalOpen(true);
-  };
 
   return (
     <div className="w-[90%] max-w-[1440px] h-[90vh] mx-auto flex flex-col items-center justify-center relative overflow-hidden">
@@ -28,14 +16,14 @@ function LandingPage() {
         {/* Content Wrapper */}
         <div className="relative z-[2] flex flex-col items-center text-center w-[90%] max-w-[1440px] px-4 md:px-12">
 
-          <img src={ShieldIcon} alt="Shield" className="w-20 h-25 bg-center bg-no-repeat"/>
-          <img src={WaveIcon} alt="Wave" className="w-80 h-8 bg-center bg-no-repeat mb-1.5 -mt-3" />
+          <img src={ShieldIcon} alt="Shield" className="w-[75px] h-[100px] bg-center bg-no-repeat"/>
+          <img src={WaveIcon} alt="Wave" className="w-[300px] h-[30px] bg-center bg-no-repeat mb-1.5 -mt-3" />
 
 
           {/* Main Text */}
-          <div className="mb-12 text-center">
+          <div className="mb-[36px] text-center">
             <h2 
-              className="text-5xl font-pre-semibold mb-1 leading-tight tracking-[-0.75px]"
+              className="text-5xl font-pre-semibold leading-tight tracking-[-0.75px]"
               style={{
                 background: "linear-gradient(90deg, #191FD9 0%, #3E6FFA 34%, #7953FF 61%, #2F007B 100%)",
                 WebkitBackgroundClip: "text",
@@ -43,9 +31,9 @@ function LandingPage() {
                 backgroundClip: "text"
               }}
             >
-              이제 대장부로 투명하게
+              대장부로 투명하게
             </h2>
-            <h3 className="text-5xl font-pre-semibold text-[#121212] mb-6 leading-tight tracking-[-0.75px]">
+            <h3 className="text-5xl font-pre-semibold text-[#121212] mb-[20px] leading-tight tracking-[-0.75px]">
               계좌를 연결하고 거래 내역을 공유해요
             </h3>
             <p className="text-lg text-[#595959] font-pre-regular tracking-[-0.75px]">
@@ -55,37 +43,21 @@ function LandingPage() {
             </p>
           </div>
 
-          {/* Buttons */}
-          <div className="flex gap-7">
-            <button 
-              onClick={() => setIsLoginModalOpen(true)}
-              className="w-36 h-10 rounded-full border border-[#7953FF] bg-white text-[#4E00CB] text-base font-pre-medium cursor-pointer transition-all duration-300 hover:bg-[#f0f0ff] shadow-md text-[#2F007B] shadow-[#4A3AFF]/30 tracking-[-0.75px]"
-            >
-              로그인하기
-            </button>
-            <button 
-              onClick={() => setIsRegisterModalOpen(true)}  
-              className="w-36 h-10 rounded-full bg-gradient-to-r from-[#7953FF] to-[#4E00CB] text-white text-base font-pre-medium cursor-pointer transition-all duration-300 hover:opacity-90 shadow-md text-[#FFFFFF] shadow-[#4A3AFF]/30 tracking-[-0.75px]"
-            >
-              회원가입하기
-            </button>
-          </div>
+          {/* Button */}
+          <button 
+            onClick={() => setIsRegisterModalOpen(true)}  
+            className="w-[200px] h-[40px] rounded-full bg-gradient-to-r from-[#7953FF] to-[#4E00CB] text-white text-20 font-pre-semibold cursor-pointer transition-all duration-300 hover:opacity-75 shadow-md text-[#FFFFFF] shadow-[#4A3AFF]/30 tracking-[-0.75px]"
+          >
+            시작하기
+          </button>
         </div>
       </div>
 
-      {/* Login Modal */}
-      {isLoginModalOpen && (
-        <LoginModal 
-          onClose={() => setIsLoginModalOpen(false)}
-          onRegisterClick={handleRegisterClick}
-        />
-      )}
 
       {/* Register Modal */}
       {isRegisterModalOpen && (
         <RegisterModal 
           onClose={() => setIsRegisterModalOpen(false)}
-          onLoginClick={handleLoginClick}
         />
       )}
     </div>

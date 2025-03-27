@@ -1,29 +1,37 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import '../../styles/global.css';
 import GoogleLogo from '../../assets/GoogleLogo.png';
 import LoginLogo from '../../assets/LoginLogo.png';
-// import { useDetectClose } from '../../hooks/useDetectClose';
+import useDetectClose from '../../hooks/useDetectClose';
 
 interface RegisterModalProps {
   onClose: () => void;
-  onLoginClick: () => void;
 }
 
-const RegisterModal = ({ onClose, onLoginClick }: RegisterModalProps) => {
+const RegisterModal = ({ onClose }: RegisterModalProps) => {
+  const modalRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setIsOpen] = useDetectClose(modalRef, true);
+
+  useEffect(() => {
+    if (!isOpen) {
+      onClose();
+    }
+  }, [isOpen, onClose]);
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl p-8 w-full max-w-[340px] relative h-[50vh] justify-center items-center flex flex-col tracking-[-0.75px]">
+      <div ref={modalRef} className="bg-white rounded-2xl p-8 w-full max-w-[340px] relative h-[50vh] justify-center items-center flex flex-col tracking-[-0.75px]">
         <button 
-          onClick={onClose}
+          onClick={() => setIsOpen(false)}
           className="absolute top-4 right-4 text-gray hover:text-black"
         >
           ✕
         </button>
         <div>
-        <h2 className="text-2xl font-pre-bold mb-8 text-center flex items-center justify-center">
+          <h2 className="text-2xl font-pre-bold mb-8 text-center flex items-center justify-center">
             <span className="text-blue">대장부</span>
             <span>에 오신것을 환영합니다</span>
-        </h2>
+          </h2>
           <div className="flex items-center justify-center mb-8">
             <img src={LoginLogo} alt="Logo" className="w-32 h-28" />
           </div>
@@ -39,18 +47,9 @@ const RegisterModal = ({ onClose, onLoginClick }: RegisterModalProps) => {
               className="w-5 h-5"
             />
             <span className="font-pre-medium text-[#333] text-base">
-              Google 계정으로 회원가입
+              Google 계정으로 시작하기
             </span>
           </button>
-        </div>
-        <div className="flex items-center justify-center gap-2 mt-4 font-pre-medium">
-            <span className="text-gray-500 text-sm">이미 회원이신가요?</span>
-            <button 
-              onClick={onLoginClick} 
-              className="text-blue font-pre-medium text-sm hover:text-blue-600"
-            >
-              로그인
-            </button>
         </div>
       </div>
     </div>
