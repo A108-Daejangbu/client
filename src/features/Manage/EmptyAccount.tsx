@@ -9,18 +9,18 @@ const EmptyAccount = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-[75vh] text-center font-pre-medium">
-      <h2 className="text-20 font-pre-medium mb-4">
+      <h2 className="text-20 md:text-24 font-pre-medium mb-10">
         대장부 서비스에 이용할{" "}
         <span className="font-pre-bold">계좌를 등록해주세요.</span>
       </h2>
-      <div className="border border-dashed border-gray200 py-4 rounded-xl max-w-s w-full flex justify-center">
+      <div className="flex flex-col justify-center items-center border border-dashed border-gray200 py-4 px-2 rounded-xl">
         <button
           onClick={handleAddAccount}
           className="flex flex-col items-center justify-center space-y-2"
         >
           <img src={addIcon} alt="add" className="w-10 mt-10" />
           <span className="text-[#4E00CB] text-[18px]">계좌 등록</span>
-          <p className="text-gray200 text-14 whitespace-nowrap">
+          <p className="font-pre-regular text-gray200 text-14 whitespace-nowrap">
             모임의 투명한 거래 내역을 위해 계좌 정보를 등록해주세요.
             <br />
             모든 거래는 모임원들에게 실시간으로 공유됩니다.

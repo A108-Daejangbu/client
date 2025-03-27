@@ -4,6 +4,7 @@ import DeleteModal from "../../features/Manage/AccountModal/DeletModal";
 import ModifyModal from "../../features/Manage/AccountModal/ModifyModal";
 import { useRef } from "react";
 import useDetectClose from "../../hooks/useDetectClose";
+import shareIcon from "../../assets/share.svg";
 
 interface AccountCardProp {
   account: Account;
@@ -41,7 +42,16 @@ const AccountCard = ({ account, bankInfo }: AccountCardProp) => {
             setIsModifyModalOpen(true);
           }}
         >
-          <img src={editIcon} alt="editIcon" className="w-5" />
+          <img src={shareIcon} alt="shareIcon" className="w-3.5" />
+        </button>
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsModifyModalOpen(true);
+          }}
+        >
+          <img src={editIcon} alt="editIcon" className="w-4" />
         </button>
 
         <button
@@ -50,7 +60,7 @@ const AccountCard = ({ account, bankInfo }: AccountCardProp) => {
             setIsDeleteModalOpen(true);
           }}
         >
-          <img src={deleteIcon} alt="deleteIcon" className="w-5" />
+          <img src={deleteIcon} alt="deleteIcon" className="w-3.5" />
         </button>
       </div>
       {/* 은행이름 및 계좌번호 */}
@@ -81,7 +91,7 @@ const AccountCard = ({ account, bankInfo }: AccountCardProp) => {
       </div>
 
       {/* 미완료 영수증 */}
-      <p className="mt-6 text-16 text-white text-right">
+      <p className="mt-5 text-12 text-white text-right">
         미완료 영수증:
         <span className="font-medium ml-2">
           {account.uncompletedReceipts}개
