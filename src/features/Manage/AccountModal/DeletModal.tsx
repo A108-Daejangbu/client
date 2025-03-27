@@ -26,12 +26,12 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
         </div>
 
         {/* 모달 본문 */}
-        <p className="text-center">해당 계좌를 삭제하시겠습니까?</p>
+        <p className="text-center text-14">해당 계좌를 삭제하시겠습니까?</p>
 
         {/* 모달 버튼 */}
-        <div className="mt-6 flex justify-between font-pre-medium">
+        <div className="mt-8 flex justify-between font-pre-medium">
           <button
-            className="w-1/2 px-4 py-2 text-white rounded-lg"
+            className="w-1/2 px-4 py-2 text-white rounded-lg text-14"
             style={{
               background: "linear-gradient(180deg, #7953FF 0%, #4E00CB 100%)",
               borderRadius: "8px",
@@ -44,7 +44,7 @@ const DeleteModal = ({ onClose }: DeleteModalProps) => {
             확인
           </button>
           <button
-            className="w-1/2 px-4 py-2 text-[#4E00CB] border border-[#4E00CB] rounded-lg hover:bg-gray-100 ml-2"
+            className="w-1/2 px-4 py-2 text-[#4E00CB] border border-[#4E00CB] rounded-lg hover:bg-gray-100 ml-2 text-14"
             onClick={onClose}
           >
             취소

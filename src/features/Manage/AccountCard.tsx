@@ -5,6 +5,7 @@ import ModifyModal from "../../features/Manage/AccountModal/ModifyModal";
 import { useRef } from "react";
 import useDetectClose from "../../hooks/useDetectClose";
 import shareIcon from "../../assets/share.svg";
+import LinkShareModal from "./AccountModal/LinkShareModal";
 
 interface AccountCardProp {
   account: Account;
@@ -15,6 +16,7 @@ const AccountCard = ({ account, bankInfo }: AccountCardProp) => {
   // useDetectClose는 모달의 상태를 관리
   const modifyModalRef = useRef<HTMLDivElement>(null!); //초기에는 null이지만, 반드시 이후에 값이 할당될 것
   const delelteModalRef = useRef<HTMLDivElement>(null!);
+  const linkshareModalRef = useRef<HTMLDivElement>(null!);
 
   // useDetectClose 훅을 사용하여 모달 열기/닫기 상태를 관리
   const [isModifyModalOpen, setIsModifyModalOpen] = useDetectClose(
@@ -23,6 +25,10 @@ const AccountCard = ({ account, bankInfo }: AccountCardProp) => {
   );
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useDetectClose(
     delelteModalRef,
+    false
+  );
+  const [isLinkShareModalOpen, setIsLinkShareModalOpen] = useDetectClose(
+    linkshareModalRef,
     false
   );
 
@@ -39,7 +45,7 @@ const AccountCard = ({ account, bankInfo }: AccountCardProp) => {
         <button
           onClick={(e) => {
             e.stopPropagation();
-            setIsModifyModalOpen(true);
+            setIsLinkShareModalOpen(true);
           }}
         >
           <img src={shareIcon} alt="shareIcon" className="w-3.5" />
@@ -97,6 +103,13 @@ const AccountCard = ({ account, bankInfo }: AccountCardProp) => {
           {account.uncompletedReceipts}개
         </span>
       </p>
+
+      {/* 링크 공유 모달 */}
+      {isLinkShareModalOpen && (
+        <div ref={linkshareModalRef}>
+          <LinkShareModal onClose={() => setIsLinkShareModalOpen(false)} />
+        </div>
+      )}
 
       {/* 수정 모달 */}
       {isModifyModalOpen && (
