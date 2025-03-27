@@ -12,17 +12,20 @@ import ManagePage from "./pages/ManagePage";
 import LandingPage from "./pages/LandingPage";
 import Header from "./layout/Header";
 import AccountPage from "./pages/AccountPage";
+import ViewerLandingPage from "./pages/ViewerLandingPage";
 
 // Header를 조건부로 렌더링하는 컴포넌트
 const AppLayout = () => {
   const location = useLocation();
   const isLandingPage = location.pathname === "/";
+  const isViewerLandingPage = location.pathname === "/viewerLanding";
 
   return (
     <>
-      {!isLandingPage && <Header />}
+      {!isLandingPage && !isViewerLandingPage && <Header />}
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/viewerLanding" element={<ViewerLandingPage />} />
         <Route path="/main" element={<MainPage />} />
         <Route path="/report" element={<ReportPage />} />
         <Route path="/manage" element={<ManagePage />} />

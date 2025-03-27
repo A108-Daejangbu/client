@@ -101,6 +101,66 @@ export const initialData: DataItem[] = [
     withdraw: '156,000',
     balance: '3,857,300',
     note: ''
+  },
+  {
+    id: 10,
+    category: '축제',
+    date: '2025.03.21',
+    content: 'MT 간식',
+    deposit: '-',
+    withdraw: '156,000',
+    balance: '3,857,300',
+    note: ''
+  },
+  {
+    id: 11,
+    category: '축제',
+    date: '2025.03.21',
+    content: 'MT 간식',
+    deposit: '-',
+    withdraw: '156,000',
+    balance: '3,857,300',
+    note: ''
+  },
+  {
+    id: 12,
+    category: '축제',
+    date: '2025.03.21',
+    content: 'MT 간식',
+    deposit: '-',
+    withdraw: '156,000',
+    balance: '3,857,300',
+    note: ''
+  },
+  {
+    id: 13,
+    category: '축제',
+    date: '2025.03.21',
+    content: 'MT 간식',
+    deposit: '-',
+    withdraw: '156,000',
+    balance: '3,857,300',
+    note: ''
+  },
+  {
+    id: 14,
+    category: '축제',
+    date: '2025.03.21',
+    content: 'MT 간식',
+    deposit: '-',
+    withdraw: '156,000',
+    balance: '3,857,300',
+    note: ''
+  },
+  {
+    id: 15,
+    category: '축제',
+    date: '2025.03.21',
+    content: 'MT 간식', 
+    deposit: '-',
+    withdraw: '156,000',
+    balance: '3,857,300',
+    note: ''
   }
 ];
 

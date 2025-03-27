@@ -20,7 +20,7 @@ const RegisterModal = ({ onClose }: RegisterModalProps) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div ref={modalRef} className="bg-white rounded-2xl p-8 w-full max-w-[340px] relative h-[50vh] justify-center items-center flex flex-col tracking-[-0.75px]">
+      <div ref={modalRef} className="bg-white rounded-2xl w-full max-w-[280px] relative h-[45vh] justify-center items-center flex flex-col tracking-[-0.75px]">
         <button 
           onClick={() => setIsOpen(false)}
           className="absolute top-4 right-4 text-gray hover:text-black"
@@ -28,9 +28,9 @@ const RegisterModal = ({ onClose }: RegisterModalProps) => {
           ✕
         </button>
         <div>
-          <h2 className="text-2xl font-pre-bold mb-8 text-center flex items-center justify-center">
-            <span className="text-blue">대장부</span>
-            <span>에 오신것을 환영합니다</span>
+        <h2 className="text-2xl font-pre-bold mb-8 text-center">
+            <span className="text-blue">대장부</span>에 오신것을<br />
+            환영합니다
           </h2>
           <div className="flex items-center justify-center mb-8">
             <img src={LoginLogo} alt="Logo" className="w-32 h-28" />
