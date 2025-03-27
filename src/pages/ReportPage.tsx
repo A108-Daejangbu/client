@@ -49,7 +49,7 @@ const TableCell = ({
   isLastRow: boolean;
   isLastColumn: boolean;
 }) => (
-  <td className={`px-4 py-4 text-center whitespace-nowrap font-pre-regular text-14 text-main200 truncate ${column === '비고' ? 'relative group' : ''}`}>
+  <td className={`px-4 py-2 text-center whitespace-nowrap font-pre-regular text-14 text-main200 truncate ${column === '비고' ? 'relative group' : ''}`}>
     {content}
     {column === '비고' && content && <NoteTooltip content={content} />}
     {isLastRow && isLastColumn && <div className="last-row-cell"></div>}
@@ -261,7 +261,7 @@ function ReportPage() {
           </div>
 
           {/* Preview 섹션과 다운로드 버튼 */}
-          <div className="mx-4 mb-1 flex justify-between items-center">
+          <div className="mx-4 mb-2 flex justify-between items-center">
             <div>
               <h2 className="font-pre-semibold text-20 text-main200">Preview</h2>
               <div className="flex items-center gap-2 text-gray200 font-pre-bold text-10">
@@ -289,7 +289,8 @@ function ReportPage() {
           </div>
 
           {/* 테이블 컨테이너 */}
-          <div className="bg-white rounded-xl overflow-hidden mx-auto shadow-[1.44px_2.16px_20.14px_rgba(0,0,0,0.2)]">
+          {/* shadow-[1.44px_2.16px_20.14px_rgba(0,0,0,0.2)] */}
+          <div className="bg-white rounded-xl overflow-hidden mx-auto border border-gray-200">
             <div className="overflow-hidden rounded-xl">
               {/* 헤더 영역 - 스크롤과 관계없이 고정 */}
               <div className="sticky top-0 z-10 bg-white">
@@ -328,7 +329,13 @@ function ReportPage() {
               </div>
               
               {/* 데이터 영역 - 스크롤 가능 */}
-              <div className="overflow-y-auto h-[400px] relative" style={{ borderBottomLeftRadius: '0.75rem', borderBottomRightRadius: '0.75rem' }}>
+              <div 
+                className="overflow-y-auto h-[400px] relative custom-scrollbar" 
+                style={{ 
+                  borderBottomLeftRadius: '0.75rem', 
+                  borderBottomRightRadius: '0.75rem' 
+                }}
+              >
                 <div className="absolute inset-0 pointer-events-none rounded-b-xl bg-white" style={{ zIndex: -1 }}></div>
                 <table className="w-full border-collapse relative" style={{ tableLayout: 'fixed' }}>
                   <colgroup>

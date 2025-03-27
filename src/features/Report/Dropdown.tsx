@@ -64,7 +64,7 @@ const Dropdown: React.FC<DropdownProps> = ({
       {column === '날짜' ? (
         <div className="p-2">
           <div className="text-12 font-pre-medium text-main200 mb-2 px-2">
-            <span className="bg-gradient-to-r from-blue to-purple bg-clip-text text-transparent">날짜 설정</span>
+            <span className="text-main200">날짜 설정</span>
             {selectedDateRange && (
               <span className="ml-2 text-11 text-gray-500">
                 {formatDateRange()}
@@ -127,7 +127,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         sections.map((section, sectionIndex) => (
           <div key={sectionIndex} className="w-[190px]">
             <div className="text-12 font-pre-medium mb-2 px-3">
-              <span className="bg-gradient-to-r from-blue to-purple bg-clip-text text-transparent">
+              <span className="text-main200">
                 {section.title}
               </span>
             </div>
@@ -140,7 +140,7 @@ const Dropdown: React.FC<DropdownProps> = ({
               return (
                 <div 
                   key={optionIndex}
-                  className={`px-3 py-2 hover:bg-gray-50 cursor-pointer transition-colors flex items-center gap-2 ${
+                  className={`px-3 py-1 hover:bg-gray-50 cursor-pointer transition-colors flex items-center gap-2 ${
                     option.label.includes('삭제') ? 'text-red-500' : 
                     option.label === '전체' ? 'text-main200' : ''
                   }`}
@@ -164,7 +164,7 @@ const Dropdown: React.FC<DropdownProps> = ({
                       )}
                     </div>
                   )}
-                  <span className={`text-12 font-pre-light transition-colors ${
+                  <span className={`text-12 font-pre-thin leading-none transition-colors ${
                     option.label.includes('삭제') ? 'text-red-500 hover:text-red-600' : 
                     option.label === '전체' ? 'text-main200' :
                     isSelected ? 'text-blue' : 'text-main200 hover:text-blue'
