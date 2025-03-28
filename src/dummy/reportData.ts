@@ -16,7 +16,7 @@ export const initialData: DataItem[] = [
     id: 1,
     category: "MT",
     date: "2025.03.13",
-    content: "MT 간식",
+    content: "MT 간식MT 간식MT 간식MT 간식MT 간식",
     deposit: "-",
     withdraw: "156,000",
     balance: "3,857,300",
