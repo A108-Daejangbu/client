@@ -106,14 +106,18 @@ body {
 
 /* 헤더와 푸터 고정 스타일 */
 .header {
-  width: 100%; /* 너비를 100%로 설정 */
+  width: 100%;
   position: relative;
-  max-width: 1440px; /* 최대 너비를 420px로 설정 */
-  height: 60px; /* 높이를 60px로 설정 */
-  display: flex; /* flexbox로 설정하여 자식 요소들을 가로로 배치 */
-  align-items: center; /* 세로축 중앙 정렬 */
-  justify-content: space-between; /* 가로축 중앙 정렬 */
-  padding: 24px 48px;
+  max-width: 1440px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40px 12px;
+  
+  @media (min-width: 768px) {
+    padding: 40px 60px;
+  }
 }
 
 /* 메인 콘텐츠 패딩 설정 (헤더와 푸터 고려) */
