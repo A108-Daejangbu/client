@@ -1,122 +1,150 @@
 import React, { useState } from "react";
+import { bankData } from "../../constants/bankData";
+import { isValidAccountName, isValidPassword } from "../../utils/validation";
 
 const RegistrationForm = () => {
   const [accountName, setAccountName] = useState(""); // 계좌명 상태
-  const [bankSelection, setBankSelection] = useState(""); // 은행 선택 상태
   const [accountNumber, setAccountNumber] = useState(""); // 계좌번호 상태
   const [verificationCode, setVerificationCode] = useState(""); // 인증번호 상태
   const [password, setPassword] = useState(""); // 입장 비밀번호 상태
-  const [passwordConfirmation, setPasswordConfirmation] = useState(""); // 입장 비밀번호 확인 상태
+  const [selectedBankName, setSelectedBankName] = useState(""); // 선택된 은행명
+
+  const [accountNameError, setAccountNameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  // 선택된 은행명에 따른 은행코드 추출, 이 은행코드로 API요청하기
+  // const selectedBankCode = bankData.find(
+  //   (bank) => bank.bankName === selectedBankName
+  // )?.bankCode;
 
   // 폼 제출 처리 함수
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // 폼 제출 후 페이지 리로드 방지
+    e.preventDefault();
+    let hasError = false;
+
+    if (!isValidAccountName(accountName)) {
+      setAccountNameError("공백 포함 11자 이하로 입력해 주세요.");
+      hasError = true;
+    } else {
+      setAccountNameError("");
+    }
+
+    if (!isValidPassword(password)) {
+      setPasswordError("영문 대문자와 숫자 조합, 4~8자로 입력해 주세요.");
+      hasError = true;
+    } else {
+      setPasswordError("");
+    }
+
+    if (hasError) return;
+
     console.log("폼이 제출되었습니다.");
   };
 
+  // const inputClassName =
+  //   "block w-full px-2 py-2 border border-gray-300 rounded-lg font-pre-regular text-12";
+  const inputClassName =
+    "block w-full min-w-0 px-2 py-1.5 border border-gray-300 rounded-lg font-pre-regular text-12 placeholder:text-gray-400 truncate";
+
   return (
-    <div className="w-full sm:max-w-lg lg:max-w-xl mx-auto text-sm font-pre-medium text-main200 whitespace-nowrap">
-      <h2 className="text-2xl font-pre-bold text-left mb-[20px]">계좌등록</h2>
+    <div className="w-full sm:max-w-md lg:max-w-md text-sm font-pre-medium text-main200 whitespace-nowrap">
+      <h2 className="text-16 font-pre-medium text-left mb-[15px]">계좌 등록</h2>
       <div className="mb-[40px] border-b"></div>
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* 계좌명 입력 필드 */}
         <div className="flex items-center gap-4">
           <label className="w-1/4">계좌명</label>
-          <input
-            type="text"
-            className="block w-full px-4 py-2 border border-main200 rounded-lg"
-            placeholder="2자 이상의 한글, 영문 대소문자만 가능합니다"
-            value={accountName}
-            onChange={(e) => setAccountName(e.target.value)}
-            required
-          />
-          <button className="px-4 py-2 invisible">확인</button>
+          <div className="relative w-full">
+            <input
+              type="text"
+              className={inputClassName}
+              placeholder="공백 포함 최대 11자 이하"
+              value={accountName}
+              onChange={(e) => setAccountName(e.target.value)}
+              required
+            />
+            {accountNameError && (
+              <p className="absolute left-0 top-full mt-1 text-red-500 text-xs">
+                {accountNameError}
+              </p>
+            )}
+          </div>
+          <button className="px-2 py-2 invisible">확인</button>
         </div>
-
         {/* 은행 선택 필드 */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 w-full">
           <label className="w-1/4">은행선택</label>
           <select
-            className="block w-full px-4 py-2 border border-gray-300 rounded-lg"
-            value={bankSelection}
-            onChange={(e) => setBankSelection(e.target.value)}
+            className="block w-full max-w-full px-2 py-2 border border-gray-300 rounded-lg bg-white font-pre-regular text-12"
+            value={selectedBankName}
+            onChange={(e) => setSelectedBankName(e.target.value)}
             required
           >
             <option value="">--------선택해 주세요--------</option>
-            <option value="bank1">은행 1</option>
-            <option value="bank2">은행 2</option>
-            <option value="bank3">은행 3</option>
+            {bankData.map((bank) => (
+              <option key={bank.bankCode} value={bank.bankName}>
+                {bank.bankName}
+              </option>
+            ))}
           </select>
-          <button className="px-4 py-2 invisible">확인</button>
+          <button className="px-2 py-1.5 invisible">확인</button>
         </div>
-
         {/* 계좌번호 입력 필드 */}
         <div className="flex items-center gap-4">
           <label className="w-1/4">계좌번호</label>
           <input
             type="text"
-            className="block w-full px-4 py-2 border border-gray-200 rounded-lg"
-            placeholder="‘-’없이 숫자만 입력해 주세요."
+            className={inputClassName}
+            placeholder="‘-’없이 숫자만 입력"
             value={accountNumber}
             onChange={(e) => setAccountNumber(e.target.value)}
             required
           />
-          <button className="border border-gray-200 rounded-lg px-4 py-2">
-            확인
+          <button className="border border-gray-200 rounded-lg px-2 py-1.5 text-12">
+            인증
           </button>
         </div>
-
         {/* 인증번호 입력 필드 */}
         <div className="flex items-center gap-4">
           <label className="w-1/4">인증번호</label>
           <input
             type="text"
-            className="block w-full px-4 py-2 border border-gray-300 rounded-lg"
-            placeholder="해당 계좌에 이체된 1원인증코드를 입력해 주세요."
+            className={inputClassName}
+            placeholder="계좌로 전송된 인증번호 입력"
             value={verificationCode}
             onChange={(e) => setVerificationCode(e.target.value)}
             required
           />
-          <button className="border border-gray-200 rounded-lg px-4 py-2">
-            중복
-          </button>
-        </div>
-
-        {/* 입장 비밀번호 입력 필드 */}
-        <div className="flex items-center gap-4">
-          <label className="w-1/4">입장 비밀번호</label>
-          <input
-            type="password"
-            className="block w-full px-4 py-2 border border-gray-300 rounded-lg"
-            placeholder="4자리 이상의 숫자, 영문 대소문자로 입력해야 합니다."
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <button className="px-4 py-2 invisible">확인</button>
-        </div>
-
-        {/* 입장 비밀번호 확인 입력 필드 */}
-        <div className="flex items-center gap-4">
-          <label className="w-1/4">비밀번호 확인</label>
-          <input
-            type="password"
-            className="block w-full px-4 py-2 border border-gray-300 rounded-lg"
-            value={passwordConfirmation}
-            onChange={(e) => setPasswordConfirmation(e.target.value)}
-            required
-          />
-          <button className="border border-gray-200 rounded-lg px-4 py-2">
+          <button className="border border-gray-200 rounded-lg px-2 py-1.5 text-12">
             확인
           </button>
+        </div>
+        {/* 입장 코드 입력 필드 */}
+        <div className="flex items-center gap-4">
+          <label className="w-1/4">입장코드</label>
+          <div className="relative w-full">
+            <input
+              type="password"
+              className={inputClassName}
+              placeholder="영문 대문자+숫자, 4자 이상 8자 이하"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            {passwordError && (
+              <p className="absolute left-0 top-full mt-1 text-red-500 text-xs">
+                {passwordError}
+              </p>
+            )}
+          </div>
+          <button className="px-2 py-2 invisible">확인</button>
         </div>
 
         {/* 제출 버튼 */}
         <div className="flex items-center">
-          <label className="w-1/4 invisible"></label>
+          {/* <label className="w-1/4 invisible"></label> */}
           <button
             type="submit"
-            className="w-full py-2 mt-6 rounded-[6.013px] bg-gradient-to-r from-[#7953FF] to-[#4E00CB] shadow-[0px_6.013px_6.239px_0px_rgba(74,58,255,0.28)] text-white"
+            className="w-full py-1.5 mt-12 rounded-[6.013px] bg-gradient-to-r from-[#7953FF] to-[#4E00CB] shadow-[0px_6.013px_6.239px_0px_rgba(74,58,255,0.28)] text-white text-base tracking-widest"
           >
             등록
           </button>

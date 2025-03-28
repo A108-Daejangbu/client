@@ -1,5 +1,6 @@
 import { useState } from "react";
 import CloseIcon from "../../../assets/CloseIcons.svg";
+import { isValidAccountName, isValidPassword } from "../../../utils/validation";
 
 interface ModifyModalProps {
   onClose: () => void;
@@ -9,16 +10,37 @@ const ModifyModal = ({ onClose }: ModifyModalProps) => {
   const [accountName, setAccountName] = useState("");
   const [password, setPassword] = useState("");
   const [emptyFields, setEmptyFields] = useState(false); // 입력필드 하나라도 비어있으면 true
+  const [accountNameError, setAccountNameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const handleSubmit = () => {
     const isEmpty = !accountName.trim() || !password.trim();
-
     setEmptyFields(isEmpty);
 
-    // 입력필드 하나라도 비어있으면 비밀번호 검사는 하지 않음
     if (isEmpty) {
+      setAccountNameError("");
+      setPasswordError("");
       return;
     }
+
+    let hasError = false;
+
+    if (!isValidAccountName(accountName)) {
+      setAccountNameError("공백 포함 최대 11자 이하로 입력해 주세요.");
+      hasError = true;
+    } else {
+      setAccountNameError("");
+    }
+
+    if (!isValidPassword(password)) {
+      setPasswordError("영문 대문자와 숫자 조합, 4~8자로 입력해 주세요.");
+      hasError = true;
+    } else {
+      setPasswordError("");
+    }
+
+    if (hasError) return;
+
     console.log("계좌 정보 변경 완료:", accountName, password);
     onClose();
   };
@@ -56,9 +78,9 @@ const ModifyModal = ({ onClose }: ModifyModalProps) => {
             className="w-full p-2 border border-gray-300 rounded-md text-14"
             placeholder="경희대 응용수학과"
           />
-          <p className="text-12 mt-1 ml-1">
-            2자리 이상의 한글, 영문 대소문자만 가능합니다.
-          </p>
+          {accountNameError && (
+            <p className="text-red-500 text-12 mt-1 ml-1">{accountNameError}</p>
+          )}
         </div>
 
         {/* 비밀번호 입력 */}
@@ -73,9 +95,9 @@ const ModifyModal = ({ onClose }: ModifyModalProps) => {
             className="w-full p-2 border border-gray-300 rounded-md text-14"
             placeholder="******"
           />
-          <p className="text-12 mt-1 ml-1">
-            4자리 이상의 숫자, 영문 대소문자로 이뤄져야합니다.
-          </p>
+          {passwordError && (
+            <p className="text-red-500 text-12 mt-1 ml-1">{passwordError}</p>
+          )}
         </div>
 
         {/* 입력 필드가 비어있을 때 메시지 */}
