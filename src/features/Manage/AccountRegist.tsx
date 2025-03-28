@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { bankData } from "../../constants/bankData";
+import { isValidAccountName, isValidPassword } from "../../utils/validation";
 
 const RegistrationForm = () => {
   const [accountName, setAccountName] = useState(""); // 계좌명 상태
@@ -8,6 +9,8 @@ const RegistrationForm = () => {
   const [password, setPassword] = useState(""); // 입장 비밀번호 상태
   const [selectedBankName, setSelectedBankName] = useState(""); // 선택된 은행명
 
+  const [accountNameError, setAccountNameError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   // 선택된 은행명에 따른 은행코드 추출, 이 은행코드로 API요청하기
   // const selectedBankCode = bankData.find(
   //   (bank) => bank.bankName === selectedBankName
@@ -15,7 +18,25 @@ const RegistrationForm = () => {
 
   // 폼 제출 처리 함수
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // 폼 제출 후 페이지 리로드 방지
+    e.preventDefault();
+    let hasError = false;
+
+    if (!isValidAccountName(accountName)) {
+      setAccountNameError("공백 포함 11자 이하로 입력해 주세요.");
+      hasError = true;
+    } else {
+      setAccountNameError("");
+    }
+
+    if (!isValidPassword(password)) {
+      setPasswordError("영문 대문자와 숫자 조합, 4~8자로 입력해 주세요.");
+      hasError = true;
+    } else {
+      setPasswordError("");
+    }
+
+    if (hasError) return;
+
     console.log("폼이 제출되었습니다.");
   };
 
@@ -32,14 +53,21 @@ const RegistrationForm = () => {
         {/* 계좌명 입력 필드 */}
         <div className="flex items-center gap-4">
           <label className="w-1/4">계좌명</label>
-          <input
-            type="text"
-            className={inputClassName}
-            placeholder="계좌명"
-            value={accountName}
-            onChange={(e) => setAccountName(e.target.value)}
-            required
-          />
+          <div className="relative w-full">
+            <input
+              type="text"
+              className={inputClassName}
+              placeholder="공백 포함 최대 11자 이하"
+              value={accountName}
+              onChange={(e) => setAccountName(e.target.value)}
+              required
+            />
+            {accountNameError && (
+              <p className="absolute left-0 top-full mt-1 text-red-500 text-xs">
+                {accountNameError}
+              </p>
+            )}
+          </div>
           <button className="px-2 py-2 invisible">확인</button>
         </div>
         {/* 은행 선택 필드 */}
@@ -66,13 +94,13 @@ const RegistrationForm = () => {
           <input
             type="text"
             className={inputClassName}
-            placeholder="‘-’없이 숫자만 입력해 주세요."
+            placeholder="‘-’없이 숫자만 입력"
             value={accountNumber}
             onChange={(e) => setAccountNumber(e.target.value)}
             required
           />
           <button className="border border-gray-200 rounded-lg px-2 py-1.5 text-12">
-            확인
+            인증
           </button>
         </div>
         {/* 인증번호 입력 필드 */}
@@ -81,28 +109,36 @@ const RegistrationForm = () => {
           <input
             type="text"
             className={inputClassName}
-            placeholder="계좌에 이체된 1원인증코드를 입력해 주세요."
+            placeholder="계좌로 전송된 인증번호 입력"
             value={verificationCode}
             onChange={(e) => setVerificationCode(e.target.value)}
             required
           />
           <button className="border border-gray-200 rounded-lg px-2 py-1.5 text-12">
-            중복
+            확인
           </button>
         </div>
-        {/* 입장 비밀번호 입력 필드 */}
+        {/* 입장 코드 입력 필드 */}
         <div className="flex items-center gap-4">
           <label className="w-1/4">입장코드</label>
-          <input
-            type="password"
-            className={inputClassName}
-            placeholder="4자리 이상의 숫자, 영문 대소문자로 입력해야 합니다."
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          <div className="relative w-full">
+            <input
+              type="password"
+              className={inputClassName}
+              placeholder="영문 대문자+숫자, 4자 이상 8자 이하"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            {passwordError && (
+              <p className="absolute left-0 top-full mt-1 text-red-500 text-xs">
+                {passwordError}
+              </p>
+            )}
+          </div>
           <button className="px-2 py-2 invisible">확인</button>
         </div>
+
         {/* 제출 버튼 */}
         <div className="flex items-center">
           {/* <label className="w-1/4 invisible"></label> */}
