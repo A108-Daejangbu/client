@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 // 데이터 import
@@ -18,26 +18,26 @@ interface ColumnItem {
   type: 'COLUMN';
 }
 
-// 툴팁 컴포넌트 분리
-const NoteTooltip = ({ content }: { content: string }) => (
+// 툴팁 컴포넌트 수정
+const ContentTooltip = ({ content }: { content: string }) => (
   <div 
-    className="fixed group-hover:block hidden bg-white p-4 min-w-[200px] max-w-[400px] z-[9999] rounded-lg"
+    className="fixed hidden group-hover:block bg-white p-2 md:p-3 min-w-[100px] max-w-[300px] z-[9999] rounded-lg shadow-lg"
     style={{ 
       top: 'calc(var(--mouse-y) + 10px)',
-      left: 'calc(var(--mouse-x) + 10px)',
+      left: 'min(calc(var(--mouse-x) + 10px), calc(100vw - 320px))',
       border: '1px solid transparent',
       backgroundImage: 'linear-gradient(white, white), linear-gradient(to right, #3E6FFA, #7953FF)',
       backgroundOrigin: 'border-box',
       backgroundClip: 'padding-box, border-box'
     }}
   >
-    <p className="text-14 font-pre-regular text-main200 whitespace-normal break-words">
+    <p className="text-12 md:text-14 font-pre-regular text-main200 whitespace-normal break-words">
       {content}
     </p>
   </div>
 );
 
-// 테이블 셀 컴포넌트 분리
+// 테이블 셀 컴포넌트 수정
 const TableCell = ({ 
   column, 
   content, 
@@ -48,13 +48,37 @@ const TableCell = ({
   content: string;
   isLastRow: boolean;
   isLastColumn: boolean;
-}) => (
-  <td className={`px-4 py-2 text-center whitespace-nowrap font-pre-regular text-14 text-main200 truncate ${column === '비고' ? 'relative group' : ''}`}>
-    {content}
-    {column === '비고' && content && <NoteTooltip content={content} />}
-    {isLastRow && isLastColumn && <div className="last-row-cell"></div>}
-  </td>
-);
+}) => {
+  const cellRef = useRef<HTMLTableCellElement>(null);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+
+  // 텍스트가 오버플로우되는지 체크
+  useEffect(() => {
+    if (cellRef.current) {
+      const isTextOverflowing = cellRef.current.scrollWidth > cellRef.current.clientWidth;
+      setIsOverflowing(isTextOverflowing);
+    }
+  }, [content]);
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (isOverflowing) {
+      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
+    }
+  };
+
+  return (
+    <td 
+      ref={cellRef}
+      className={`px-2 md:px-4 py-1.5 md:py-2 text-center whitespace-nowrap font-pre-regular text-12 md:text-14 text-main200 truncate ${isOverflowing ? 'group relative' : ''}`}
+      onMouseMove={handleMouseMove}
+    >
+      {content}
+      {isOverflowing && <ContentTooltip content={content} />}
+      {isLastRow && isLastColumn && <div className="last-row-cell"></div>}
+    </td>
+  );
+};
 
 function ReportPage() {
   const [columns, setColumns] = useState<string[]>(initialColumns);
@@ -279,21 +303,21 @@ function ReportPage() {
             
             <button 
               onClick={handleDownloadExcel}
-              className="bg-gradient-to-r from-blue to-purple hover:opacity-80 text-white px-6 py-2 rounded-lg flex items-center gap-2 font-pre-bold text-14"
+              className="bg-gradient-to-r from-blue to-purple hover:opacity-80 text-white px-3 md:px-6 py-1.5 md:py-2 rounded-lg flex items-center gap-1 md:gap-2 font-pre-bold text-12 md:text-14"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
               </svg>
-              보고서 다운받기
+              <span className="hidden sm:inline">보고서 다운받기</span>
+              <span className="sm:hidden">다운로드</span>
             </button>
           </div>
 
           {/* 테이블 컨테이너 */}
           {/* shadow-[1.44px_2.16px_20.14px_rgba(0,0,0,0.2)] */}
           <div className="bg-white rounded-xl overflow-hidden mx-auto border border-gray-200">
-            <div className="overflow-hidden rounded-xl">
-              {/* 헤더 영역 - 스크롤과 관계없이 고정 */}
-              <div className="sticky top-0 z-10 bg-white">
+            <div className="overflow-x-auto overflow-y-hidden rounded-xl">
+              <div className="sticky top-0 z-10 bg-white min-w-[600px]"> {/* 최소 너비 설정 */}
                 <table className="w-full border-collapse" style={{ tableLayout: 'fixed' }}>
                   <colgroup>
                     {columns.map((column, index) => (
@@ -325,17 +349,11 @@ function ReportPage() {
                 </table>
                 
                 {/* 그라데이션 선 - 헤더와 함께 고정 */}
-                <div className="h-[1px] w-[860px] bg-gradient-to-r from-[#3262DE] to-[#9A1EBC] mx-auto"></div>
+                <div className="h-[1px] w-full bg-gradient-to-r from-[#3262DE] to-[#9A1EBC]"></div>
               </div>
               
               {/* 데이터 영역 - 스크롤 가능 */}
-              <div 
-                className="overflow-y-auto h-[400px] relative custom-scrollbar" 
-                style={{ 
-                  borderBottomLeftRadius: '0.75rem', 
-                  borderBottomRightRadius: '0.75rem' 
-                }}
-              >
+              <div className="overflow-y-auto max-h-[calc(100vh-300px)] md:h-[400px] relative custom-scrollbar min-w-[600px]">
                 <div className="absolute inset-0 pointer-events-none rounded-b-xl bg-white" style={{ zIndex: -1 }}></div>
                 <table className="w-full border-collapse relative" style={{ tableLayout: 'fixed' }}>
                   <colgroup>
