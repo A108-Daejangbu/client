@@ -5,7 +5,7 @@ import AddAccountBtn from "../features/Manage/AddAccountBtn";
 
 function ManagePage() {
   return (
-    <div className="content">
+    <div className="md:content md:pt-[50px]">
       {/* API연결후 여기에 계좌 개수 0보다크면 아래 버튼과 카드컴포넌트 보여주는 분기문 적기 */}
       <AddAccountBtn />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-[1000px] w-full mx-auto justify-items-center">
