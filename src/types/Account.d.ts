@@ -7,7 +7,7 @@ interface AccountResp {
 }
 
 // [41]
-interface Account extends Bank {
+export interface Account extends Bank {
   accountId: number; // 계좌 ID
   accountName: string; // 계좌 별명
   accountNumber: string; // 계좌번호
@@ -16,7 +16,7 @@ interface Account extends Bank {
 }
 
 // [41]
-interface Bank {
+export interface Bank {
   bankCode: string; // 은행 코드
   bankName: string; // 은행 이름
 }
