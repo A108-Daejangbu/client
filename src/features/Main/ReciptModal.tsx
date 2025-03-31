@@ -3,7 +3,7 @@ import ReciptImg from "./ReciptImg";
 
 const ReciptModal = () => {
   return (
-    <div>
+    <div className="w-[250px] h-[550px] border border-1px">
       <ReciptImg></ReciptImg>
       <ReciptContent></ReciptContent>
     </div>
