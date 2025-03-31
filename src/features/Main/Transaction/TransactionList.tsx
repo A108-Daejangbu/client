@@ -28,6 +28,18 @@ const TransactionList = () => {
     })
   );
 
+  const [activeModalId, setActiveModalId] = useState<string | null>(null);
+
+  const handleModalToggle = (transactionId: string) => {
+    if (activeModalId === transactionId) {
+      // 현재 열린 모달을 클릭하면 닫기
+      setActiveModalId(null);
+    } else {
+      // 다른 모달을 클릭하면 기존 모달은 닫히고 새로운 모달이 열림
+      setActiveModalId(transactionId);
+    }
+  };
+
   return (
     <div className="">
       <TransactionMonthNavi currDate={currDate} setCurrDate={setCurrDate} />
@@ -49,7 +61,12 @@ const TransactionList = () => {
               {tx.transactionType === "1" ? (
                 <>
                   <div className="md:w-[50%] w-[80%] flex justify-between">
-                    <TransactionCard transaction={tx} isInline={true} />
+                    <TransactionCard 
+                      transaction={tx}
+                      isInline={true}
+                      isModalOpen={activeModalId === tx.id.toString()}
+                      onModalToggle={() => handleModalToggle(tx.id.toString())}
+                    />
                     <div className="flex items-center">
                       {/* <span className='font-pre-extralight text-main200'>&lt;</span> */}
                       <GoTriangleLeft className="h-3 w-3 text-main200  hidden md:block" />
@@ -67,7 +84,12 @@ const TransactionList = () => {
                       <div className="self-center w-8 border-t border-dashed border-main200  hidden md:block" />
                       <GoTriangleRight className="h-3 w-3 text-main200  hidden md:block" />
                     </div>
-                    <TransactionCard transaction={tx} isInline={true} />
+                    <TransactionCard 
+                      transaction={tx}
+                      isInline={true}
+                      isModalOpen={activeModalId === tx.id.toString()}
+                      onModalToggle={() => handleModalToggle(tx.id.toString())}
+                    />
                   </div>
                 </>
               )}

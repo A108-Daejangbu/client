@@ -22,8 +22,8 @@ const AppLayout = () => {
   const isViewerLandingPage = location.pathname === "/viewerLanding";
   
   // 실제 구현시에는 로그인 상태와 사용자 이름을 상태 관리 라이브러리나 context에서 가져와야 합니다
-  const isLoggedIn = false; // 예시 값
-  // const isLoggedIn = true; // 예시 값
+  // const isLoggedIn = false; // 예시 값
+  const isLoggedIn = true; // 예시 값
   const userName = "홍길동"; // 예시 값
 
   return (
