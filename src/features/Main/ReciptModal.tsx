@@ -9,7 +9,7 @@ interface ReciptModalProps {
 
 const ReciptModal = ({ date, balance, detail }: ReciptModalProps) => {
   return (
-    <div className="max-w-[250px] max-h-[650px] min-w-[200px] border border-1px rounded-lg shadow-lg bg-white flex flex-col">
+    <div className="w-[248px] max-h-[650px] border border-1px rounded-lg shadow-lg bg-white flex flex-col">
       <div className="flex-shrink-0">
         <ReciptImg />
       </div>

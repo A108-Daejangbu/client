@@ -5,6 +5,7 @@ import prevarrow from "../../assets/prev_arrow.svg";
 import nextarrow from "../../assets/next_arrow.svg";
 import download from "../../assets/download.svg";
 import CloseIcon from "../../assets/CloseIcons.svg";
+import ReactDOM from "react-dom";
 
 const ReciptImg = () => {
   // 이미지 Base64 URL을 저장할 배열
@@ -31,6 +32,21 @@ const ReciptImg = () => {
     reader.readAsDataURL(file);
   };
 
+  /** 드롭 이벤트: 파일을 읽어 업로드 처리 */
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    if (!e.dataTransfer.files || e.dataTransfer.files.length === 0) return;
+    const file = e.dataTransfer.files[0];
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target && typeof event.target.result === "string") {
+        setImages((prev) => [...prev, event.target!.result as string]);
+        setCurrentIndex(images.length);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   /** 이전 슬라이드로 이동 */
   const goToPrev = () => {
     setCurrentIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
@@ -44,7 +60,7 @@ const ReciptImg = () => {
   /**
    * 실제 캐러셀에 표시될 '슬라이드' 데이터
    * - images 배열만큼 이미지 슬라이드 생성
-   * - 마지막에는 업로드 슬라이드
+   * - 마지막은 항상 업로드 슬라이드가 있음
    */
   const slides = [
     // 이미지 슬라이드들
@@ -77,9 +93,13 @@ const ReciptImg = () => {
 
     // 업로드 슬라이드
     <div key="upload-slide" className="inline-block align-top w-full p-2">
-      {/* 검은색 영역 대신, 업로드 박스도 동일 높이로 맞추고 싶다면 h-[180px] 사용 가능
-          여기서는 편의상 자동 높이로 두어도 됩니다. (아래는 예시로 h-[180px] 적용) */}
-      <div className="w-full h-[180px] flex items-center justify-center">
+      {/* 드래그 앤 드롭을 위한 이벤트 핸들러 적용 */}
+      <div
+        className="w-full h-[180px] flex items-center justify-center"
+        onDragOver={(e) => e.preventDefault()}
+        onDragLeave={(e) => e.preventDefault()}
+        onDrop={handleDrop}
+      >
         <div className="w-[180px] h-[100px] border-2 border-dashed border-[#1849D6] rounded-md text-center flex flex-col items-center gap-1 p-2">
           {/* 폴더 + 업로드 화살표 아이콘 */}
           <img src={uploadImg} alt="uploadImg" className="w-5" />
@@ -103,7 +123,7 @@ const ReciptImg = () => {
   ];
 
   return (
-    <div className="w-full max-w-[400px] mx-auto">
+    <div className="w-full mx-auto">
       {/* 캐러셀 컨테이너: 높이를 고정하여(예: h-[250px]) 검은색 영역 아래에 여백 확보 */}
       <div className="relative w-full h-[200px] overflow-hidden">
         {/* 슬라이드들을 가로로 나열 (whitespace-nowrap) */}
@@ -154,26 +174,29 @@ const ReciptImg = () => {
         <hr className="w-[220px] border-dashed border-gray-300" />
       </div>
 
-      {/* 모달 (이미지를 클릭했을 때 크게 보기) */}
-      {selectedImage && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-          <div className="relative">
-            {/* 업로드된 이미지 크게 표시 (최대 화면 90%) */}
-            <img
-              src={selectedImage}
-              alt="preview"
-              className="max-w-[90vw] max-h-[90vh]"
-            />
-            {/* 닫기 버튼 */}
-            <button
-              onClick={() => setSelectedImage(null)}
-              className="absolute top-3 right-3"
-            >
-              <img src={CloseIcon} alt="closeIcon" />
-            </button>
-          </div>
-        </div>
-      )}
+      {/* 모달 (이미지를 클릭했을 때 크게 보기)
+          React Portal을 사용하여 document.body 기준 전체 화면에서 중앙에 배치 */}
+      {selectedImage &&
+        ReactDOM.createPortal(
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+            <div className="relative">
+              {/* 업로드된 이미지 크게 표시 (최대 화면 50vw, 40vh) */}
+              <img
+                src={selectedImage}
+                alt="preview"
+                className="max-w-[70vw] max-h-[70vh]"
+              />
+              {/* 닫기 버튼 */}
+              <button
+                onClick={() => setSelectedImage(null)}
+                className="absolute top-3 right-3"
+              >
+                <img src={CloseIcon} alt="closeIcon" />
+              </button>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 };
