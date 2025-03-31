@@ -1,13 +1,21 @@
 import { CiReceipt } from "react-icons/ci";
 import CategoryCard from "./CategoryCard";
+import { useState } from "react";
+import ReciptModal from "../ReciptModal";
 
 interface TransactionProp {
   transaction: Transaction;
   isInline?: boolean;
+  isModalOpen: boolean;
+  onModalToggle: () => void;
 }
 
-const TransactionCard = ({transaction, isInline}:TransactionProp) => {
-
+const TransactionCard = ({
+  transaction, 
+  isInline,
+  isModalOpen,
+  onModalToggle
+}: TransactionProp) => {
   const calcTransactionDate = (date: string): string => {
     return `${date.substring(2,4)}.${date.substring(4,6)}.${date.substring(6, 8)}`;
   }
@@ -52,7 +60,21 @@ const TransactionCard = ({transaction, isInline}:TransactionProp) => {
           {isInline ? <CategoryCard category={category}  isInline={true} /> : 
           <CategoryCard category={category} />}
         </div>
-        <div className="items-end"><CiReceipt className="h-5 w-5" /></div>
+        <div className="items-end relative">
+          <CiReceipt 
+            className="h-5 w-5 cursor-pointer" 
+            onClick={onModalToggle}
+          />
+          {isModalOpen && (
+            <div className="fixed right-20 top-1/2 transform -translate-y-1/2 z-50">
+              <ReciptModal 
+                date={calcTransactionDate(transaction.transactionDate)}
+                balance={transaction.transactionBalance.toLocaleString()}
+                detail={transaction.detail}
+              />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

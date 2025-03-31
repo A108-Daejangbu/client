@@ -1,7 +1,6 @@
 import React from "react";
 import TransactionList from "../features/Main/Transaction/TransactionList";
 import SearchBar from "../features/Main/SearchBar";
-import ReciptModal from "../features/Main/ReciptModal";
 
 import { accountInfo } from "../dummy/accountInfo";
 
@@ -23,11 +22,6 @@ function MainPage() {
         </div>
         <div className="w-full md:w-1/2">
           <TransactionList />
-        </div>
-        <div className=" hidden md:block w-1/4 justify-items-center">
-          <div>
-            <ReciptModal></ReciptModal>
-          </div>
         </div>
       </div>
     </div>
