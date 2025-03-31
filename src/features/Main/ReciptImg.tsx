@@ -65,9 +65,12 @@ const ReciptImg = () => {
   const slides = [
     // 이미지 슬라이드들
     ...images.map((imgSrc, idx) => (
-      <div key={`slide-${idx}`} className="inline-block align-top w-full p-2">
-        {/* 검은색 영역(이미지 표시 부분) 높이 고정: h-[180px] */}
-        <div className="w-full h-[180px] flex items-center justify-center bg-black rounded-md">
+      <div
+        key={`slide-${idx}`}
+        className="inline-block align-top w-full p-2 pt-10"
+      >
+        {/* 검은색 영역(이미지 표시 부분)*/}
+        <div className="w-full h-[140px] flex items-center justify-center bg-black rounded-md">
           {/* 이미지 & 다운로드 아이콘 */}
           <div className="relative w-full h-full flex items-center justify-center">
             <img
@@ -95,7 +98,7 @@ const ReciptImg = () => {
     <div key="upload-slide" className="inline-block align-top w-full p-2">
       {/* 드래그 앤 드롭을 위한 이벤트 핸들러 적용 */}
       <div
-        className="w-full h-[180px] flex items-center justify-center"
+        className="w-full h-[200px] flex items-center justify-center"
         onDragOver={(e) => e.preventDefault()}
         onDragLeave={(e) => e.preventDefault()}
         onDrop={handleDrop}
@@ -144,13 +147,13 @@ const ReciptImg = () => {
         {/* 좌우 이동 버튼 */}
         <button
           onClick={goToPrev}
-          className="absolute top-1/2 left-3.5 -translate-y-1/2 bg-white rounded-full px-1.5 py-1 text-sm shadow"
+          className="absolute top-[50%] left-3.5 bg-white rounded-full px-1.5 py-1 text-sm shadow"
         >
           <img src={prevarrow} alt="prev-arrow" />
         </button>
         <button
           onClick={goToNext}
-          className="absolute top-1/2 right-3.5 -translate-y-1/2 bg-white rounded-full px-1.5 py-1 text-sm shadow"
+          className="absolute top-[50%] right-3.5 bg-white rounded-full px-1.5 py-1 text-sm shadow"
         >
           <img src={nextarrow} alt="next-arrow" />
         </button>
