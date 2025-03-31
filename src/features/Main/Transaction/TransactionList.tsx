@@ -61,7 +61,7 @@ const TransactionList = () => {
               {tx.transactionType === "1" ? (
                 <>
                   <div className="md:w-[50%] w-[80%] flex justify-between">
-                    <TransactionCard 
+                    <TransactionCard
                       transaction={tx}
                       isInline={true}
                       isModalOpen={activeModalId === tx.id.toString()}
@@ -84,7 +84,7 @@ const TransactionList = () => {
                       <div className="self-center w-8 border-t border-dashed border-main200  hidden md:block" />
                       <GoTriangleRight className="h-3 w-3 text-main200  hidden md:block" />
                     </div>
-                    <TransactionCard 
+                    <TransactionCard
                       transaction={tx}
                       isInline={true}
                       isModalOpen={activeModalId === tx.id.toString()}
