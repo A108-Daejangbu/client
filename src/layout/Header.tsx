@@ -15,7 +15,7 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const headerType = useHeaderType(isLoggedIn);
-  const { getMyNickname, logout, isLoading, error } = useMemberStore();
+  const { getMyNickname, logout, isLoading} = useMemberStore();
 
   // 닉네임 조회
   useEffect(() => {
