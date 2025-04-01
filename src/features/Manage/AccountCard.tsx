@@ -6,6 +6,7 @@ import { useRef } from "react";
 import useDetectClose from "../../hooks/useDetectClose";
 import shareIcon from "../../assets/share.svg";
 import LinkShareModal from "./AccountModal/LinkShareModal";
+import { Account, BankInfo } from "../../types/Account";
 
 interface AccountCardProp {
   account: Account;

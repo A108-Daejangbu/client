@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Logo from "../assets/Logo.png";
 import { useHeaderType } from "../hooks/useHeaderType";
@@ -24,20 +24,40 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
 
   // 로그아웃 아이콘
   const LogoutIcon = () => (
-    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+    <svg
+      className="w-5 h-5"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+      />
     </svg>
   );
 
   // 햄버거 메뉴 아이콘
   const MenuIcon = () => (
-    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+    <svg
+      className="w-6 h-6"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M4 6h16M4 12h16M4 18h16"
+      />
     </svg>
   );
 
   // 계정 관련 헤더
-  if (headerType === 'account') {
+  if (headerType === "account") {
     return (
       <header className="header flex justify-between items-center">
         <div className="flex absolute left-1/2 transform -translate-x-1/2">
@@ -47,8 +67,8 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
           <span className="font-pre-medium text-13 md:text-16 truncate max-w-[80px] md:max-w-none">
             {userName}님
           </span>
-          <button 
-            className="p-1.5 md:p-2 rounded-lg hover:bg-gray-100 transition-colors" 
+          <button
+            className="p-1.5 md:p-2 rounded-lg hover:bg-gray-100 transition-colors"
             title="로그아웃"
           >
             <LogoutIcon />
@@ -62,7 +82,7 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
     <>
       <header className="header flex justify-between items-center">
         {/* 모바일 햄버거 메뉴 */}
-        <button 
+        <button
           className="md:hidden p-1.5 hover:bg-gray-100 rounded-lg"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
@@ -71,12 +91,14 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
 
         {/* 데스크톱 메뉴 */}
         <div className="hidden md:flex space-x-12">
-          {headerType === 'manager' && (
+          {headerType === "manager" && (
             <>
               <span
                 onClick={() => handleNavigate("/main")}
                 className={`font-pre-medium text-16 cursor-pointer hover:text-purple-600 transition-colors ${
-                  isCurrentPage("/main") ? "text-purple-600 font-bold border-b-2 border-purple-600" : "text-gray-700"
+                  isCurrentPage("/main")
+                    ? "text-purple-600 font-bold border-b-2 border-purple-600"
+                    : "text-gray-700"
                 }`}
               >
                 장부 현황
@@ -84,7 +106,9 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
               <span
                 onClick={() => handleNavigate("/report")}
                 className={`font-pre-medium text-16 cursor-pointer hover:text-purple-600 transition-colors ${
-                  isCurrentPage("/report") ? "text-purple-600 font-bold border-b-2 border-purple-600" : "text-gray-700"
+                  isCurrentPage("/report")
+                    ? "text-purple-600 font-bold border-b-2 border-purple-600"
+                    : "text-gray-700"
                 }`}
               >
                 보고서
@@ -92,19 +116,23 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
               <span
                 onClick={() => handleNavigate("/manage")}
                 className={`font-pre-medium text-16 cursor-pointer hover:text-purple-600 transition-colors ${
-                  isCurrentPage("/manage") ? "text-purple-600 font-bold border-b-2 border-purple-600" : "text-gray-700"
+                  isCurrentPage("/manage")
+                    ? "text-purple-600 font-bold border-b-2 border-purple-600"
+                    : "text-gray-700"
                 }`}
               >
                 내 정보 관리
               </span>
             </>
           )}
-          {headerType === 'viewer' && (
+          {headerType === "viewer" && (
             <>
               <span
                 onClick={() => handleNavigate("/main")}
                 className={`font-pre-medium text-16 cursor-pointer hover:text-purple-600 transition-colors ${
-                  isCurrentPage("/main") ? "text-purple-600 font-bold border-b-2 border-purple-600" : "text-gray-700"
+                  isCurrentPage("/main")
+                    ? "text-purple-600 font-bold border-b-2 border-purple-600"
+                    : "text-gray-700"
                 }`}
               >
                 장부 현황
@@ -112,7 +140,9 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
               <span
                 onClick={() => handleNavigate("/report")}
                 className={`font-pre-medium text-16 cursor-pointer hover:text-purple-600 transition-colors ${
-                  isCurrentPage("/report") ? "text-purple-600 font-bold border-b-2 border-purple-600" : "text-gray-700"
+                  isCurrentPage("/report")
+                    ? "text-purple-600 font-bold border-b-2 border-purple-600"
+                    : "text-gray-700"
                 }`}
               >
                 보고서
@@ -127,13 +157,13 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
         </div>
 
         {/* 사용자 정보 영역 */}
-        {headerType === 'manager' && (
+        {headerType === "manager" && (
           <div className="flex items-center space-x-2 md:space-x-4">
             <span className="font-pre-medium text-13 md:text-16 truncate max-w-[80px] md:max-w-none">
               {userName}님
             </span>
-            <button 
-              className="p-1.5 md:p-2 rounded-lg hover:bg-gray-100 transition-colors" 
+            <button
+              className="p-1.5 md:p-2 rounded-lg hover:bg-gray-100 transition-colors"
               title="로그아웃"
             >
               <LogoutIcon />
@@ -146,12 +176,14 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
       {isMenuOpen && (
         <div className="md:hidden fixed top-16 left-0 right-0 bg-white border-b border-gray-200 shadow-lg z-50">
           <div className="flex flex-col py-2">
-            {headerType === 'manager' && (
+            {headerType === "manager" && (
               <>
                 <span
                   onClick={() => handleNavigate("/main")}
                   className={`py-3 px-6 font-pre-medium text-14 ${
-                    isCurrentPage("/main") ? "text-purple-600 font-bold" : "text-gray-700"
+                    isCurrentPage("/main")
+                      ? "text-purple-600 font-bold"
+                      : "text-gray-700"
                   }`}
                 >
                   장부 현황
@@ -159,7 +191,9 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
                 <span
                   onClick={() => handleNavigate("/report")}
                   className={`py-3 px-6 font-pre-medium text-14 ${
-                    isCurrentPage("/report") ? "text-purple-600 font-bold" : "text-gray-700"
+                    isCurrentPage("/report")
+                      ? "text-purple-600 font-bold"
+                      : "text-gray-700"
                   }`}
                 >
                   보고서
@@ -167,19 +201,23 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
                 <span
                   onClick={() => handleNavigate("/manage")}
                   className={`py-3 px-6 font-pre-medium text-14 ${
-                    isCurrentPage("/manage") ? "text-purple-600 font-bold" : "text-gray-700"
+                    isCurrentPage("/manage")
+                      ? "text-purple-600 font-bold"
+                      : "text-gray-700"
                   }`}
                 >
                   내 정보 관리
                 </span>
               </>
             )}
-            {headerType === 'viewer' && (
+            {headerType === "viewer" && (
               <>
                 <span
                   onClick={() => handleNavigate("/main")}
                   className={`py-3 px-6 font-pre-medium text-14 ${
-                    isCurrentPage("/main") ? "text-purple-600 font-bold" : "text-gray-700"
+                    isCurrentPage("/main")
+                      ? "text-purple-600 font-bold"
+                      : "text-gray-700"
                   }`}
                 >
                   장부 현황
@@ -187,7 +225,9 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
                 <span
                   onClick={() => handleNavigate("/report")}
                   className={`py-3 px-6 font-pre-medium text-14 ${
-                    isCurrentPage("/report") ? "text-purple-600 font-bold" : "text-gray-700"
+                    isCurrentPage("/report")
+                      ? "text-purple-600 font-bold"
+                      : "text-gray-700"
                   }`}
                 >
                   보고서

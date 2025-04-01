@@ -1,33 +1,32 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from "react";
 import { FiChevronDown, FiChevronUp, FiSearch } from "react-icons/fi";
-import useDetectClose from '../../hooks/useDetectClose';
+import useDetectClose from "../../hooks/useDetectClose";
 
 const SearchBar = () => {
-
   const dropMenuList = [
     { label: "입출금명 + 비고", value: "ALL" },
     { label: "입출금명", value: "SUMMARY" },
     { label: "비고", value: "DETAIL" },
-    { label: "금액", value: "AMOUNT" }
+    { label: "금액", value: "AMOUNT" },
   ];
 
   const [isFocused, setIsFocused] = useState<boolean>(false); // 검색 focus 여부
-  const [inputValue, setInputValue] = useState<string>("");  // 검색 키워드
-  const inputRef = useRef<HTMLInputElement>(null);   // 검색 키워드
+  const [inputValue, setInputValue] = useState<string>(""); // 검색 키워드
+  const inputRef = useRef<HTMLInputElement>(null); // 검색 키워드
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dropdownRef = useRef<HTMLDivElement>(null!);
   const [isDropOpen, setIsDropOpen] = useDetectClose(dropdownRef, false);
   const [dropMenu, setDropMenu] = useState(dropMenuList[0]);
-  
-  const setDrop = (selectedMenu: {label: string, value: string}) => {
+
+  const setDrop = (selectedMenu: { label: string; value: string }) => {
     setDropMenu(selectedMenu);
     setIsDropOpen(!isDropOpen);
-  }
+  };
 
   return (
-    <div className='flex gap-2 items-center w-full justify-end'>
-      <div ref={dropdownRef} className='relative font-pre-light text-[#666666]'>
+    <div className="flex gap-2 items-center w-full justify-end">
+      <div ref={dropdownRef} className="relative font-pre-light text-[#666666]">
         {/* 드롭다운 */}
         <button
           onClick={() => setIsDropOpen(!isDropOpen)}
@@ -49,9 +48,8 @@ const SearchBar = () => {
             ))}
           </ul>
         )}
-
       </div>
-      <div className='rounded-3xl justify-start w-2/5 max-w-60 bg-[#F7F6F6]'>
+      <div className="rounded-3xl justify-start w-2/5 max-w-60 bg-[#F7F6F6]">
         {/* 검색 input */}
         <div className="flex items-center gap-2 py-1 px-4">
           <input
@@ -61,7 +59,7 @@ const SearchBar = () => {
             placeholder={isFocused ? "" : "Search"}
             onFocus={() => setIsFocused(true)}
             onBlur={() => {
-              if(!inputValue.trim()){
+              if (!inputValue.trim()) {
                 setIsFocused(false);
               }
             }}
@@ -72,11 +70,11 @@ const SearchBar = () => {
               }
             }}
           />
-          <FiSearch className='text-[#767676] font-pre-semibold' />
+          <FiSearch className="text-[#767676] font-pre-semibold" />
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default SearchBar;

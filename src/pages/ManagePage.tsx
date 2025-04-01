@@ -1,15 +1,24 @@
 import AccountCard from "../features/Manage/AccountCard";
 import { bankData } from "../constants/bankData";
-import { accountInfo } from "../dummy/accountInfo";
+// import { accountInfo } from "../dummy/accountInfo";
 import AddAccountBtn from "../features/Manage/AddAccountBtn";
+import { useAccountStore } from "../stores/useAccountStore";
+import EmptyAccount from "../features/Manage/EmptyAccount";
 
 function ManagePage() {
+  // 스토어에서 accounts 상태를 가져옵니다.
+  const accounts = useAccountStore((state) => state.accounts);
+
+  if (accounts.length === 0) {
+    return <EmptyAccount />;
+  }
+
   return (
     <div className="md:content md:pt-[50px]">
       {/* API연결후 여기에 계좌 개수 0보다크면 아래 버튼과 카드컴포넌트 보여주는 분기문 적기 */}
       <AddAccountBtn />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-[1000px] w-full mx-auto justify-items-center">
-        {accountInfo.map((account, index) => {
+        {accounts.map((account, index) => {
           // 해당 계좌의 은행 정보를 bankData에서 찾기
           const bankInfo = bankData.find(
             (bank) => bank.bankCode === account.bankCode
