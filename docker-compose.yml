@@ -5,5 +5,5 @@ services:
     image: daejangbu-frontend
     container_name: daejangbu-frontend
     ports:
-      - "80:80"
+      - "5173:80"
     restart: always
