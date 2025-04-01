@@ -268,7 +268,8 @@ function ReportPage() {
   const handleDownloadExcel = useCallback(() => {
     // 현재 표시된 데이터와 컬럼을 기반으로 워크시트 데이터 생성
     const worksheetData = tableData.map((item) => {
-      const row: any = {};
+      const row: Record<string, string | number | boolean | null | undefined> =
+        {};
       columns.forEach((column) => {
         const field = fieldMapping[column];
         row[column] = item[field];
