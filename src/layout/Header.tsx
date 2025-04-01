@@ -42,7 +42,8 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
   const handleLogout = async () => {
     try {
       await logout();
-      navigate("/login");
+      alert("로그아웃 되었습니다.");
+      navigate("/");
     } catch (error) {
       console.error("로그아웃 실패:", error);
     }
