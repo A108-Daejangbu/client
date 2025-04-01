@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Logo from "../assets/Logo.png";
 import { useHeaderType } from "../hooks/useHeaderType";
+import { useMemberStore } from "../stores/useMemberStore";
 
 interface HeaderProps {
   isLoggedIn?: boolean;
@@ -10,13 +11,41 @@ interface HeaderProps {
 
 const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [nickname, setNickname] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
   const headerType = useHeaderType(isLoggedIn);
+  const { getMyNickname, logout, isLoading, error } = useMemberStore();
+
+  // 닉네임 조회
+  useEffect(() => {
+    const fetchNickname = async () => {
+      try {
+        const userNickname = await getMyNickname();
+        setNickname(userNickname);
+      } catch (error) {
+        console.error("닉네임 조회 실패:", error);
+      }
+    };
+
+    if (isLoggedIn) {
+      fetchNickname();
+    }
+  }, [isLoggedIn, getMyNickname]);
 
   const handleNavigate = (path: string) => {
     navigate(path);
     setIsMenuOpen(false);
+  };
+
+  // 로그아웃 처리
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/login");
+    } catch (error) {
+      console.error("로그아웃 실패:", error);
+    }
   };
 
   // 현재 경로와 일치하는지 확인하여 색상 변경
@@ -65,11 +94,13 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
         </div>
         <div className="flex items-center space-x-2 md:space-x-4 ml-auto">
           <span className="font-pre-medium text-13 md:text-16 truncate max-w-[80px] md:max-w-none">
-            {userName}님
+            {nickname || userName}님
           </span>
           <button
             className="p-1.5 md:p-2 rounded-lg hover:bg-gray-100 transition-colors"
             title="로그아웃"
+            onClick={handleLogout}
+            disabled={isLoading}
           >
             <LogoutIcon />
           </button>
@@ -160,11 +191,13 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
         {headerType === "manager" && (
           <div className="flex items-center space-x-2 md:space-x-4">
             <span className="font-pre-medium text-13 md:text-16 truncate max-w-[80px] md:max-w-none">
-              {userName}님
+              {nickname || userName}님
             </span>
             <button
               className="p-1.5 md:p-2 rounded-lg hover:bg-gray-100 transition-colors"
               title="로그아웃"
+              onClick={handleLogout}
+              disabled={isLoading}
             >
               <LogoutIcon />
             </button>
