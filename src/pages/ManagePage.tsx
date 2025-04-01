@@ -3,9 +3,16 @@ import { bankData } from "../constants/bankData";
 // import { accountInfo } from "../dummy/accountInfo";
 import AddAccountBtn from "../features/Manage/AddAccountBtn";
 import { useAccountStore } from "../stores/useAccountStore";
+import EmptyAccount from "../features/Manage/EmptyAccount";
+
 function ManagePage() {
   // 스토어에서 accounts 상태를 가져옵니다.
   const accounts = useAccountStore((state) => state.accounts);
+
+  if (accounts.length === 0) {
+    return <EmptyAccount />;
+  }
+
   return (
     <div className="md:content md:pt-[50px]">
       {/* API연결후 여기에 계좌 개수 0보다크면 아래 버튼과 카드컴포넌트 보여주는 분기문 적기 */}

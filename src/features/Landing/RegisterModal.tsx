@@ -19,8 +19,7 @@ const RegisterModal = ({ onClose }: RegisterModalProps) => {
   }, [isOpen, onClose]);
 
   const loginWithGoogle = () => {
-    window.location.href =
-      "https://j12a108.p.ssafy.io/api/oauth2/authorization/google";
+    window.location.href = `${import.meta.env.VITE_SERVER_URL}/oauth2/authorization/google`;
   };
 
   return (
