@@ -1,4 +1,3 @@
-import React from "react";
 import TransactionList from "../features/Main/Transaction/TransactionList";
 import SearchBar from "../features/Main/SearchBar";
 

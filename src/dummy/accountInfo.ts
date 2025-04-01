@@ -1,3 +1,5 @@
+import { Account } from "../types/Account";
+
 export const accountInfo: Account[] = [
   {
     accountId: 1,

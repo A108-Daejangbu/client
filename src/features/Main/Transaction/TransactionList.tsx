@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import TransactionCard from "./TransactionCard";
 import { transactions } from "../../../dummy/transactions";
 import TransactionMonthNavi from "./TransactionMonthNavi";
