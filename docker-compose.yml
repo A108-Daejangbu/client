@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  daejangbu-frontend:
+    image: daejangbu-frontend
+    container_name: daejangbu-frontend
+    ports:
+      - "5173:80"
+    restart: always
