@@ -26,7 +26,7 @@ function LandingPage() {
           {/* Main Text */}
           <div className="mb-[20px] md:mb-[36px] text-center">
             <h2
-              className="text-3xl md:text-5xl font-pre-semibold leading-tight tracking-[-0.75px]"
+              className="text-3xl md:text-5xl font-pre-semibold leading-tight tracking-[-0.75px] mb-4"
               style={{
                 background:
                   "linear-gradient(90deg, #191FD9 0%, #3E6FFA 34%, #7953FF 61%, #2F007B 100%)",
