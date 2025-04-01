@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { bankData } from "../../constants/bankData";
 import { isValidAccountName, isValidPassword } from "../../utils/validation";
+import { checkDuplicateAccount } from "../../apis/account/checkDuplicateAccount";
 
 const RegistrationForm = () => {
   const [accountName, setAccountName] = useState(""); // 계좌명 상태
@@ -11,6 +12,9 @@ const RegistrationForm = () => {
 
   const [accountNameError, setAccountNameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [accountNumberMessage, setAccountNumberMessage] = useState("");
+  // 계좌번호 검증 결과 메시지 상태
+
   // 선택된 은행명에 따른 은행코드 추출, 이 은행코드로 API요청하기
   // const selectedBankCode = bankData.find(
   //   (bank) => bank.bankName === selectedBankName
@@ -40,8 +44,17 @@ const RegistrationForm = () => {
     console.log("폼이 제출되었습니다.");
   };
 
-  // const inputClassName =
-  //   "block w-full px-2 py-2 border border-gray-300 rounded-lg font-pre-regular text-12";
+  // 계좌번호 중복 체크 API 호출 함수
+  const handleCheckAccountNumber = async () => {
+    try {
+      const response = await checkDuplicateAccount(accountNumber);
+      setAccountNumberMessage(response.message);
+    } catch (error) {
+      console.error(error); // 에러 로그 출력
+      setAccountNumberMessage("계좌번호 검증 중 오류가 발생했습니다.");
+    }
+  };
+
   const inputClassName =
     "block w-full min-w-0 px-2 py-1.5 border border-gray-300 rounded-lg font-pre-regular text-12 placeholder:text-gray-400 truncate";
 
@@ -91,18 +104,31 @@ const RegistrationForm = () => {
         {/* 계좌번호 입력 필드 */}
         <div className="flex items-center gap-4">
           <label className="w-1/4">계좌번호</label>
-          <input
-            type="text"
-            className={inputClassName}
-            placeholder="‘-’없이 숫자만 입력"
-            value={accountNumber}
-            onChange={(e) => setAccountNumber(e.target.value)}
-            required
-          />
-          <button className="border border-gray-200 rounded-lg px-2 py-1.5 text-12">
+          <div className="relative w-full">
+            <input
+              type="text"
+              className={inputClassName}
+              placeholder="‘-’없이 숫자만 입력"
+              value={accountNumber}
+              onChange={(e) => setAccountNumber(e.target.value)}
+              required
+            />
+            {/* 계좌번호 중복 체크 결과 메시지 */}
+            {accountNumberMessage && (
+              <p className="absolute left-0 text-[10px] ml-1">
+                {accountNumberMessage}
+              </p>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={handleCheckAccountNumber}
+            className="border border-gray-200 rounded-lg px-2 py-1.5 text-12"
+          >
             인증
           </button>
         </div>
+
         {/* 인증번호 입력 필드 */}
         <div className="flex items-center gap-4">
           <label className="w-1/4">인증번호</label>
