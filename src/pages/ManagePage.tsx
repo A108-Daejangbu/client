@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import AccountCard from "../features/Manage/AccountCard";
 import { bankData } from "../constants/bankData";
 import AddAccountBtn from "../features/Manage/AddAccountBtn";
@@ -9,6 +10,7 @@ import { useAccountStore } from "../stores/useAccountStore";
 function ManagePage() {
   const accounts = useAccountStore((state) => state.accounts); // 계좌 목록 상태
   const setAccounts = useAccountStore((state) => state.setAccounts); // 계좌 목록 설정 함수
+  const navigate = useNavigate();
 
   // 로그인 후 계좌 정보 가져오기
   useEffect(() => {
@@ -29,6 +31,11 @@ function ManagePage() {
     return <EmptyAccount />;
   }
 
+  // 클릭 시 해당 계좌의 accountId를 URL에 포함하여 MainPage로 이동
+  const handleCardClick = (accountId: number) => {
+    navigate(`/main/${accountId}`);
+  };
+
   return (
     <div className="md:content md:pt-[50px]">
       <AddAccountBtn />
@@ -45,7 +52,12 @@ function ManagePage() {
 
           // bankInfo가 있을 경우, AccountCard 컴포넌트에 account와 bankInfo를 props로 전달
           return (
-            <AccountCard key={index} account={account} bankInfo={bankInfo} />
+            <AccountCard
+              key={index}
+              account={account}
+              bankInfo={bankInfo}
+              onClick={() => handleCardClick(account.accountId)}
+            />
           );
         })}
       </div>

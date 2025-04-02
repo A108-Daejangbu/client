@@ -11,9 +11,10 @@ import { Account, BankInfo } from "../../types/Account";
 interface AccountCardProp {
   account: Account;
   bankInfo: BankInfo;
+  onClick?: () => void;
 }
 
-const AccountCard = ({ account, bankInfo }: AccountCardProp) => {
+const AccountCard = ({ account, bankInfo, onClick }: AccountCardProp) => {
   // useDetectClose는 모달의 상태를 관리
   const modifyModalRef = useRef<HTMLDivElement>(null!); //초기에는 null이지만, 반드시 이후에 값이 할당될 것
   const delelteModalRef = useRef<HTMLDivElement>(null!);
@@ -35,6 +36,7 @@ const AccountCard = ({ account, bankInfo }: AccountCardProp) => {
 
   return (
     <div
+      onClick={onClick}
       className="w-[19rem] p-4 rounded-2xl shadow-lg relative font-pre-regular"
       style={{
         borderRadius: "17px",
