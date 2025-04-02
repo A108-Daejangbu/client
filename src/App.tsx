@@ -47,7 +47,10 @@ const AppLayout = () => {
       )}
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/viewerLanding" element={<ViewerLandingPage />} />
+        <Route
+          path="/viewerLanding/:accountId"
+          element={<ViewerLandingPage />}
+        />
         <Route path="/main/:accountId" element={<MainPage />} />
         <Route path="/report" element={<ReportPage />} />
         <Route path="/manage" element={<ManagePage />} />
