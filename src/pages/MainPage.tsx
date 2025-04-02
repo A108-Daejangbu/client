@@ -1,5 +1,6 @@
 import TransactionList from "../features/Main/Transaction/TransactionList";
 import SearchBar from "../features/Main/SearchBar";
+import ScoreComponent from "../features/Main/ScoreComponent";
 
 import { accountInfo } from "../dummy/accountInfo";
 
@@ -17,7 +18,10 @@ function MainPage() {
 
       <div className="flex flex-col md:flex-row h-auto">
         <div className="w-full md:w-1/4 justify-items-center">
-          <div>점수...</div>
+          <ScoreComponent 
+            score={10} 
+            transactions={7}
+          />
         </div>
         <div className="w-full md:w-1/2">
           <TransactionList />
