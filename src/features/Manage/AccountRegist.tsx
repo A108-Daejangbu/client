@@ -167,7 +167,7 @@ const RegistrationForm = () => {
             <input
               type="password"
               className={inputClassName}
-              placeholder="영문 대문자+숫자, 4자 이상 8자 이하"
+              placeholder="숫자 4자 이상 8자 이하"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
