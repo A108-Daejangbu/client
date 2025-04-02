@@ -2,24 +2,23 @@ import CloseIcon from "../../../assets/CloseIcons.svg";
 import { useState } from "react";
 
 interface LinkShareModalProps {
+  accountId: number;
   onClose: () => void;
 }
 
-const LinkShareModal = ({ onClose }: LinkShareModalProps) => {
-  // const [shareLink, setShareLink] = useState(
-  //   `https://ViwerLanding/${accountId}`
-  // );
+const LinkShareModal = ({ accountId, onClose }: LinkShareModalProps) => {
+  const shareLink = `${window.location.origin}/viewerLanding/${accountId}`;
+  //window.location.origin을 사용해 현재 도메인을 가져오고, 그 뒤에 accountId
   const [buttonText, setButtonText] = useState("링크 복사");
 
   // 링크 복사 함수
   const handleCopyLink = () => {
     navigator.clipboard
-      // .writeText(shareLink)
-      .writeText("https://sharelinkid") //실제 복사되는 주소로, 나중에 shareLink로 바꾸기
+      .writeText(shareLink) //실제 복사되는 주소
       .then(() => {
-        setButtonText("복사 완료"); // 버튼 텍스트를 "복사 완료"로 변경
+        setButtonText("복사 완료");
         setTimeout(() => {
-          setButtonText("링크 복사"); // 5초 후에 버튼 텍스트를 원래대로 복원
+          setButtonText("링크 복사");
         }, 5000);
       })
       .catch((err) => {
@@ -29,19 +28,17 @@ const LinkShareModal = ({ onClose }: LinkShareModalProps) => {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
-      onClick={onClose} // 배경을 클릭하면 모달이 닫히도록 설정
+      onClick={onClose}
     >
       <div
         className="bg-white p-6 rounded-lg shadow-lg w-80 sm:w-96 font-pre-regular text-main200"
-        onClick={(e) => e.stopPropagation()} // 모달 본체 클릭 시, 이벤트 전파를 막아 닫히지 않도록 처리>
+        onClick={(e) => e.stopPropagation()}
       >
         {/* 모달 헤더 */}
         <div className="flex items-center justify-between mb-6 w-full">
           <div className="w-[15px]"></div>
           <h2 className="text-lg font-pre-medium text-center">링크 공유</h2>
-          <button
-            onClick={onClose} // onClose prop 사용해 모달 닫기
-          >
+          <button onClick={onClose}>
             <img src={CloseIcon} alt="CloseIcon" />
           </button>
         </div>
@@ -55,8 +52,7 @@ const LinkShareModal = ({ onClose }: LinkShareModalProps) => {
           {/* 주소*/}
           <input
             type="text"
-            // value={shareLink}
-            value="https://sharelinkid" //여기는 읽기 전용
+            value={shareLink}
             className="border-[2px] border-purple rounded-lg mb-8 py-2 px-2 w-full"
             readOnly
           />

@@ -11,9 +11,10 @@ import { Account, BankInfo } from "../../types/Account";
 interface AccountCardProp {
   account: Account;
   bankInfo: BankInfo;
+  onClick?: () => void;
 }
 
-const AccountCard = ({ account, bankInfo }: AccountCardProp) => {
+const AccountCard = ({ account, bankInfo, onClick }: AccountCardProp) => {
   // useDetectClose는 모달의 상태를 관리
   const modifyModalRef = useRef<HTMLDivElement>(null!); //초기에는 null이지만, 반드시 이후에 값이 할당될 것
   const delelteModalRef = useRef<HTMLDivElement>(null!);
@@ -35,13 +36,14 @@ const AccountCard = ({ account, bankInfo }: AccountCardProp) => {
 
   return (
     <div
+      onClick={onClick}
       className="w-[19rem] p-4 rounded-2xl shadow-lg relative font-pre-regular"
       style={{
         borderRadius: "17px",
         background: `linear-gradient(120deg, ${bankInfo.color1} 15%, ${bankInfo.color2} 50%)`,
       }}
     >
-      {/* 수정 삭제 버튼 */}
+      {/* 공유 수정 삭제 버튼 */}
       <div className="absolute top-4 right-4 flex space-x-3 z-10">
         <button
           onClick={(e) => {
@@ -49,7 +51,7 @@ const AccountCard = ({ account, bankInfo }: AccountCardProp) => {
             setIsLinkShareModalOpen(true);
           }}
         >
-          <img src={shareIcon} alt="shareIcon" className="w-3.5" />
+          <img src={shareIcon} alt="shareIcon" className="w-4" />
         </button>
 
         <button
@@ -58,7 +60,7 @@ const AccountCard = ({ account, bankInfo }: AccountCardProp) => {
             setIsModifyModalOpen(true);
           }}
         >
-          <img src={editIcon} alt="editIcon" className="w-4" />
+          <img src={editIcon} alt="editIcon" className="w-5" />
         </button>
 
         <button
@@ -67,13 +69,13 @@ const AccountCard = ({ account, bankInfo }: AccountCardProp) => {
             setIsDeleteModalOpen(true);
           }}
         >
-          <img src={deleteIcon} alt="deleteIcon" className="w-3.5" />
+          <img src={deleteIcon} alt="deleteIcon" className="w-4" />
         </button>
       </div>
       {/* 은행이름 및 계좌번호 */}
       <div className="text-10 opacity-75 text-white flex gap-1.5">
-        <h2>{account.bankName}</h2>
-        <p>{account.accountNumber}</p>
+        <h2>{bankInfo.bankName}</h2>
+        <p>{account.accountNo}</p>
       </div>
       {/* 은행 로고와 계좌명 잔액*/}
       <div className="flex mt-6 items-center">
@@ -87,9 +89,9 @@ const AccountCard = ({ account, bankInfo }: AccountCardProp) => {
 
         <div className="flex-cols font-pre-semibold ">
           <h2 className="text-20 text-white truncate">
-            {account.accountName.length >= 13
-              ? account.accountName.slice(0, 13) + "..."
-              : account.accountName}
+            {account.accountNickname.length >= 13
+              ? account.accountNickname.slice(0, 13) + "..."
+              : account.accountNickname}
           </h2>
           <p className="text-[18px] text-white">
             {account.balance.toLocaleString()}원
@@ -101,14 +103,17 @@ const AccountCard = ({ account, bankInfo }: AccountCardProp) => {
       <p className="mt-5 text-12 text-white text-right">
         미완료 영수증:
         <span className="font-medium ml-2">
-          {account.uncompletedReceipts}개
+          {account.unCompletedReceipts}개
         </span>
       </p>
 
       {/* 링크 공유 모달 */}
       {isLinkShareModalOpen && (
         <div ref={linkshareModalRef}>
-          <LinkShareModal onClose={() => setIsLinkShareModalOpen(false)} />
+          <LinkShareModal
+            accountId={account.accountId}
+            onClose={() => setIsLinkShareModalOpen(false)}
+          />
         </div>
       )}
 
