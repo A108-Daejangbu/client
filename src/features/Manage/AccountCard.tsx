@@ -43,7 +43,7 @@ const AccountCard = ({ account, bankInfo, onClick }: AccountCardProp) => {
         background: `linear-gradient(120deg, ${bankInfo.color1} 15%, ${bankInfo.color2} 50%)`,
       }}
     >
-      {/* 수정 삭제 버튼 */}
+      {/* 공유 수정 삭제 버튼 */}
       <div className="absolute top-4 right-4 flex space-x-3 z-10">
         <button
           onClick={(e) => {
@@ -51,7 +51,7 @@ const AccountCard = ({ account, bankInfo, onClick }: AccountCardProp) => {
             setIsLinkShareModalOpen(true);
           }}
         >
-          <img src={shareIcon} alt="shareIcon" className="w-3.5" />
+          <img src={shareIcon} alt="shareIcon" className="w-4" />
         </button>
 
         <button
@@ -60,7 +60,7 @@ const AccountCard = ({ account, bankInfo, onClick }: AccountCardProp) => {
             setIsModifyModalOpen(true);
           }}
         >
-          <img src={editIcon} alt="editIcon" className="w-4" />
+          <img src={editIcon} alt="editIcon" className="w-5" />
         </button>
 
         <button
@@ -69,7 +69,7 @@ const AccountCard = ({ account, bankInfo, onClick }: AccountCardProp) => {
             setIsDeleteModalOpen(true);
           }}
         >
-          <img src={deleteIcon} alt="deleteIcon" className="w-3.5" />
+          <img src={deleteIcon} alt="deleteIcon" className="w-4" />
         </button>
       </div>
       {/* 은행이름 및 계좌번호 */}
@@ -110,7 +110,10 @@ const AccountCard = ({ account, bankInfo, onClick }: AccountCardProp) => {
       {/* 링크 공유 모달 */}
       {isLinkShareModalOpen && (
         <div ref={linkshareModalRef}>
-          <LinkShareModal onClose={() => setIsLinkShareModalOpen(false)} />
+          <LinkShareModal
+            accountId={account.accountId}
+            onClose={() => setIsLinkShareModalOpen(false)}
+          />
         </div>
       )}
 
