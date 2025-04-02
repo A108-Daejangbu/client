@@ -43,7 +43,7 @@ const ErrorPage: React.FC = () => {
           className="group relative px-8 py-4 bg-gradient-to-r from-purple to-blue rounded-xl
                    font-pre-bold text-16 text-white overflow-hidden
                    transition-all duration-300 hover:shadow-lg
-                   hover:scale-[1.02] active:scale-[0.98]"
+                   hover:scale-[1.02] active:scale-[0.98] mt-[80px]"
         >
           <span className="relative z-10">시작화면으로 돌아가기</span>
           <div className="absolute inset-0 bg-gradient-to-r from-blue to-purple 
