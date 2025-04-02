@@ -2,6 +2,7 @@ import TransactionList from "../features/Main/Transaction/TransactionList";
 import SearchBar from "../features/Main/SearchBar";
 import { useParams } from "react-router-dom";
 import { useAccountStore } from "../stores/useAccountStore";
+import ScoreComponent from "../features/Main/ScoreComponent";
 // useParams를 사용해 accountId를 받아오고, 해당 ID에 맞는 계좌 데이터를 store에서 찾은 후 보여줌
 
 function MainPage() {
@@ -30,7 +31,10 @@ function MainPage() {
       )}
       <div className="flex flex-col md:flex-row h-auto">
         <div className="w-full md:w-1/4 justify-items-center">
-          <div>점수...</div>
+          <ScoreComponent 
+            score={10} 
+            transactions={7}
+          />
         </div>
         <div className="w-full md:w-1/2">
           <TransactionList />
