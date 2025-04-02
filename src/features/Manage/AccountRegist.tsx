@@ -12,6 +12,7 @@ const RegistrationForm = () => {
 
   const [accountNameError, setAccountNameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [accountNumberError, setAccountNumberError] = useState("");
   const [accountNumberMessage, setAccountNumberMessage] = useState("");
   // 계좌번호 검증 결과 메시지 상태
 
@@ -19,6 +20,9 @@ const RegistrationForm = () => {
   // const selectedBankCode = bankData.find(
   //   (bank) => bank.bankName === selectedBankName
   // )?.bankCode;
+
+  // 계좌번호 숫자만 입력되었는지 검사하는 함수
+  const isNumeric = (value: string) => /^\d+$/.test(value);
 
   // 폼 제출 처리 함수
   const handleSubmit = (e: React.FormEvent) => {
@@ -46,12 +50,18 @@ const RegistrationForm = () => {
 
   // 계좌번호 중복 체크 API 호출 함수
   const handleCheckAccountNumber = async () => {
+    // 입력된 계좌번호가 숫자로만 구성되었는지 확인
+    if (!isNumeric(accountNumber)) {
+      setAccountNumberError("숫자만 입력해 주세요.");
+      return; // 숫자가 아니라면 API 호출하지 않고 반환
+    } else {
+      setAccountNumberError(""); // 정상 입력이면 에러 메시지 초기화
+    }
     try {
       const response = await checkDuplicateAccount(accountNumber);
-      setAccountNumberMessage(response.message);
-    } catch (error) {
-      console.error(error); // 에러 로그 출력
-      setAccountNumberMessage("계좌번호 검증 중 오류가 발생했습니다.");
+      setAccountNumberMessage(response.message); // 성공 메시지 표시
+    } catch {
+      setAccountNumberMessage("계좌번호 검증 중 오류가 발생했습니다."); // 모든 에러에 동일 메시지
     }
   };
 
@@ -113,6 +123,12 @@ const RegistrationForm = () => {
               onChange={(e) => setAccountNumber(e.target.value)}
               required
             />
+            {/* 계좌번호 유효성 에러 메시지 */}
+            {accountNumberError && (
+              <p className="absolute left-0 text-[10px] ml-1 text-red-500">
+                {accountNumberError}
+              </p>
+            )}
             {/* 계좌번호 중복 체크 결과 메시지 */}
             {accountNumberMessage && (
               <p className="absolute left-0 text-[10px] ml-1">
