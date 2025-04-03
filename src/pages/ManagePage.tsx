@@ -10,6 +10,7 @@ import { useAccountStore } from "../stores/useAccountStore";
 function ManagePage() {
   const accounts = useAccountStore((state) => state.accounts); // 계좌 목록 상태
   const setAccounts = useAccountStore((state) => state.setAccounts); // 계좌 목록 설정 함수
+  const selectAccount = useAccountStore((state) => state.selectAccount); // 선택된 계좌 ID 설정 함수
   const navigate = useNavigate();
 
   // 로그인 후 계좌 정보 가져오기
@@ -33,6 +34,7 @@ function ManagePage() {
 
   // 클릭 시 해당 계좌의 accountId를 URL에 포함하여 MainPage로 이동
   const handleCardClick = (accountId: number) => {
+    selectAccount(accountId);
     navigate(`/main/${accountId}`);
   };
 
