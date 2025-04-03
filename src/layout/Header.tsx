@@ -171,9 +171,9 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
           {headerType === "viewer" && (
             <>
               <span
-                onClick={() => handleNavigate("/main")}
+                onClick={() => handleNavigate(`/main/${accountId}`)}
                 className={`font-pre-medium text-16 cursor-pointer hover:text-purple-600 transition-colors ${
-                  isCurrentPage("/main")
+                  isCurrentPage(`/main/${accountId}`)
                     ? "text-purple-600 font-bold border-b-2 border-purple-600"
                     : "text-gray-700"
                 }`}
@@ -224,9 +224,9 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
             {headerType === "manager" && (
               <>
                 <span
-                  onClick={() => handleNavigate("/main")}
+                  onClick={() => handleNavigate(`/main/${accountId}`)}
                   className={`py-3 px-6 font-pre-medium text-14 ${
-                    isCurrentPage("/main")
+                    isCurrentPage(`/main/${accountId}`)
                       ? "text-purple-600 font-bold"
                       : "text-gray-700"
                   }`}
@@ -258,9 +258,9 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
             {headerType === "viewer" && (
               <>
                 <span
-                  onClick={() => handleNavigate("/main")}
+                  onClick={() => handleNavigate(`/main/${accountId}`)}
                   className={`py-3 px-6 font-pre-medium text-14 ${
-                    isCurrentPage("/main")
+                    isCurrentPage(`/main/${accountId}`)
                       ? "text-purple-600 font-bold"
                       : "text-gray-700"
                   }`}

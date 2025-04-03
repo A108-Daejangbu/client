@@ -25,14 +25,13 @@ const AppLayout = () => {
   const definedRoutes = [
     "/",
     "/viewerLanding",
-    "/report",
     "/manage",
     "/account",
   ];
 
   // 현재 경로가 정의된 라우트에 없거나 /error인 경우 에러 페이지로 간주
   const isErrorPage =
-    (!definedRoutes.includes(location.pathname) && !location.pathname.startsWith('/main')) ||
+    (!definedRoutes.includes(location.pathname) && !location.pathname.startsWith('/main')) && !location.pathname.startsWith('/report') ||
     location.pathname === "/error";
 
   // 실제 구현시에는 로그인 상태와 사용자 이름을 상태 관리 라이브러리나 context에서 가져와야 합니다
@@ -51,7 +50,7 @@ const AppLayout = () => {
           element={<ViewerLandingPage />}
         />
         <Route path="/main/:accountId" element={<MainPage />} />
-        <Route path="/report" element={<ReportPage />} />
+        <Route path="/report/:accountId" element={<ReportPage />} />
         <Route path="/manage" element={<ManagePage />} />
         <Route path="/account" element={<AccountPage />} />
         <Route path="/error" element={<ErrorPage />} />
