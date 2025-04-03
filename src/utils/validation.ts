@@ -8,10 +8,10 @@ export const isValidAccountName = (name: string): boolean => {
 
 /**
  * 입장코드 유효성 검사
- * - 영문 대문자 + 숫자 포함
+ * - 숫자 포함
  * - 4자 이상, 8자 이하
  */
 export const isValidPassword = (password: string): boolean => {
-  const regex = /^(?=.*[A-Z])(?=.*\d)[A-Z\d]{4,8}$/;
+  const regex = /^\d{4,8}$/;
   return regex.test(password);
 };
