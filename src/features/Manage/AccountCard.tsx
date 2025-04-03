@@ -16,7 +16,7 @@ interface AccountCardProp {
 
 const AccountCard = ({ account, bankInfo, onClick }: AccountCardProp) => {
   // useDetectClose는 모달의 상태를 관리
-  const modifyModalRef = useRef<HTMLDivElement>(null!); //초기에는 null이지만, 반드시 이후에 값이 할당될 것
+  const modifyModalRef = useRef<HTMLDivElement>(null!);
   const delelteModalRef = useRef<HTMLDivElement>(null!);
   const linkshareModalRef = useRef<HTMLDivElement>(null!);
 
@@ -36,7 +36,6 @@ const AccountCard = ({ account, bankInfo, onClick }: AccountCardProp) => {
 
   return (
     <div
-      onClick={onClick}
       className="w-[19rem] p-4 rounded-2xl shadow-lg relative font-pre-regular"
       style={{
         borderRadius: "17px",
@@ -53,7 +52,6 @@ const AccountCard = ({ account, bankInfo, onClick }: AccountCardProp) => {
         >
           <img src={shareIcon} alt="shareIcon" className="w-4" />
         </button>
-
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -62,7 +60,6 @@ const AccountCard = ({ account, bankInfo, onClick }: AccountCardProp) => {
         >
           <img src={editIcon} alt="editIcon" className="w-5" />
         </button>
-
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -72,13 +69,19 @@ const AccountCard = ({ account, bankInfo, onClick }: AccountCardProp) => {
           <img src={deleteIcon} alt="deleteIcon" className="w-4" />
         </button>
       </div>
-      {/* 은행이름 및 계좌번호 */}
+      {/* 은행 이름 및 계좌번호 */}
       <div className="text-10 opacity-75 text-white flex gap-1.5">
         <h2>{bankInfo.bankName}</h2>
         <p>{account.accountNo}</p>
       </div>
-      {/* 은행 로고와 계좌명 잔액*/}
-      <div className="flex mt-6 items-center">
+      {/* 은행 로고와 계좌명 잔액 (여기를 클릭하면 onClick 실행) */}
+      <div
+        className="flex mt-6 items-center cursor-pointer"
+        onClick={(e) => {
+          e.stopPropagation();
+          if (onClick) onClick();
+        }}
+      >
         <div className="w-[40px] h-[40px] bg-white rounded-full flex items-center justify-center mr-3">
           <img
             src={bankInfo.logo}
@@ -86,8 +89,7 @@ const AccountCard = ({ account, bankInfo, onClick }: AccountCardProp) => {
             className="w-[26px] h-[26px]"
           />
         </div>
-
-        <div className="flex-cols font-pre-semibold ">
+        <div className="flex-cols font-pre-semibold">
           <h2 className="text-20 text-white truncate">
             {account.accountNickname.length >= 13
               ? account.accountNickname.slice(0, 13) + "..."
@@ -98,7 +100,6 @@ const AccountCard = ({ account, bankInfo, onClick }: AccountCardProp) => {
           </p>
         </div>
       </div>
-
       {/* 미완료 영수증 */}
       <p className="mt-5 text-12 text-white text-right">
         미완료 영수증:
@@ -120,14 +121,20 @@ const AccountCard = ({ account, bankInfo, onClick }: AccountCardProp) => {
       {/* 수정 모달 */}
       {isModifyModalOpen && (
         <div ref={modifyModalRef}>
-          <ModifyModal onClose={() => setIsModifyModalOpen(false)} />
+          <ModifyModal
+            onClose={() => setIsModifyModalOpen(false)}
+            account={account}
+          />
         </div>
       )}
 
       {/* 삭제 모달 */}
       {isDeleteModalOpen && (
         <div ref={delelteModalRef}>
-          <DeleteModal onClose={() => setIsDeleteModalOpen(false)} />
+          <DeleteModal
+            onClose={() => setIsDeleteModalOpen(false)}
+            accountId={account.accountId}
+          />
         </div>
       )}
     </div>
