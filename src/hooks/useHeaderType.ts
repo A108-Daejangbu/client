@@ -12,7 +12,7 @@ export const useHeaderType = (isLoggedIn: boolean = false): HeaderType => {
   }
 
   // 메인 페이지나 리포트 페이지
-  if (['/main', '/report'].includes(path)) {
+  if (path.startsWith('/main') || path.startsWith('/report')) {
     return isLoggedIn ? 'manager' : 'viewer';
   }
 
