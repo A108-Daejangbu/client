@@ -3,10 +3,10 @@ import SearchBar from "../features/Main/SearchBar";
 import { useParams } from "react-router-dom";
 import { useAccountStore } from "../stores/useAccountStore";
 import ScoreComponent from "../features/Main/ScoreComponent";
-// useParams를 사용해 accountId를 받아오고, 해당 ID에 맞는 계좌 데이터를 store에서 찾은 후 보여줌
+
 
 function MainPage() {
-  // URL에서 accountId 파라미터를 가져옴 (문자열이므로 숫자로 변환)
+  
   const accountId = useAccountStore((state) => state.selectedAccountId);
   const accounts = useAccountStore((state) => state.accounts);
   // 선택된 accountId에 해당하는 계좌 정보 찾기
