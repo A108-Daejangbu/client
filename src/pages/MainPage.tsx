@@ -7,7 +7,7 @@ import ScoreComponent from "../features/Main/ScoreComponent";
 
 function MainPage() {
   // URL에서 accountId 파라미터를 가져옴 (문자열이므로 숫자로 변환)
-  const { accountId } = useParams<{ accountId: string }>();
+  const accountId = useAccountStore((state) => state.selectedAccountId);
   const accounts = useAccountStore((state) => state.accounts);
   // 선택된 accountId에 해당하는 계좌 정보 찾기
   const selectedAccount = accounts.find(
