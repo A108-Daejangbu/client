@@ -17,6 +17,9 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
   const headerType = useHeaderType(isLoggedIn);
   const { getMyNickname, logout, isLoading} = useMemberStore();
 
+  // URL에서 accountId 추출
+  const accountId = location.pathname.split('/')[2];
+
   // 닉네임 조회
   useEffect(() => {
     const fetchNickname = async () => {
@@ -50,7 +53,15 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
   };
 
   // 현재 경로와 일치하는지 확인하여 색상 변경
-  const isCurrentPage = (path: string) => location.pathname === path;
+  const isCurrentPage = (path: string) => {
+    // 동적 라우트인 경우 (accountId가 포함된 경우)
+    if (path.includes(':accountId')) {
+      const pathPattern = path.replace(':accountId', '[0-9]+');
+      const regex = new RegExp(`^${pathPattern}$`);
+      return regex.test(location.pathname);
+    }
+    return location.pathname === path;
+  };
 
   // 로그아웃 아이콘
   const LogoutIcon = () => (
@@ -126,9 +137,9 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
           {headerType === "manager" && (
             <>
               <span
-                onClick={() => handleNavigate("/main")}
+                onClick={() => handleNavigate(`/main/${accountId}`)}
                 className={`font-pre-medium text-16 cursor-pointer hover:text-purple-600 transition-colors ${
-                  isCurrentPage("/main")
+                  isCurrentPage(`/main/${accountId}`)
                     ? "text-purple-600 font-bold border-b-2 border-purple-600"
                     : "text-gray-700"
                 }`}
@@ -136,9 +147,9 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
                 장부 현황
               </span>
               <span
-                onClick={() => handleNavigate("/report")}
+                onClick={() => handleNavigate(`/report/${accountId}`)}
                 className={`font-pre-medium text-16 cursor-pointer hover:text-purple-600 transition-colors ${
-                  isCurrentPage("/report")
+                  isCurrentPage(`/report/${accountId}`)
                     ? "text-purple-600 font-bold border-b-2 border-purple-600"
                     : "text-gray-700"
                 }`}
@@ -170,9 +181,9 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
                 장부 현황
               </span>
               <span
-                onClick={() => handleNavigate("/report")}
+                onClick={() => handleNavigate(`/report/${accountId}`)}
                 className={`font-pre-medium text-16 cursor-pointer hover:text-purple-600 transition-colors ${
-                  isCurrentPage("/report")
+                  isCurrentPage(`/report/${accountId}`)
                     ? "text-purple-600 font-bold border-b-2 border-purple-600"
                     : "text-gray-700"
                 }`}
@@ -223,9 +234,9 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
                   장부 현황
                 </span>
                 <span
-                  onClick={() => handleNavigate("/report")}
+                  onClick={() => handleNavigate(`/report/${accountId}`)}
                   className={`py-3 px-6 font-pre-medium text-14 ${
-                    isCurrentPage("/report")
+                    isCurrentPage(`/report/${accountId}`)
                       ? "text-purple-600 font-bold"
                       : "text-gray-700"
                   }`}
@@ -257,9 +268,9 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
                   장부 현황
                 </span>
                 <span
-                  onClick={() => handleNavigate("/report")}
+                  onClick={() => handleNavigate(`/report/${accountId}`)}
                   className={`py-3 px-6 font-pre-medium text-14 ${
-                    isCurrentPage("/report")
+                    isCurrentPage(`/report/${accountId}`)
                       ? "text-purple-600 font-bold"
                       : "text-gray-700"
                   }`}
