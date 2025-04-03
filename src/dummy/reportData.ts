@@ -1,168 +1,22 @@
+import { useTransactionStore } from "../stores/useTransactionStore";
+
 // DataItem 타입 정의
 export interface DataItem {
-  id: number;
-  category: string;
-  date: string;
-  content: string;
-  deposit: string;
-  withdraw: string;
-  balance: string;
-  note: string;
+  id: number;                           // 거래내역 ID
+  transactionDate: string;              // 거래 날짜 (YYYY-MM-DD)
+  transactionTime: string;              // 거래 시간 (HH:mm:ss)
+  transactionType: 'DEPOSIT' | 'WITHDRAW';     // 거래 유형
+  transactionBalance: number;           // 거래 금액
+  transactionAfterBalance: number;      // 거래 후 잔액
+  passStatus: 'NONE' | 'PASS' | 'WARNING' | 'FAIL';               // 승인 상태
+  categoryId: number;                   // 카테고리 ID
+  categoryName: string;                 // 카테고리명
+  transactionSummary: string;           // 거래처명
+  detail: string;                       // 거래 상세 내용
 }
 
-// 더미데이터 export
-export const initialData: DataItem[] = [
-  {
-    id: 1,
-    category: "MT",
-    date: "2025.03.13",
-    content: "MT 간식MT 간식MT 간식MT 간식MT 간식",
-    deposit: "-",
-    withdraw: "156,000",
-    balance: "3,857,300",
-    note: "여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.여기는 영수증 비고 내용이 들어갈 곳입니다.",
-  },
-  {
-    id: 2,
-    category: "MT",
-    date: "2025.03.14",
-    content: "MT 숙소",
-    deposit: "800,000,000",
-    withdraw: "-",
-    balance: "3,057,300",
-    note: "",
-  },
-  {
-    id: 3,
-    category: "MT",
-    date: "2025.03.15",
-    content: "MT 준비물품",
-    deposit: "-",
-    withdraw: "120,000",
-    balance: "2,937,300",
-    note: "",
-  },
-  {
-    id: 4,
-    category: "개강총회",
-    date: "2025.03.16",
-    content: "MT 준비물품",
-    deposit: "-",
-    withdraw: "156,000",
-    balance: "3,857,300",
-    note: "",
-  },
-  {
-    id: 5,
-    category: "개강총회",
-    date: "2025.03.17",
-    content: "MT 준비물품",
-    deposit: "-",
-    withdraw: "156,000",
-    balance: "3,857,300",
-    note: "",
-  },
-  {
-    id: 6,
-    category: "축제",
-    date: "2025.03.18",
-    content: "MT 간식",
-    deposit: "-",
-    withdraw: "156,000",
-    balance: "3,857,300",
-    note: "",
-  },
-  {
-    id: 7,
-    category: "축제",
-    date: "2025.03.19",
-    content: "MT 간식",
-    deposit: "-",
-    withdraw: "156,000",
-    balance: "3,857,300",
-    note: "",
-  },
-  {
-    id: 8,
-    category: "축제",
-    date: "2025.03.20",
-    content: "MT 간식",
-    deposit: "-",
-    withdraw: "156,000",
-    balance: "3,857,300",
-    note: "",
-  },
-  {
-    id: 9,
-    category: "축제",
-    date: "2025.03.21",
-    content: "MT 간식",
-    deposit: "-",
-    withdraw: "156,000",
-    balance: "3,857,300",
-    note: "",
-  },
-  {
-    id: 10,
-    category: "축제",
-    date: "2025.03.21",
-    content: "MT 간식",
-    deposit: "-",
-    withdraw: "156,000",
-    balance: "3,857,300",
-    note: "",
-  },
-  {
-    id: 11,
-    category: "축제",
-    date: "2025.03.21",
-    content: "MT 간식",
-    deposit: "-",
-    withdraw: "156,000",
-    balance: "3,857,300",
-    note: "",
-  },
-  {
-    id: 12,
-    category: "축제",
-    date: "2025.03.21",
-    content: "MT 간식",
-    deposit: "-",
-    withdraw: "156,000",
-    balance: "3,857,300",
-    note: "",
-  },
-  {
-    id: 13,
-    category: "축제",
-    date: "2025.03.21",
-    content: "MT 간식",
-    deposit: "-",
-    withdraw: "156,000",
-    balance: "3,857,300",
-    note: "",
-  },
-  {
-    id: 14,
-    category: "축제",
-    date: "2025.03.21",
-    content: "MT 간식",
-    deposit: "-",
-    withdraw: "156,000",
-    balance: "3,857,300",
-    note: "",
-  },
-  {
-    id: 15,
-    category: "축제",
-    date: "2025.03.21",
-    content: "MT 간식",
-    deposit: "-",
-    withdraw: "156,000",
-    balance: "3,857,300",
-    note: "",
-  },
-];
+// useTransactionStore에서 데이터 가져오기
+export const initialData: DataItem[] = useTransactionStore.getState().transactions;
 
 // 초기 컬럼 이름도 함께 export
 export const initialColumns = [
@@ -177,13 +31,13 @@ export const initialColumns = [
 
 // 필드 매핑 객체도 export
 export const fieldMapping: Record<string, keyof DataItem> = {
-  카테고리: "category",
-  날짜: "date",
-  내용: "content",
-  입금: "deposit",
-  출금: "withdraw",
-  잔액: "balance",
-  비고: "note",
+  카테고리: "categoryName",
+  날짜: "transactionDate",
+  내용: "detail",
+  입금: "transactionBalance",
+  출금: "transactionBalance",
+  잔액: "transactionAfterBalance",
+  비고: "detail",
 };
 
 // 열 너비 매핑도 export
@@ -192,7 +46,7 @@ export const columnWidths = ["12%", "12%", "14%", "14%", "14%", "14%", "20%"];
 // 카테고리 옵션을 initialData에서 추출하는 함수
 const getCategoryOptions = () => {
   const uniqueCategories = Array.from(
-    new Set(initialData.map((item) => item.category))
+    new Set(initialData.map((item) => item.categoryName))
   );
 
   return [

@@ -11,6 +11,8 @@ import {
 } from "../dummy/reportData";
 import DraggableColumnHeader from "../features/Report/DraggableColumnHeader";
 import * as XLSX from "xlsx";
+import { useTransactionStore } from "../stores/useTransactionStore"; // 스토어 import 추가
+import { useAccountStore } from "../stores/useAccountStore";
 
 // // 타입 정의
 // interface ColumnItem {
@@ -83,6 +85,12 @@ const TableCell = ({
 };
 
 function ReportPage() {
+  const accountId = useAccountStore((state) => state.selectedAccountId);
+  const accounts = useAccountStore((state) => state.accounts);
+  // 선택된 accountId에 해당하는 계좌 정보 찾기
+  const selectedAccount = accounts.find(
+    (account) => account.accountId === Number(accountId)
+  );
   const [columns, setColumns] = useState<string[]>(initialColumns);
   const [tableData, setTableData] = useState<DataItem[]>(initialData);
   const [selectedFilters, setSelectedFilters] = useState<
@@ -98,6 +106,37 @@ function ReportPage() {
   } | null>(null);
 
   // fieldMapping과 columnWidths는 import해서 사용
+
+  // useTransactionStore에서 필요한 상태와 메서드 가져오기
+  const fetchTransactions = useTransactionStore(state => state.fetchTransactions);
+  const transactions = useTransactionStore(state => state.transactions);
+  const isLoading = useTransactionStore(state => state.isLoading);
+
+  // 컴포넌트 마운트 시 거래내역 조회
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        await fetchTransactions({
+          accountId: 1,
+          pageSize: 10,
+          pageNo: 1,
+          startDate: "20240701",
+          endDate: "20240731",
+          type: "DEPOSIT",
+          searchOption: "ALL"
+        });
+      } catch (error) {
+        console.error("거래내역 조회 실패:", error);
+      }
+    };
+
+    fetchInitialData();
+  }, []); // 빈 의존성 배열로 컴포넌트 마운트 시에만 실행
+
+  // tableData 상태를 transactions로 업데이트
+  useEffect(() => {
+    setTableData(transactions);
+  }, [transactions]);
 
   // 컬럼 순서 변경 함수
   const moveColumn = useCallback((fromIndex: number, toIndex: number) => {
@@ -135,7 +174,7 @@ function ReportPage() {
         };
 
         filteredData = filteredData.filter((item) => {
-          const itemDate = parseDate(item.date);
+          const itemDate = parseDate(item.transactionDate);
           return (
             itemDate >= selectedDateRange.from &&
             itemDate <= selectedDateRange.to
@@ -146,7 +185,7 @@ function ReportPage() {
       // 카테고리 필터 적용
       if (selectedCategories.length > 0) {
         filteredData = filteredData.filter((item) =>
-          selectedCategories.includes(item.category)
+          selectedCategories.includes(item.categoryName)
         );
       }
 
@@ -157,13 +196,13 @@ function ReportPage() {
             column === "입금" &&
             filters.includes('입금이 "-" 인 거래내역 숨기기')
           ) {
-            filteredData = filteredData.filter((item) => item.deposit !== "-");
+            filteredData = filteredData.filter((item) => item.transactionType !== "DEPOSIT");
           }
           if (
             column === "출금" &&
             filters.includes('출금이 "-" 인 거래내역 숨기기')
           ) {
-            filteredData = filteredData.filter((item) => item.withdraw !== "-");
+            filteredData = filteredData.filter((item) => item.transactionType !== "WITHDRAW");
           }
         }
       });
@@ -247,7 +286,7 @@ function ReportPage() {
     // 전체 데이터의 날짜 범위 계산
     const dates = tableData.map((item) => {
       // YYYY.MM.DD 형식의 문자열을 Date 객체로 변환
-      const [year, month, day] = item.date.split(".").map(Number);
+      const [year, month, day] = item.transactionDate.split(".").map(Number);
       return new Date(year, month - 1, day);
     });
 
@@ -307,7 +346,7 @@ function ReportPage() {
           {/* 헤더 */}
           <div className="mb-[30px]">
             <h1 className="font-pre-extrabold text-[28px] text-center text-main200">
-              경희대학교 응용수학과
+              {selectedAccount?.accountNickname}
             </h1>
           </div>
 
