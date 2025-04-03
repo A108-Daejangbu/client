@@ -30,14 +30,14 @@ const RegistrationForm = () => {
     let hasError = false;
 
     if (!isValidAccountName(accountName)) {
-      setAccountNameError("공백 포함 11자 이하로 입력해 주세요.");
+      setAccountNameError("공백 포함 25자 이하로 입력해 주세요.");
       hasError = true;
     } else {
       setAccountNameError("");
     }
 
     if (!isValidPassword(password)) {
-      setPasswordError("영문 대문자와 숫자 조합, 4~8자로 입력해 주세요.");
+      setPasswordError("숫자 4~8자로 입력해 주세요.");
       hasError = true;
     } else {
       setPasswordError("");
@@ -80,7 +80,7 @@ const RegistrationForm = () => {
             <input
               type="text"
               className={inputClassName}
-              placeholder="공백 포함 최대 11자 이하"
+              placeholder="공백 포함 최대 25자 이하"
               value={accountName}
               onChange={(e) => setAccountName(e.target.value)}
               required

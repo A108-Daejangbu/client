@@ -131,7 +131,10 @@ const AccountCard = ({ account, bankInfo, onClick }: AccountCardProp) => {
       {/* 삭제 모달 */}
       {isDeleteModalOpen && (
         <div ref={delelteModalRef}>
-          <DeleteModal onClose={() => setIsDeleteModalOpen(false)} />
+          <DeleteModal
+            onClose={() => setIsDeleteModalOpen(false)}
+            accountId={account.accountId}
+          />
         </div>
       )}
     </div>
