@@ -1,3 +1,5 @@
+//더미 데이터 파일 종류별로 파일 나눠서 다시 작성하기
+
 import { useTransactionStore } from "../stores/useTransactionStore";
 
 // DataItem 타입 정의
