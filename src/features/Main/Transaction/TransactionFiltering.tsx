@@ -7,9 +7,11 @@ import FilterPeriod from "./FilterModal/FilterPeriod";
 import FilterMoney from "./FilterModal/FilterMoney";
 import FilterTransaction from "./FilterModal/FilterTransaction";
 import FilterCategory from "./FilterModal/FilterCategory";
+import { SelectDate, SelectOptions, TransactionReq } from "../../../types/Transaction";
 
 interface TransactionFilteringProps{
-  categories: Category[]
+  categories: Category[];
+  onFilterChange: (req: Partial<TransactionReq>) => void;
 }
 
 const TransactionFiltering = ({categories}: TransactionFilteringProps) => {
@@ -23,7 +25,7 @@ const TransactionFiltering = ({categories}: TransactionFilteringProps) => {
 
   const [selectOptions, setSelectOptions] = useState<SelectOptions>({period:'이번달', type:'전체', order:'최신순'})
   // const orderMap = { 최신순: "DESC", 과거순: "ASC", } as const;
-  // const typeMap = { 전체: "", 입금만: "1", 출금만: "2"} as const;
+  // const typeMap = { 전체: "", 입금만: "DEPOSIT", 출금만: "WITHDRAWAL"} as const;
 
   const [dateRange, setDateRange] = useState<SelectDate>({startPeriod: formatDate(new Date(year, month, 1)), endPeriod: formatDate(today)});
   const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);

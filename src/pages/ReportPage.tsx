@@ -111,7 +111,7 @@ function ReportPage() {
   // useTransactionStore에서 필요한 상태와 메서드 가져오기
   const fetchTransactions = useTransactionStore(state => state.fetchTransactions);
   const transactions = useTransactionStore(state => state.transactions);
-  const isLoading = useTransactionStore(state => state.isLoading);
+  // const isLoading = useTransactionStore(state => state.isLoading);
 
   // 컴포넌트 마운트 시 거래내역 조회
   useEffect(() => {

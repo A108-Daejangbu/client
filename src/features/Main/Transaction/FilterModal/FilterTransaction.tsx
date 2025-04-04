@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { SelectOptions } from "../../../../types/Transaction";
+import { useTransactionFilterStore } from "../../../../stores/useTransactionFilterStore";
 
 interface FilterTransactionProps {
   title: string;
-  type: string;
+  type: "유형" | "정렬";
   setSelectOptions: React.Dispatch<React.SetStateAction<SelectOptions>>;
   selectType?: string;
   selectOrder?: string;
@@ -12,23 +14,36 @@ const FilterTransaction = ({title, type, setSelectOptions, selectType, selectOrd
   const [typeOption, setTypeOption] = useState(selectType)
   const [orderOption, setOrderOption] = useState(selectOrder)
 
+  const setFilters = useTransactionFilterStore((state) => state.setFilters)
+  const removeFilter = useTransactionFilterStore((state) => state.removeFilter)
+
+  const orderMap = { 최신순: "DESC", 과거순: "ASC", } as const;
+  const typeMap = { 전체: undefined, 입금만: "DEPOSIT", 출금만: "WITHDRAWAL"} as const;
+
   const optionList = type==='유형' ? ['전체', '입금만', '출금만'] : ['최신순', '과거순'];
   const option = type==='유형' ? typeOption : orderOption;
   const setOption = type==='유형' ? setTypeOption : setOrderOption;
 
+
   const handleOption = (label: string) => {
-    if(type==='유형'){
-      setSelectOptions(prev => ({
-        ...prev,
-        type: label
-      }))
-    }else{
-      setSelectOptions(prev => ({
-        ...prev,
-        order: label
-      }))
-    }
     setOption(label)
+    setSelectOptions(prev => ({
+      ...prev,
+      [type === '유형' ? 'type' : 'order']:label,
+    }))
+    if(type==='유형'){
+      if(label === '전체'){
+        removeFilter("type")
+      }else{
+        setFilters({
+          type: typeMap[label as keyof typeof typeMap]
+        })
+      }
+    }else{
+      setFilters({
+        orderType: orderMap[label as keyof typeof orderMap]
+      })
+    }
   }
 
   return (

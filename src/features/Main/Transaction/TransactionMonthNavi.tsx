@@ -1,3 +1,6 @@
+import { useTransactionFilterStore } from "../../../stores/useTransactionFilterStore";
+import { formatDateToString } from "../../../utils/date";
+
 // const [currDate, setCurrDate] = useState({month: date.getMonth(), year: date.getFullYear()});
 interface TransactionMonthNaviProps {
   currDate: { month: number; year: number };
@@ -5,20 +8,28 @@ interface TransactionMonthNaviProps {
 }
 
 const TransactionMonthNavi = ({currDate, setCurrDate}:TransactionMonthNaviProps) => {  
+  const setFilters = useTransactionFilterStore((state) => state.setFilters)
+
   const goToPreMonth = () => {
-    if(currDate.month === 0){
-      setCurrDate({month: (currDate.month+11)%12, year: currDate.year-1});
-    }else{
-      setCurrDate({month: currDate.month-1, year: currDate.year});
-    }
+    const newMonth = currDate.month === 0 ? 11 : currDate.month - 1;
+    const newYear = currDate.month === 0 ? currDate.year - 1 : currDate.year;
+
+    setCurrDate({ month: newMonth, year: newYear });
+    setFilters({
+      startDate: formatDateToString(newYear, newMonth, 1),
+      endDate: formatDateToString(newYear, newMonth + 1, 0),
+    });
   }
 
   const goToNextMonth = () => {
-    if(currDate.month === 11){
-      setCurrDate({month: (currDate.month+1)%12, year: currDate.year+1});
-    }else{
-      setCurrDate({month: currDate.month+1, year: currDate.year});
-    }
+    const newMonth = currDate.month === 11 ? 0 : currDate.month + 1;
+    const newYear = currDate.month === 11 ? currDate.year + 1 : currDate.year;
+
+    setCurrDate({ month: newMonth, year: newYear });
+    setFilters({
+      startDate: formatDateToString(newYear, newMonth, 1),
+      endDate: formatDateToString(newYear, newMonth + 1, 0),
+    });
   }
 
   const getMonthtoEng = () => {

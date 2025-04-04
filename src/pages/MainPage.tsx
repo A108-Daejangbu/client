@@ -6,13 +6,15 @@ import ScoreComponent from "../features/Main/ScoreComponent";
 
 
 function MainPage() {
-  
-  const accountId = useAccountStore((state) => state.selectedAccountId);
+    
+  const {accountId} = useParams<{accountId: string}>();
   const accounts = useAccountStore((state) => state.accounts);
+  
   // 선택된 accountId에 해당하는 계좌 정보 찾기
   const selectedAccount = accounts.find(
     (account) => account.accountId === Number(accountId)
   );
+
   return (
     // <div className="px-4 md:content md:!pt-0">
     <div className="content !p-2 !px-8 md:!px-[50px]">
@@ -37,7 +39,7 @@ function MainPage() {
           />
         </div>
         <div className="w-full md:w-1/2">
-          <TransactionList />
+          <TransactionList accountId={accountId} />
         </div>
       </div>
     </div>
