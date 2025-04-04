@@ -8,9 +8,12 @@ import {
   initialColumns,
   fieldMapping,
   columnWidths,
+  getDropdownSections,
 } from "../dummy/reportData";
 import DraggableColumnHeader from "../features/Report/DraggableColumnHeader";
 import * as XLSX from "xlsx";
+import { useTransactionStore } from "../stores/useTransactionStore"; // 스토어 import 추가
+import { useAccountStore } from "../stores/useAccountStore";
 
 // // 타입 정의
 // interface ColumnItem {
@@ -83,6 +86,12 @@ const TableCell = ({
 };
 
 function ReportPage() {
+  const accountId = useAccountStore((state) => state.selectedAccountId);
+  const accounts = useAccountStore((state) => state.accounts);
+  // 선택된 accountId에 해당하는 계좌 정보 찾기
+  const selectedAccount = accounts.find(
+    (account) => account.accountId === Number(accountId)
+  );
   const [columns, setColumns] = useState<string[]>(initialColumns);
   const [tableData, setTableData] = useState<DataItem[]>(initialData);
   const [selectedFilters, setSelectedFilters] = useState<
@@ -98,6 +107,42 @@ function ReportPage() {
   } | null>(null);
 
   // fieldMapping과 columnWidths는 import해서 사용
+
+  // useTransactionStore에서 필요한 상태와 메서드 가져오기
+  const fetchTransactions = useTransactionStore(state => state.fetchTransactions);
+  const transactions = useTransactionStore(state => state.transactions);
+  const isLoading = useTransactionStore(state => state.isLoading);
+
+  // 컴포넌트 마운트 시 거래내역 조회
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        await fetchTransactions({
+          accountId: 1,
+          pageSize: 10,
+          pageNo: 1,
+          startDate: "20250303",
+          endDate: "20250403",
+        });
+      } catch (error) {
+        console.error("거래내역 조회 실패:", error);
+      }
+    };
+
+    fetchInitialData();
+  }, []); // 빈 의존성 배열로 컴포넌트 마운트 시에만 실행
+
+  // tableData 상태를 transactions로 업데이트하는 부분
+  useEffect(() => {
+    // 날짜와 시간을 기준으로 오름차순 정렬 (과거순)
+    const sortedTransactions = [...transactions].sort((a, b) => {
+      const dateA = new Date(`${a.transactionDate} ${a.transactionTime}`);
+      const dateB = new Date(`${b.transactionDate} ${b.transactionTime}`);
+      return dateA.getTime() - dateB.getTime(); // 과거순 정렬
+    });
+    
+    setTableData(sortedTransactions);
+  }, [transactions]);
 
   // 컬럼 순서 변경 함수
   const moveColumn = useCallback((fromIndex: number, toIndex: number) => {
@@ -122,7 +167,7 @@ function ReportPage() {
     return index !== -1 ? columnWidths[index] : "14%";
   };
 
-  // 필터링된 데이터를 계산하는 함수
+  // 필터링된 데이터를 계산하는 함수 수정
   const getFilteredData = useCallback(
     (baseData: DataItem[]) => {
       let filteredData = [...baseData];
@@ -130,12 +175,11 @@ function ReportPage() {
       // 날짜 필터 적용
       if (selectedDateRange) {
         const parseDate = (dateStr: string) => {
-          const [year, month, day] = dateStr.split(".").map(Number);
-          return new Date(year, month - 1, day);
+          return new Date(dateStr);
         };
 
         filteredData = filteredData.filter((item) => {
-          const itemDate = parseDate(item.date);
+          const itemDate = parseDate(item.transactionDate);
           return (
             itemDate >= selectedDateRange.from &&
             itemDate <= selectedDateRange.to
@@ -146,7 +190,7 @@ function ReportPage() {
       // 카테고리 필터 적용
       if (selectedCategories.length > 0) {
         filteredData = filteredData.filter((item) =>
-          selectedCategories.includes(item.category)
+          selectedCategories.includes(item.categoryName)
         );
       }
 
@@ -155,17 +199,24 @@ function ReportPage() {
         if (filters.length > 0) {
           if (
             column === "입금" &&
-            filters.includes('입금이 "-" 인 거래내역 숨기기')
+            filters.includes('입금이 "0" 인 거래내역 숨기기')
           ) {
-            filteredData = filteredData.filter((item) => item.deposit !== "-");
+            filteredData = filteredData.filter((item) => item.transactionType !== "WITHDRAWAL");
           }
           if (
             column === "출금" &&
-            filters.includes('출금이 "-" 인 거래내역 숨기기')
+            filters.includes('출금이 "0" 인 거래내역 숨기기')
           ) {
-            filteredData = filteredData.filter((item) => item.withdraw !== "-");
+            filteredData = filteredData.filter((item) => item.transactionType !== "DEPOSIT");
           }
         }
+      });
+
+      // 필터링 후 과거순으로 정렬
+      filteredData.sort((a, b) => {
+        const dateA = new Date(`${a.transactionDate} ${a.transactionTime}`);
+        const dateB = new Date(`${b.transactionDate} ${b.transactionTime}`);
+        return dateA.getTime() - dateB.getTime(); // 과거순 정렬
       });
 
       return filteredData;
@@ -214,19 +265,26 @@ function ReportPage() {
     []
   );
 
-  // 필터 변경시 데이터 업데이트
+  // 필터 변경시 데이터 업데이트 수정
   useEffect(() => {
-    const filteredData = getFilteredData(initialData);
+    // initialData 대신 transactions 사용
+    const filteredData = getFilteredData(transactions);
     setTableData(filteredData);
-  }, [selectedDateRange, selectedCategories, selectedFilters, getFilteredData]);
+  }, [selectedDateRange, selectedCategories, selectedFilters, getFilteredData, transactions]);
 
-  // 필터 초기화 함수
+  // 필터 초기화 함수 수정
   const handleResetFilter = useCallback((columnName: string) => {
     setSelectedFilters((prev) => ({ ...prev, [columnName]: [] }));
-    setTableData(initialData);
-  }, []);
+    // transactions를 정렬해서 설정
+    const sortedTransactions = [...transactions].sort((a, b) => {
+      const dateA = new Date(`${a.transactionDate} ${a.transactionTime}`);
+      const dateB = new Date(`${b.transactionDate} ${b.transactionTime}`);
+      return dateA.getTime() - dateB.getTime(); // 과거순 정렬
+    });
+    setTableData(sortedTransactions);
+  }, [transactions]);
 
-  // 날짜 포맷팅 함수 수정
+  // 날짜 포맷팅 함수 수정 (출력 형식을 YYYY.MM.DD로 유지)
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -246,9 +304,8 @@ function ReportPage() {
 
     // 전체 데이터의 날짜 범위 계산
     const dates = tableData.map((item) => {
-      // YYYY.MM.DD 형식의 문자열을 Date 객체로 변환
-      const [year, month, day] = item.date.split(".").map(Number);
-      return new Date(year, month - 1, day);
+      // YYYY-MM-DD 형식의 문자열을 Date 객체로 변환
+      return new Date(item.transactionDate);
     });
 
     if (dates.length === 0) return null;
@@ -268,11 +325,14 @@ function ReportPage() {
   const handleDownloadExcel = useCallback(() => {
     // 현재 표시된 데이터와 컬럼을 기반으로 워크시트 데이터 생성
     const worksheetData = tableData.map((item) => {
-      const row: Record<string, string | number | boolean | null | undefined> =
-        {};
+      const row: Record<string, string | number> = {};
       columns.forEach((column) => {
         const field = fieldMapping[column];
-        row[column] = item[field];
+        if (typeof field === 'function') {
+          row[column] = field(item);
+        } else {
+          row[column] = item[field];
+        }
       });
       return row;
     });
@@ -300,14 +360,22 @@ function ReportPage() {
     XLSX.writeFile(workbook, fileName);
   }, [tableData, columns, fieldMapping, getDisplayDateRange]);
 
+  // dropdownSections 상태 추가
+  const [dropdownSections, setDropdownSections] = useState(getDropdownSections([]));
+
+  // transactions가 업데이트될 때마다 dropdownSections 업데이트
+  useEffect(() => {
+    setDropdownSections(getDropdownSections(transactions));
+  }, [transactions]);
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="content bg-white flex justify-center">
-        <div className="max-w-[900px] w-full">
+        <div className="max-w-[1000px] w-full">
           {/* 헤더 */}
           <div className="mb-[30px]">
             <h1 className="font-pre-extrabold text-[28px] text-center text-main200">
-              경희대학교 응용수학과
+              {selectedAccount?.accountNickname}
             </h1>
           </div>
 
@@ -389,6 +457,7 @@ function ReportPage() {
                           onDateFilter={handleDateFilter}
                           selectedDateRange={selectedDateRange}
                           selectedFilters={selectedFilters}
+                          dropdownSections={dropdownSections}
                         />
                       ))}
                     </tr>
@@ -426,11 +495,17 @@ function ReportPage() {
                       >
                         {columns.map((column, index) => {
                           const field = fieldMapping[column];
+                          let content;
+                          if (typeof field === 'function') {
+                            content = String(field(item));
+                          } else {
+                            content = String(item[field]);
+                          }
                           return (
                             <TableCell
                               key={`${item.id}-${index}`}
                               column={column}
-                              content={String(item[field])}
+                              content={content}
                               isLastRow={idx === tableData.length - 1}
                               isLastColumn={index === columns.length - 1}
                             />

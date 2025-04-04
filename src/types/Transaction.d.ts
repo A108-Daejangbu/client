@@ -27,7 +27,7 @@
 //   keyword?: string;                    // 검색 키워드
 // }
 // 거래 유형
-export type TransactionType = 'DEPOSIT' | 'WITHDRAW';
+export type TransactionType = 'DEPOSIT' | 'WITHDRAWAL';
 
 // 거래내역 검색 옵션
 export type SearchOption = 'ALL' | 'SUMMARY' | 'DETAIL' | 'AMOUNT';
