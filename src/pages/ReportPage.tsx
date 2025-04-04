@@ -201,13 +201,13 @@ function ReportPage() {
             column === "입금" &&
             filters.includes('입금이 "0" 인 거래내역 숨기기')
           ) {
-            filteredData = filteredData.filter((item) => item.transactionType !== "DEPOSIT");
+            filteredData = filteredData.filter((item) => item.transactionType !== "WITHDRAWAL");
           }
           if (
             column === "출금" &&
             filters.includes('출금이 "0" 인 거래내역 숨기기')
           ) {
-            filteredData = filteredData.filter((item) => item.transactionType !== "WITHDRAWAL");
+            filteredData = filteredData.filter((item) => item.transactionType !== "DEPOSIT");
           }
         }
       });
