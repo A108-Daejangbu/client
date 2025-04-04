@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDrag, useDrop } from 'react-dnd';  // 드래그 앤 드롭 기능을 위한 훅
 import Dropdown from './Dropdown';
-import { dropdownSections } from '../../dummy/reportData';
+import { DropdownSection } from '../../dummy/reportData'; // dropdownSections 제거하고 DropdownSection 타입만 import
 
 // 컴포넌트 props 타입 정의
 interface DraggableColumnHeaderProps {
@@ -17,6 +17,7 @@ interface DraggableColumnHeaderProps {
   onDateFilter?: (dates: { from: Date; to: Date }) => void; // 날짜 필터 함수
   selectedDateRange?: { from: Date; to: Date } | null;       // 선택된 날짜 범위
   selectedFilters?: Record<string, string[]>;                // 선택된 필터 상태
+  dropdownSections: Record<string, DropdownSection[]>;       // 드롭다운 섹션 데이터
 }
 
 // 드래그 앤 드롭을 위한 아이템 타입 정의
@@ -36,7 +37,8 @@ const DraggableColumnHeader: React.FC<DraggableColumnHeaderProps> = ({
   selectedCategories = [],
   onDateFilter,
   selectedDateRange,
-  selectedFilters = {}
+  selectedFilters = {},
+  dropdownSections,
 }) => {
   // 드롭다운 메뉴의 열림/닫힘 상태 관리
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

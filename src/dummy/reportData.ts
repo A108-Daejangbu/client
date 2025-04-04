@@ -43,10 +43,10 @@ export const fieldMapping: Record<string, keyof DataItem | ((item: DataItem) => 
 // 열 너비 매핑도 export
 export const columnWidths = ["12%", "12%", "14%", "14%", "14%", "14%", "20%"];
 
-// 카테고리 옵션을 initialData에서 추출하는 함수
-const getCategoryOptions = () => {
+// getCategoryOptions 함수를 export하고 매개변수를 받도록 수정
+export const getCategoryOptions = (transactions: DataItem[]) => {
   const uniqueCategories = Array.from(
-    new Set(initialData.map((item) => item.categoryName))
+    new Set(transactions.map((item) => item.categoryName))
   );
 
   return [
@@ -56,25 +56,12 @@ const getCategoryOptions = () => {
   ];
 };
 
-// 드롭다운 옵션 타입 정의
-export interface DropdownOption {
-  label: string;
-  color?: string; // 태그 색상
-  isSelected?: boolean;
-}
-
-// 드롭다운 섹션 타입 정의
-export interface DropdownSection {
-  title: string;
-  options: DropdownOption[];
-}
-
-// 드롭다운 데이터 구조 수정
-export const dropdownSections: Record<string, DropdownSection[]> = {
+// getDropdownSections 함수로 변경하여 동적으로 생성
+export const getDropdownSections = (transactions: DataItem[]): Record<string, DropdownSection[]> => ({
   카테고리: [
     {
       title: "카테고리 설정",
-      options: getCategoryOptions(),
+      options: getCategoryOptions(transactions),
     },
   ],
   날짜: [
@@ -119,4 +106,17 @@ export const dropdownSections: Record<string, DropdownSection[]> = {
       options: [{ label: "비고 열 삭제" }],
     },
   ],
-};
+});
+
+// 드롭다운 옵션 타입 정의
+export interface DropdownOption {
+  label: string;
+  color?: string; // 태그 색상
+  isSelected?: boolean;
+}
+
+// 드롭다운 섹션 타입 정의
+export interface DropdownSection {
+  title: string;
+  options: DropdownOption[];
+}
