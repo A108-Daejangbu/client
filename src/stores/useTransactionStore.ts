@@ -1,24 +1,19 @@
 import { create } from "zustand";
-import axios from "axios";
 import type { Transaction, TransactionReq } from "../types/Transaction";
+import axiosClient from "../apis/axiosClient";
 
-// API 요청을 위한 기본 URL 설정
-const API_BASE_URL = import.meta.env.VITE_SERVER_URL;
-
-// axios 인스턴스 생성
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  withCredentials: true,
-});
+const api = axiosClient
 
 interface TransactionStore {
   transactions: Transaction[];
   selectedTransaction: Transaction | null;
+  categories: Category[];
   isLoading: boolean;
   error: string | null;
 
   // 상태 관리 메서드
   setTransactions: (transactions: Transaction[]) => void;
+  setCategories: (categories: Category[]) => void;
   setSelectedTransaction: (transaction: Transaction | null) => void;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
@@ -30,11 +25,13 @@ interface TransactionStore {
 export const useTransactionStore = create<TransactionStore>((set) => ({
   transactions: [],
   selectedTransaction: null,
+  categories: [],
   isLoading: false,
   error: null,
 
   // 상태 업데이트 메서드
   setTransactions: (transactions) => set({ transactions }),
+  setCategories: (categories) => set({categories}),
   setSelectedTransaction: (transaction) => set({ selectedTransaction: transaction }),
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
@@ -45,7 +42,7 @@ export const useTransactionStore = create<TransactionStore>((set) => ({
       set({ isLoading: true, error: null });
       
       // 필수 파라미터 검증
-      if (!params.accountId || !params.pageSize || !params.pageNo || !params.startDate || !params.endDate) {
+      if (!params.accountId || !params.pageSize || params.pageNo == null || !params.startDate || !params.endDate) {
         throw new Error('필수 파라미터가 누락되었습니다. (accountId, pageSize, pageNo, startDate, endDate는 필수값입니다.)');
       }
 
@@ -79,4 +76,6 @@ export const useTransactionStore = create<TransactionStore>((set) => ({
       set({ isLoading: false });
     }
   },
+
+  
 }));

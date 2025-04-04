@@ -3,6 +3,7 @@ import CategoryCard from "./CategoryCard";
 // import { useState } from "react";
 import ReciptModal from "../ReciptModal";
 import ReactDOM from "react-dom";
+import { Transaction } from "../../../types/Transaction";
 
 interface TransactionProp {
   transaction: Transaction;
@@ -36,7 +37,7 @@ const TransactionCard = ({
 
   const category: Category = {
     categoryId: transaction.categoryId,
-    categoryName: transaction.categoryName,
+    name: transaction.categoryName,
   };
 
   return (

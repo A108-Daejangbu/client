@@ -18,7 +18,7 @@ const CategoryCard = ({category, onDelete, onSelected, isInline}: CategoryCardPr
     {bgColor: '#FF85D0', textColor: '#CE64AD'},
   ]
 
-  const idx = (category.categoryId + new Date().getDate() + new Date().getMonth()) % ColorPallete.length;
+  const idx = ((category.categoryId ? category.categoryId: 0)  + new Date().getDate() + new Date().getMonth()) % ColorPallete.length;
   const BgColor = ColorPallete[idx].bgColor;
   const TextColor = ColorPallete[idx].textColor;
 
@@ -52,10 +52,10 @@ const CategoryCard = ({category, onDelete, onSelected, isInline}: CategoryCardPr
             ? "inline-block overflow-hidden whitespace-nowrap text-ellipsis max-w-[150px]"
             : ""
         }`}
-        title={isInline ? category.categoryName : undefined} // Hover 시 전체 보기
+        title={isInline ? category.name : undefined} // Hover 시 전체 보기
       >
         <span className="mr-2">#</span>
-        {category.categoryName}
+        {category.name}
       </span>
 
       {/* X 버튼 */}
