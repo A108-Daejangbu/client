@@ -5,7 +5,7 @@ export interface DataItem {
   id: number;                           // 거래내역 ID
   transactionDate: string;              // 거래 날짜 (YYYY-MM-DD)
   transactionTime: string;              // 거래 시간 (HH:mm:ss)
-  transactionType: 'DEPOSIT' | 'WITHDRAW';     // 거래 유형
+  transactionType: 'DEPOSIT' | 'WITHDRAWAL';     // 거래 유형
   transactionBalance: number;           // 거래 금액
   transactionAfterBalance: number;      // 거래 후 잔액
   passStatus: 'NONE' | 'PASS' | 'WARNING' | 'FAIL';               // 승인 상태
@@ -30,12 +30,12 @@ export const initialColumns = [
 ];
 
 // 필드 매핑 객체도 export
-export const fieldMapping: Record<string, keyof DataItem> = {
+export const fieldMapping: Record<string, keyof DataItem | ((item: DataItem) => string | number)> = {
   카테고리: "categoryName",
   날짜: "transactionDate",
-  내용: "detail",
-  입금: "transactionBalance",
-  출금: "transactionBalance",
+  내용: "transactionSummary",
+  입금: (item: DataItem) => item.transactionType === 'DEPOSIT' ? item.transactionBalance : 0,
+  출금: (item: DataItem) => item.transactionType === 'WITHDRAWAL' ? item.transactionBalance : 0,
   잔액: "transactionAfterBalance",
   비고: "detail",
 };

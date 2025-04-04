@@ -120,10 +120,8 @@ function ReportPage() {
           accountId: 1,
           pageSize: 10,
           pageNo: 1,
-          startDate: "20240701",
-          endDate: "20240731",
-          type: "DEPOSIT",
-          searchOption: "ALL"
+          startDate: "20250303",
+          endDate: "20250403",
         });
       } catch (error) {
         console.error("거래내역 조회 실패:", error);
@@ -133,9 +131,18 @@ function ReportPage() {
     fetchInitialData();
   }, []); // 빈 의존성 배열로 컴포넌트 마운트 시에만 실행
 
-  // tableData 상태를 transactions로 업데이트
+  // tableData 상태를 transactions로 업데이트하는 부분 수정
   useEffect(() => {
-    setTableData(transactions);
+    // 날짜와 시간을 기준으로 내림차순 정렬 (최신순)
+    const sortedTransactions = [...transactions].sort((a, b) => {
+      // 날짜 비교
+      const dateA = new Date(`${a.transactionDate} ${a.transactionTime}`);
+      const dateB = new Date(`${b.transactionDate} ${b.transactionTime}`);
+      // 오름차순 정렬 (과거순)
+      return dateA.getTime() - dateB.getTime();
+    });
+    
+    setTableData(sortedTransactions);
   }, [transactions]);
 
   // 컬럼 순서 변경 함수
@@ -202,7 +209,7 @@ function ReportPage() {
             column === "출금" &&
             filters.includes('출금이 "-" 인 거래내역 숨기기')
           ) {
-            filteredData = filteredData.filter((item) => item.transactionType !== "WITHDRAW");
+            filteredData = filteredData.filter((item) => item.transactionType !== "WITHDRAWAL");
           }
         }
       });
@@ -307,11 +314,14 @@ function ReportPage() {
   const handleDownloadExcel = useCallback(() => {
     // 현재 표시된 데이터와 컬럼을 기반으로 워크시트 데이터 생성
     const worksheetData = tableData.map((item) => {
-      const row: Record<string, string | number | boolean | null | undefined> =
-        {};
+      const row: Record<string, string | number> = {};
       columns.forEach((column) => {
         const field = fieldMapping[column];
-        row[column] = item[field];
+        if (typeof field === 'function') {
+          row[column] = field(item);
+        } else {
+          row[column] = item[field];
+        }
       });
       return row;
     });
@@ -342,7 +352,7 @@ function ReportPage() {
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="content bg-white flex justify-center">
-        <div className="max-w-[900px] w-full">
+        <div className="max-w-[1000px] w-full">
           {/* 헤더 */}
           <div className="mb-[30px]">
             <h1 className="font-pre-extrabold text-[28px] text-center text-main200">
@@ -465,11 +475,17 @@ function ReportPage() {
                       >
                         {columns.map((column, index) => {
                           const field = fieldMapping[column];
+                          let content;
+                          if (typeof field === 'function') {
+                            content = String(field(item));
+                          } else {
+                            content = String(item[field]);
+                          }
                           return (
                             <TableCell
                               key={`${item.id}-${index}`}
                               column={column}
-                              content={String(item[field])}
+                              content={content}
                               isLastRow={idx === tableData.length - 1}
                               isLastColumn={index === columns.length - 1}
                             />
