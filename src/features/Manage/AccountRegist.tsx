@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import { bankData } from "../../constants/bankData";
 import { isValidAccountName, isValidPassword } from "../../utils/validation";
 import { checkDuplicateAccount } from "../../apis/account/checkDuplicateAccount";
+import { requestAccountCode } from "../../apis/account/requestAccountCode";
+import { verifyAuthCode } from "../../apis/account/verifyAuthCode";
+import { submitAccount } from "../../apis/account/submitAccount"; // API 함수 추가
+import { useNavigate } from "react-router-dom";
 
 const RegistrationForm = () => {
   const [accountName, setAccountName] = useState(""); // 계좌명 상태
@@ -14,21 +18,19 @@ const RegistrationForm = () => {
   const [passwordError, setPasswordError] = useState("");
   const [accountNumberError, setAccountNumberError] = useState("");
   const [accountNumberMessage, setAccountNumberMessage] = useState("");
-  // 계좌번호 검증 결과 메시지 상태
-
-  // 선택된 은행명에 따른 은행코드 추출, 이 은행코드로 API요청하기
-  // const selectedBankCode = bankData.find(
-  //   (bank) => bank.bankName === selectedBankName
-  // )?.bankCode;
+  const [verificationMessage, setVerificationMessage] = useState(""); // 인증번호 검증 결과 메시지
+  const [isVerified, setIsVerified] = useState(false); // 인증 완료 상태
+  const navigate = useNavigate();
 
   // 계좌번호 숫자만 입력되었는지 검사하는 함수
   const isNumeric = (value: string) => /^\d+$/.test(value);
 
   // 폼 제출 처리 함수
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     let hasError = false;
 
+    // 필수 항목 검증
     if (!isValidAccountName(accountName)) {
       setAccountNameError("공백 포함 25자 이하로 입력해 주세요.");
       hasError = true;
@@ -43,25 +45,80 @@ const RegistrationForm = () => {
       setPasswordError("");
     }
 
+    if (!selectedBankName) {
+      setAccountNumberError("은행을 선택해 주세요.");
+      hasError = true;
+    }
+
+    if (!isVerified) {
+      setVerificationMessage("인증을 완료해 주세요.");
+      hasError = true;
+    }
+
     if (hasError) return;
 
-    console.log("폼이 제출되었습니다.");
+    // 인증 완료 후 계좌 등록 API 호출
+    const data = {
+      accountNickname: accountName,
+      bankCode:
+        bankData.find((bank) => bank.bankName === selectedBankName)?.bankCode ||
+        "",
+      accountNo: accountNumber,
+      password,
+    };
+
+    try {
+      const response = await submitAccount(data); // API 호출
+      console.log("계좌 등록 성공:", response);
+
+      // 계좌 등록 성공 시 /manage 페이지로 이동
+      navigate("/manage");
+    } catch (error) {
+      console.error("계좌 등록 실패:", error);
+    }
   };
 
-  // 계좌번호 중복 체크 API 호출 함수
+  // 계좌번호 중복 체크 후 1원 요청 API 호출 함수
   const handleCheckAccountNumber = async () => {
-    // 입력된 계좌번호가 숫자로만 구성되었는지 확인
     if (!isNumeric(accountNumber)) {
       setAccountNumberError("숫자만 입력해 주세요.");
-      return; // 숫자가 아니라면 API 호출하지 않고 반환
+      return;
     } else {
-      setAccountNumberError(""); // 정상 입력이면 에러 메시지 초기화
+      setAccountNumberError("");
     }
+
     try {
-      const response = await checkDuplicateAccount(accountNumber);
-      setAccountNumberMessage(response.message); // 성공 메시지 표시
-    } catch {
-      setAccountNumberMessage("계좌번호 검증 중 오류가 발생했습니다."); // 모든 에러에 동일 메시지
+      const duplicateResponse = await checkDuplicateAccount(accountNumber);
+      if (duplicateResponse.result) {
+        await requestAccountCode(accountNumber);
+        setAccountNumberMessage("1원인증코드를 전송했습니다.");
+      } else {
+        setAccountNumberMessage(duplicateResponse.message);
+      }
+    } catch (error: unknown) {
+      void error;
+      setAccountNumberMessage("계좌번호 검증 중 오류가 발생했습니다.");
+    }
+  };
+
+  // 인증번호 검증 API 호출 함수
+  const handleVerifyCode = async () => {
+    if (!accountNumber) {
+      setVerificationMessage("계좌번호를 먼저 입력하세요.");
+      return;
+    }
+    if (!verificationCode) {
+      setVerificationMessage("인증번호를 입력하세요.");
+      return;
+    }
+
+    try {
+      await verifyAuthCode(accountNumber, verificationCode);
+      setVerificationMessage("인증이 완료되었습니다.");
+      setIsVerified(true); // 인증 완료 상태 설정
+    } catch (error) {
+      console.error("API 호출 실패:", error);
+      setVerificationMessage("인증번호 검증 중 오류가 발생했습니다.");
     }
   };
 
@@ -91,8 +148,8 @@ const RegistrationForm = () => {
               </p>
             )}
           </div>
-          <button className="px-2 py-2 invisible">확인</button>
         </div>
+
         {/* 은행 선택 필드 */}
         <div className="flex items-center gap-4 w-full">
           <label className="w-1/4">은행선택</label>
@@ -109,8 +166,8 @@ const RegistrationForm = () => {
               </option>
             ))}
           </select>
-          <button className="px-2 py-1.5 invisible">확인</button>
         </div>
+
         {/* 계좌번호 입력 필드 */}
         <div className="flex items-center gap-4">
           <label className="w-1/4">계좌번호</label>
@@ -123,13 +180,11 @@ const RegistrationForm = () => {
               onChange={(e) => setAccountNumber(e.target.value)}
               required
             />
-            {/* 계좌번호 유효성 에러 메시지 */}
             {accountNumberError && (
               <p className="absolute left-0 text-[10px] ml-1 text-red-500">
                 {accountNumberError}
               </p>
             )}
-            {/* 계좌번호 중복 체크 결과 메시지 */}
             {accountNumberMessage && (
               <p className="absolute left-0 text-[10px] ml-1">
                 {accountNumberMessage}
@@ -145,21 +200,34 @@ const RegistrationForm = () => {
           </button>
         </div>
 
-        {/* 인증번호 입력 필드 */}
+        {/* 인증번호 입력 및 검증 필드 */}
         <div className="flex items-center gap-4">
           <label className="w-1/4">인증번호</label>
-          <input
-            type="text"
-            className={inputClassName}
-            placeholder="계좌로 전송된 인증번호 입력"
-            value={verificationCode}
-            onChange={(e) => setVerificationCode(e.target.value)}
-            required
-          />
-          <button className="border border-gray-200 rounded-lg px-2 py-1.5 text-12">
-            확인
+          <div className="relative w-full">
+            <input
+              type="text"
+              className={inputClassName}
+              placeholder="계좌로 전송된 인증번호 입력"
+              value={verificationCode}
+              onChange={(e) => setVerificationCode(e.target.value)}
+              required
+            />
+            {verificationMessage && (
+              <p className="absolute left-0 text-[10px] ml-1">
+                {verificationMessage}
+              </p>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={handleVerifyCode}
+            className="border border-gray-200 rounded-lg px-2 py-1.5 text-12"
+            disabled={isVerified}
+          >
+            {isVerified ? "완료" : "확인"}
           </button>
         </div>
+
         {/* 입장 코드 입력 필드 */}
         <div className="flex items-center gap-4">
           <label className="w-1/4">입장코드</label>
@@ -178,12 +246,10 @@ const RegistrationForm = () => {
               </p>
             )}
           </div>
-          <button className="px-2 py-2 invisible">확인</button>
         </div>
 
         {/* 제출 버튼 */}
         <div className="flex items-center">
-          {/* <label className="w-1/4 invisible"></label> */}
           <button
             type="submit"
             className="w-full py-1.5 mt-12 rounded-[6.013px] bg-gradient-to-r from-[#7953FF] to-[#4E00CB] shadow-[0px_6.013px_6.239px_0px_rgba(74,58,255,0.28)] text-white text-base tracking-widest"
