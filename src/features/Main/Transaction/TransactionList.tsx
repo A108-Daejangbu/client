@@ -1,49 +1,115 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import TransactionCard from "./TransactionCard";
-import { transactions } from "../../../dummy/transactions";
 import TransactionMonthNavi from "./TransactionMonthNavi";
 import TransactionFiltering from "./TransactionFiltering";
 
 import { GoTriangleLeft, GoTriangleRight } from "react-icons/go";
+import { getMyCategories } from "../../../apis/transaction/getMyCategories";
+import { useTransactionStore } from "../../../stores/useTransactionStore";
+import { endDate, startDate } from "../../../utils/date";
+import { TransactionReq } from "../../../types/Transaction";
+import { useTransactionFilterStore } from "../../../stores/useTransactionFilterStore";
+import { useNavigate } from "react-router-dom";
 
-const TransactionList = () => {
-  const date = new Date();
+interface TransactionListProps {
+  accountId: string | undefined
+}
+
+const TransactionList = ({accountId} : TransactionListProps) => {
+  const navigate = useNavigate();
+
+  const date = new Date()
   const [currDate, setCurrDate] = useState({
     month: date.getMonth(),
     year: date.getFullYear(),
   });
 
-  const categoryMap = new Map<number, string>();
+  const [filterOptions, setFilterOptions] = useState<Partial<TransactionReq>>({});
 
-  transactions.forEach((tx) => {
-    if (!categoryMap.has(tx.categoryId)) {
-      categoryMap.set(tx.categoryId, tx.categoryName);
+  const transactions = useTransactionStore((state) => state.transactions)
+  const categoryList = useTransactionStore((state) => state.categories)
+  const setCategories = useTransactionStore((state) => state.setCategories)
+  const fetchTransactions = useTransactionStore((state) => state.fetchTransactions)
+
+  const filters = useTransactionFilterStore((state) => state.filters);
+  const resetFilters = useTransactionFilterStore((state) => state.resetFilters);
+
+  const fetchCategories = useCallback(async (accountId: string) => {
+    const data = await getMyCategories(accountId);
+    setCategories(data);
+  }, [setCategories])
+
+  const handleFilterChange = (updated: Partial<TransactionReq>) => {
+    setFilterOptions((prev) => ({ ...prev, ...updated }));
+  };
+
+  useEffect(() => {
+    if(!accountId) return;
+
+    const init = async() => {
+
+      try{
+  
+        await fetchCategories(accountId);
+        resetFilters();
+    
+        // 기본 거래내역 조회
+        const req: TransactionReq = {
+          accountId: Number(accountId),
+          pageSize: 30,
+          pageNo: 0,
+          startDate,
+          endDate,
+          ...filters
+        };
+        await fetchTransactions(req);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      }catch (error){
+        navigate('/error')
+      }
     }
-  });
 
-  const categoryList: Category[] = Array.from(categoryMap.entries()).map(
-    ([categoryId, categoryName]) => ({
-      categoryId,
-      categoryName,
-    })
-  );
+    init();
+  }, [accountId])
+
+  // 필터 변경 시 거래내역 다시 요청
+  useEffect(() =>{
+    if(!accountId) return;
+
+    const applySearchFilter = async () => {
+      try{
+        const req: TransactionReq = {
+          accountId: Number(accountId),
+          pageSize: 30,
+          pageNo: 0,
+          startDate: filterOptions.startDate ?? startDate,
+          endDate: filterOptions.endDate ?? endDate,
+          // ...filterOptions,
+          ...filters
+        };
+    
+        await fetchTransactions(req);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      }catch(error){
+        navigate('/error')
+      }
+    }
+    applySearchFilter()
+
+  }, [filters])
 
   const [activeModalId, setActiveModalId] = useState<string | null>(null);
 
   const handleModalToggle = (transactionId: string) => {
-    if (activeModalId === transactionId) {
-      // 현재 열린 모달을 클릭하면 닫기
-      setActiveModalId(null);
-    } else {
-      // 다른 모달을 클릭하면 기존 모달은 닫히고 새로운 모달이 열림
-      setActiveModalId(transactionId);
-    }
+    setActiveModalId((prev) => (prev === transactionId ? null : transactionId));
   };
 
   return (
     <div className="">
       <TransactionMonthNavi currDate={currDate} setCurrDate={setCurrDate} />
-      <TransactionFiltering categories={categoryList} />
+      <TransactionFiltering 
+      categories={categoryList}
+      onFilterChange={handleFilterChange} />
 
       {/* 타임라인 형식의 transaction card들 */}
       <div className="relative py-3">
@@ -58,7 +124,7 @@ const TransactionList = () => {
               className="relative z-10 flex justify-between items-center w-full"
             >
               {/* 왼쪽 카드 (거래 유형 = 입금(1)) */}
-              {tx.transactionType === "1" ? (
+              {tx.transactionType === "DEPOSIT" ? (
                 <>
                   <div className="md:w-[50%] w-[80%] flex justify-between">
                     <TransactionCard
