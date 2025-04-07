@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { bankData } from "../../constants/bankData";
+// import { bankData } from "../../constants/bankData";
 import { isValidAccountName, isValidPassword } from "../../utils/validation";
 import { checkDuplicateAccount } from "../../apis/account/checkDuplicateAccount";
 import { requestAccountCode } from "../../apis/account/requestAccountCode";
@@ -12,7 +12,7 @@ const RegistrationForm = () => {
   const [accountNumber, setAccountNumber] = useState(""); // 계좌번호 상태
   const [verificationCode, setVerificationCode] = useState(""); // 인증번호 상태
   const [password, setPassword] = useState(""); // 입장 비밀번호 상태
-  const [selectedBankName, setSelectedBankName] = useState(""); // 선택된 은행명
+  // const [selectedBankName, setSelectedBankName] = useState(""); // 선택된 은행명
 
   const [accountNameError, setAccountNameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -32,23 +32,23 @@ const RegistrationForm = () => {
 
     // 필수 항목 검증
     if (!isValidAccountName(accountName)) {
-      setAccountNameError("공백 포함 25자 이하로 입력해 주세요.");
+      setAccountNameError("공백 포함 13자 이하로 입력해 주세요.");
       hasError = true;
     } else {
       setAccountNameError("");
     }
 
     if (!isValidPassword(password)) {
-      setPasswordError("숫자 4~8자로 입력해 주세요.");
+      setPasswordError(" 4~8자리의 숫자로 입력해 주세요.");
       hasError = true;
     } else {
       setPasswordError("");
     }
 
-    if (!selectedBankName) {
-      setAccountNumberError("은행을 선택해 주세요.");
-      hasError = true;
-    }
+    // if (!selectedBankName) {
+    //   setAccountNumberError("은행을 선택해 주세요.");
+    //   hasError = true;
+    // }
 
     if (!isVerified) {
       setVerificationMessage("인증을 완료해 주세요.");
@@ -60,9 +60,6 @@ const RegistrationForm = () => {
     // 인증 완료 후 계좌 등록 API 호출
     const data = {
       accountNickname: accountName,
-      bankCode:
-        bankData.find((bank) => bank.bankName === selectedBankName)?.bankCode ||
-        "",
       accountNo: accountNumber,
       password,
     };
@@ -70,7 +67,6 @@ const RegistrationForm = () => {
     try {
       const response = await submitAccount(data); // API 호출
       console.log("계좌 등록 성공:", response);
-
       // 계좌 등록 성공 시 /manage 페이지로 이동
       navigate("/manage");
     } catch (error) {
@@ -137,13 +133,13 @@ const RegistrationForm = () => {
             <input
               type="text"
               className={inputClassName}
-              placeholder="공백 포함 최대 25자 이하"
+              placeholder="공백 포함 최대 13자 이하"
               value={accountName}
               onChange={(e) => setAccountName(e.target.value)}
               required
             />
             {accountNameError && (
-              <p className="absolute left-0 top-full mt-1 text-red-500 text-xs">
+              <p className="absolute ml-1 text-red-500 text-xs">
                 {accountNameError}
               </p>
             )}
@@ -151,7 +147,7 @@ const RegistrationForm = () => {
         </div>
 
         {/* 은행 선택 필드 */}
-        <div className="flex items-center gap-4 w-full">
+        {/* <div className="flex items-center gap-4 w-full">
           <label className="w-1/4">은행선택</label>
           <select
             className="block w-full max-w-full px-2 py-2 border border-gray-300 rounded-lg bg-white font-pre-regular text-12"
@@ -166,12 +162,12 @@ const RegistrationForm = () => {
               </option>
             ))}
           </select>
-        </div>
+        </div> */}
 
         {/* 계좌번호 입력 필드 */}
         <div className="flex items-center gap-4">
           <label className="w-1/4">계좌번호</label>
-          <div className="relative w-full">
+          <div className="relative w-full px-3">
             <input
               type="text"
               className={inputClassName}
@@ -181,14 +177,12 @@ const RegistrationForm = () => {
               required
             />
             {accountNumberError && (
-              <p className="absolute left-0 text-[10px] ml-1 text-red-500">
+              <p className="absolute text-xs ml-1 text-red-500">
                 {accountNumberError}
               </p>
             )}
             {accountNumberMessage && (
-              <p className="absolute left-0 text-[10px] ml-1">
-                {accountNumberMessage}
-              </p>
+              <p className="absolute text-xs ml-1">{accountNumberMessage}</p>
             )}
           </div>
           <button
@@ -203,7 +197,7 @@ const RegistrationForm = () => {
         {/* 인증번호 입력 및 검증 필드 */}
         <div className="flex items-center gap-4">
           <label className="w-1/4">인증번호</label>
-          <div className="relative w-full">
+          <div className="relative w-full px-3">
             <input
               type="text"
               className={inputClassName}
@@ -213,9 +207,7 @@ const RegistrationForm = () => {
               required
             />
             {verificationMessage && (
-              <p className="absolute left-0 text-[10px] ml-1">
-                {verificationMessage}
-              </p>
+              <p className="absolute text-xs ml-1">{verificationMessage}</p>
             )}
           </div>
           <button
@@ -235,13 +227,13 @@ const RegistrationForm = () => {
             <input
               type="password"
               className={inputClassName}
-              placeholder="숫자 4자 이상 8자 이하"
+              placeholder="4자리 이상, 8자리 이하의 숫자"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
             {passwordError && (
-              <p className="absolute left-0 top-full mt-1 text-red-500 text-xs">
+              <p className="absolute ml-1 text-red-500 text-xs">
                 {passwordError}
               </p>
             )}
