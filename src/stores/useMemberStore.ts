@@ -65,7 +65,7 @@ export const useMemberStore = create<MemberStore>((set) => ({
   logout: async () => {
     try {
       set({ isLoading: true, error: null });
-      await api.post(`/member/manager/logout`);
+      await api.post(`/member/common/logout`);
       set({ member: null });
     } catch (error) {
       set({ error: "로그아웃 중 오류가 발생했습니다." });
