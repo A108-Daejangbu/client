@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useParams } from "react-router-dom";
+import { getMyAllAccounts } from "../apis/manage/getMyAllAccounts";
 // 데이터 import
 import {
   DataItem,
@@ -100,7 +101,11 @@ const TableCell = ({
 };
 
 function ReportPage() {
-  const { accountId } = useParams<{ accountId: string }>();
+  // useParams에서 ':accountId' 형식의 URL 파라미터를 가져옴
+  const params = useParams();
+  // URL에서 accountId 추출 - /report/{accountId} 형식 활용
+  const accountId = params.accountId || window.location.pathname.split('/report/')[1];
+  
   const accounts = useAccountStore((state) => state.accounts);
   // 선택된 accountId에 해당하는 계좌 정보 찾기
   const selectedAccount = accounts.find(
@@ -131,6 +136,26 @@ function ReportPage() {
   // useTransactionStore에서 필요한 상태와 메서드 가져오기
   const fetchTransactions = useTransactionStore(state => state.fetchTransactions);
   const transactions = useTransactionStore(state => state.transactions);
+
+  // accounts가 비어있을 때 계좌 정보를 가져오는 API 호출
+  const setAccounts = useAccountStore((state) => state.setAccounts);
+
+  useEffect(() => {
+    // accounts 배열이 비어있을 때만 API 호출
+    if (accounts.length === 0 && accountId) {
+      const fetchAccounts = async () => {
+        try {
+          // getMyAllAccounts API를 import 해야 함
+          const accountData = await getMyAllAccounts();
+          setAccounts(accountData);
+        } catch (error) {
+          console.error("계좌 정보를 가져오는 중 오류가 발생했습니다:", error);
+        }
+      };
+      
+      fetchAccounts();
+    }
+  }, [accounts.length, accountId, setAccounts]);
 
   // 필터링된 데이터를 계산하는 함수를 먼저 선언
   const getFilteredData = useCallback(
