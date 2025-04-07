@@ -48,6 +48,7 @@ const TableCell = ({
   content,
   isLastRow,
   isLastColumn,
+  column,
 }: {
   column: string;
   content: string;
@@ -57,6 +58,18 @@ const TableCell = ({
   const cellRef = useRef<HTMLTableCellElement>(null);
   const [isOverflowing, setIsOverflowing] = useState(false);
 
+  // 콤마 추가 처리를 위한 함수
+  const formatNumberWithComma = (value: string): string => {
+    // 숫자인 경우 콤마 추가
+    if (!isNaN(Number(value)) && ['입금', '출금', '잔액'].includes(column)) {
+      return Number(value).toLocaleString('ko-KR');
+    }
+    return value;
+  };
+
+  // 포맷팅된 콘텐츠
+  const formattedContent = formatNumberWithComma(content);
+
   // 텍스트가 오버플로우되는지 체크
   useEffect(() => {
     if (cellRef.current) {
@@ -64,7 +77,7 @@ const TableCell = ({
         cellRef.current.scrollWidth > cellRef.current.clientWidth;
       setIsOverflowing(isTextOverflowing);
     }
-  }, [content]);
+  }, [formattedContent]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (isOverflowing) {
@@ -79,8 +92,8 @@ const TableCell = ({
       className={`px-2 md:px-4 py-1.5 md:py-2 text-center whitespace-nowrap font-pre-regular text-12 md:text-14 text-main200 truncate ${isOverflowing ? "group relative" : ""}`}
       onMouseMove={handleMouseMove}
     >
-      {content}
-      {isOverflowing && <ContentTooltip content={content} />}
+      {formattedContent}
+      {isOverflowing && <ContentTooltip content={formattedContent} />}
       {isLastRow && isLastColumn && <div className="last-row-cell"></div>}
     </td>
   );
