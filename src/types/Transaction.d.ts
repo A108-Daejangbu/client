@@ -13,19 +13,6 @@
 //   detail: string;                    // 비고
 // }
 
-// // 거래내역 조회 request [5]
-// export interface TransactionReq{
-//   id: number;                          // 계좌 ID
-//   pageSize: number;                                        
-//   pageNo: number;
-//   startDate: string|null;              // 조회 시작일(null 입력 시 전체 내역 조회)                                   
-//   endDate: string|null;                // 조회 종료일
-//   type: '1' | '2' | null;              // '1': 입금, '2': 출금, 'null': 입출금 전체체
-//   min?: number;                        // 최저 금액 
-//   max?: number;                        // 최고 금액
-//   searchoption?: 'ALL' | 'SUMMARY' | 'DETAIL' | 'AMOUNT'; // 검새 조건('ALL': 상호명+비고, 'SUMMARY': 상호명, 'DETAIL': 비고, 'AMOUNT': 금액)
-//   keyword?: string;                    // 검색 키워드
-// }
 // 거래 유형
 export type TransactionType = 'DEPOSIT' | 'WITHDRAWAL';
 

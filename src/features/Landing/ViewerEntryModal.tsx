@@ -2,6 +2,8 @@ import React, { useRef, useEffect, useState } from 'react';
 import '../../styles/global.css';
 import LoginLogo from '../../assets/LoginLogo.png';
 import useDetectClose from '../../hooks/useDetectClose';
+import axiosClient from '../../apis/axiosClient';
+import { useNavigate } from 'react-router-dom';
 
 interface ViewerEntryModalProps {
   onClose: () => void;
@@ -11,6 +13,16 @@ const ViewerEntryModal = ({ onClose }: ViewerEntryModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useDetectClose(modalRef, true);
   const [password, setPassword] = useState('');
+  const [accountId, setAccountId] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const pathname = window.location.pathname;
+    const match = pathname.match(/\/viewerLanding\/(\d+)/);
+    if (match) {
+      setAccountId(match[1]);
+    }
+  }, []);
 
   useEffect(() => {
     if (!isOpen) {
@@ -18,10 +30,25 @@ const ViewerEntryModal = ({ onClose }: ViewerEntryModalProps) => {
     }
   }, [isOpen, onClose]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // 여기에 비밀번호 검증 로직 추가
-    console.log('Password submitted:', password);
+    try {
+      const response = await axiosClient.post('/account/auth/check-password', {
+        accountId,
+        password
+      });
+      
+      if (response.status === 200) {
+        // 비밀번호가 맞으면 처리할 로직
+        navigate(`/main/${accountId}`);
+        console.log('비밀번호 확인 성공');
+        onClose();
+      }
+    } catch (error) {
+      // 에러 처리
+      console.error('비밀번호 확인 실패:', error);
+      alert('비밀번호가 올바르지 않습니다.');
+    }
   };
 
   return (

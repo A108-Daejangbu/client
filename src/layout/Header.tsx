@@ -45,10 +45,15 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
   const handleLogout = async () => {
     try {
       await logout();
+      document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie = "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       alert("로그아웃 되었습니다.");
       navigate("/");
     } catch (error) {
+      document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie = "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       console.error("로그아웃 실패:", error);
+      navigate("/");
     }
   };
 
