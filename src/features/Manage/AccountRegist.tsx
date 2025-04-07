@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-// import { bankData } from "../../constants/bankData";
 import { isValidAccountName, isValidPassword } from "../../utils/validation";
 import { checkDuplicateAccount } from "../../apis/account/checkDuplicateAccount";
 import { requestAccountCode } from "../../apis/account/requestAccountCode";
 import { verifyAuthCode } from "../../apis/account/verifyAuthCode";
-import { submitAccount } from "../../apis/account/submitAccount"; // API 함수 추가
+import { submitAccount } from "../../apis/account/submitAccount";
 import { useNavigate } from "react-router-dom";
 
 const RegistrationForm = () => {
@@ -12,7 +11,6 @@ const RegistrationForm = () => {
   const [accountNumber, setAccountNumber] = useState(""); // 계좌번호 상태
   const [verificationCode, setVerificationCode] = useState(""); // 인증번호 상태
   const [password, setPassword] = useState(""); // 입장 비밀번호 상태
-  // const [selectedBankName, setSelectedBankName] = useState(""); // 선택된 은행명
 
   const [accountNameError, setAccountNameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
@@ -45,11 +43,6 @@ const RegistrationForm = () => {
       setPasswordError("");
     }
 
-    // if (!selectedBankName) {
-    //   setAccountNumberError("은행을 선택해 주세요.");
-    //   hasError = true;
-    // }
-
     if (!isVerified) {
       setVerificationMessage("인증을 완료해 주세요.");
       hasError = true;
@@ -67,7 +60,6 @@ const RegistrationForm = () => {
     try {
       const response = await submitAccount(data); // API 호출
       console.log("계좌 등록 성공:", response);
-      // 계좌 등록 성공 시 /manage 페이지로 이동
       navigate("/manage");
     } catch (error) {
       console.error("계좌 등록 실패:", error);
@@ -145,24 +137,6 @@ const RegistrationForm = () => {
             )}
           </div>
         </div>
-
-        {/* 은행 선택 필드 */}
-        {/* <div className="flex items-center gap-4 w-full">
-          <label className="w-1/4">은행선택</label>
-          <select
-            className="block w-full max-w-full px-2 py-2 border border-gray-300 rounded-lg bg-white font-pre-regular text-12"
-            value={selectedBankName}
-            onChange={(e) => setSelectedBankName(e.target.value)}
-            required
-          >
-            <option value="">--------선택해 주세요--------</option>
-            {bankData.map((bank) => (
-              <option key={bank.bankCode} value={bank.bankName}>
-                {bank.bankName}
-              </option>
-            ))}
-          </select>
-        </div> */}
 
         {/* 계좌번호 입력 필드 */}
         <div className="flex items-center gap-4">
