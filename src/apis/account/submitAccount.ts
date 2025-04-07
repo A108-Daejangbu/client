@@ -1,4 +1,4 @@
-import axiosClient from "../axiosClient"; // axiosClient 설정
+import axiosClient from "../axiosClient";
 
 interface SubmitAccountRequest {
   accountNickname: string;
