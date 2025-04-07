@@ -413,6 +413,12 @@ function ReportPage() {
     }
   }, [isLoading, hasMore]);
 
+  // handleResetAllFilters 함수 수정
+  const handleResetAllFilters = useCallback(() => {
+    // 페이지 새로고침 수행
+    window.location.reload();
+  }, []);
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="content bg-white flex justify-center">
@@ -443,26 +449,35 @@ function ReportPage() {
               </div>
             </div>
 
-            <button
-              onClick={handleDownloadExcel}
-              className="bg-gradient-to-r from-blue to-purple hover:opacity-80 text-white px-3 md:px-6 py-1.5 md:py-2 rounded-lg flex items-center gap-1 md:gap-2 font-pre-bold text-12 md:text-14"
-            >
-              <svg
-                className="w-4 h-4 md:w-5 md:h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleResetAllFilters}
+                className="border border-gray-300 hover:bg-gray-50 text-main200 px-3 md:px-6 py-1.5 md:py-2 rounded-lg font-pre-bold text-12 md:text-14"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                />
-              </svg>
-              <span className="hidden sm:inline">보고서 다운받기</span>
-              <span className="sm:hidden">다운로드</span>
-            </button>
+                필터 초기화
+              </button>
+              
+              <button
+                onClick={handleDownloadExcel}
+                className="bg-gradient-to-r from-blue to-purple hover:opacity-80 text-white px-3 md:px-6 py-1.5 md:py-2 rounded-lg flex items-center gap-1 md:gap-2 font-pre-bold text-12 md:text-14"
+              >
+                <svg
+                  className="w-4 h-4 md:w-5 md:h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                  />
+                </svg>
+                <span className="hidden sm:inline">보고서 다운받기</span>
+                <span className="sm:hidden">다운로드</span>
+              </button>
+            </div>
           </div>
 
           {/* 테이블 컨테이너 */}
