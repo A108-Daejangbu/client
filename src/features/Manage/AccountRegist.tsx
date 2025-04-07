@@ -233,7 +233,7 @@ const RegistrationForm = () => {
               required
             />
             {passwordError && (
-              <p className="absolute left-0 top-full mt-1 text-red-500 text-xs">
+              <p className="absolute ml-1 text-red-500 text-xs">
                 {passwordError}
               </p>
             )}
