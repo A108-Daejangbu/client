@@ -13,7 +13,7 @@ function ManagePage() {
   const selectAccount = useAccountStore((state) => state.selectAccount); // 선택된 계좌 ID 설정 함수
   const navigate = useNavigate();
 
-  // 로그인 후 계좌 정보 가져오기
+  //렌더링시 계좌 정보 가져오기
   useEffect(() => {
     const fetchAccounts = async () => {
       try {
