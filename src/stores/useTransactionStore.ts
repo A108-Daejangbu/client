@@ -1,40 +1,37 @@
 import { create } from "zustand";
-import axios from "axios";
 import type { Transaction, TransactionReq } from "../types/Transaction";
+import axiosClient from "../apis/axiosClient";
 
-// API 요청을 위한 기본 URL 설정
-const API_BASE_URL = import.meta.env.VITE_SERVER_URL;
-
-// axios 인스턴스 생성
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  withCredentials: true,
-});
+const api = axiosClient
 
 interface TransactionStore {
   transactions: Transaction[];
   selectedTransaction: Transaction | null;
+  categories: Category[];
   isLoading: boolean;
   error: string | null;
 
   // 상태 관리 메서드
   setTransactions: (transactions: Transaction[]) => void;
+  setCategories: (categories: Category[]) => void;
   setSelectedTransaction: (transaction: Transaction | null) => void;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
 
   // API 요청 메서드
-  fetchTransactions: (params: TransactionReq) => Promise<void>;
+  fetchTransactions: (params: TransactionReq) => Promise<Transaction[]>;
 }
 
 export const useTransactionStore = create<TransactionStore>((set) => ({
   transactions: [],
   selectedTransaction: null,
+  categories: [],
   isLoading: false,
   error: null,
 
   // 상태 업데이트 메서드
   setTransactions: (transactions) => set({ transactions }),
+  setCategories: (categories) => set({categories}),
   setSelectedTransaction: (transaction) => set({ selectedTransaction: transaction }),
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
@@ -45,7 +42,7 @@ export const useTransactionStore = create<TransactionStore>((set) => ({
       set({ isLoading: true, error: null });
       
       // 필수 파라미터 검증
-      if (!params.accountId || !params.pageSize || !params.pageNo || !params.startDate || !params.endDate) {
+      if (!params.accountId || !params.pageSize || params.pageNo == null || !params.startDate || !params.endDate) {
         throw new Error('필수 파라미터가 누락되었습니다. (accountId, pageSize, pageNo, startDate, endDate는 필수값입니다.)');
       }
 
@@ -59,22 +56,40 @@ export const useTransactionStore = create<TransactionStore>((set) => ({
           endDate: params.endDate,
           
           // 선택적 파라미터
+          orderType: params.orderType || 'DESC', // 기본값을 DESC로 설정
           ...(params.type && { type: params.type }),
           ...(params.min && { min: params.min }),
           ...(params.max && { max: params.max }),
           ...(params.keyword && { keyword: params.keyword }),
           ...(params.searchOption && { searchOption: params.searchOption }),
           ...(params.categoryId && { categoryId: params.categoryId }),
-          ...(params.orderType && { orderType: params.orderType }),
           ...(params.searchOptionAsString && { searchOptionAsString: params.searchOptionAsString })
         }
       });
 
-      set({ transactions: response.data });
-    } catch (error) {
-      set({ 
-        error: error instanceof Error ? error.message : '거래내역 조회 중 오류가 발생했습니다.' 
+      const transactions = response.data;
+      
+      // 상태 업데이트 로직 수정
+      set((state) => {
+        // 첫 페이지이거나 accountId가 변경된 경우
+        if (params.pageNo === 0) {
+          return { transactions };
+        }
+        
+        // 이전 거래내역과 새로운 거래내역 합치기
+        return { 
+          transactions: [...state.transactions, ...transactions]
+        };
       });
+      
+      return transactions;
+    } catch (error) {
+      console.error('거래내역 조회 실패:', error);
+      set({ 
+        error: error instanceof Error ? error.message : '거래내역 조회 중 오류가 발생했습니다.',
+        transactions: [] // 에러 발생 시 transactions 초기화
+      });
+      return [];
     } finally {
       set({ isLoading: false });
     }
