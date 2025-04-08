@@ -2,7 +2,10 @@ import TransactionList from "../features/Main/Transaction/TransactionList";
 import SearchBar from "../features/Main/SearchBar";
 import { useParams } from "react-router-dom";
 import { useAccountStore } from "../stores/useAccountStore";
-import ScoreComponent from "../features/Main/ScoreComponent";
+import ScoreComponent from "../features/Main/Score/ScoreComponent";
+import { useEffect } from "react";
+import { useTransactionStore } from "../stores/useTransactionStore";
+import { getMyScore } from "../apis/transaction/getMyScore";
 
 
 function MainPage() {
@@ -14,6 +17,20 @@ function MainPage() {
   const selectedAccount = accounts.find(
     (account) => account.accountId === Number(accountId)
   );
+
+  const score = useTransactionStore((state) => state.score)
+  const setScore = useTransactionStore((state) => state.setScore)
+
+  const getScore = async (accountId: string) => {
+    if(!accountId) return;
+    const data = await getMyScore(accountId)
+    setScore(data)
+  }
+
+  useEffect(() => {
+    if(!accountId) return;
+    getScore(accountId);
+  }, [])
 
   return (
     // <div className="px-4 md:content md:!pt-0">
@@ -33,10 +50,12 @@ function MainPage() {
       )}
       <div className="flex flex-col md:flex-row h-auto">
         <div className="w-full md:w-1/4 justify-items-center">
-          <ScoreComponent 
-            score={10} 
-            transactions={7}
-          />
+          {/* {score && <ScoreComponent 
+            score={score} 
+          />} */}
+          <div className="md:sticky md:top-[100px]">
+            {score && <ScoreComponent score={score} />}
+          </div>
         </div>
         <div className="w-full md:w-1/2">
           <TransactionList accountId={accountId} />

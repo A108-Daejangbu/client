@@ -7,6 +7,7 @@ import { formatDateToString } from "../utils/date";
 
 interface FilterState {
   filters: Partial<TransactionReq>;
+
   setFilters: (updates: Partial<TransactionReq>) => void;
   resetFilters: () => void;
   removeFilter: (key: keyof TransactionReq) => void;
