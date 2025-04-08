@@ -14,7 +14,7 @@ const FilterCategory = ({unselectedCategories, selectedCategories, toggleCategor
       </div>
       <div className="flex flex-wrap gap-2 py-2">
         {selectedCategories.map((cat, idx) => (
-          <CategoryCard category={cat} onSelected={true} key={idx} onDelete={toggleCategory} isInline={true}/>
+          <CategoryCard category={cat} onSelected={true} key={idx} onDelete={toggleCategory} isInline={true} callin={"filter"}/>
         ))}
       </div>
       <hr className="py-1" />
@@ -22,7 +22,7 @@ const FilterCategory = ({unselectedCategories, selectedCategories, toggleCategor
         <span className="text-gray-400 text-sm">아직 설정된 카테고리가 없습니다.</span>
       ) :(<div className="flex flex-wrap gap-2 pb-2">
           {unselectedCategories.map((cat, idx) => (
-            <CategoryCard category={cat} onDelete={toggleCategory} key={idx}  isInline={true} />
+            <CategoryCard category={cat} onDelete={toggleCategory} key={idx}  isInline={true} callin={"filter"}/>
           ))}
         </div>
       )}

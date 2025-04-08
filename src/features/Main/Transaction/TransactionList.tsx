@@ -92,6 +92,7 @@ const TransactionList = ({accountId} : TransactionListProps) => {
           ...filters
         };
     
+        console.log("필터링 제대로 들어가니?: ", req)
         await fetchTransactions(req);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       }catch(error){
