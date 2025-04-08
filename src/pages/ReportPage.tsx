@@ -170,9 +170,14 @@ function ReportPage() {
 
         filteredData = filteredData.filter((item) => {
           const itemDate = parseDate(item.transactionDate);
+          // 종료일의 다음날 00:00:00으로 설정하여 해당 날짜의 모든 거래가 포함되도록 함
+          const endDate = new Date(selectedDateRange.to);
+          endDate.setDate(endDate.getDate() + 1);
+          endDate.setHours(0, 0, 0, 0);
+          
           return (
             itemDate >= selectedDateRange.from &&
-            itemDate <= selectedDateRange.to
+            itemDate < endDate
           );
         });
       }
