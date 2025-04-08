@@ -162,7 +162,7 @@ const Header = ({ userType }: HeaderProps) => {
                     : "text-gray-700"
                 }`}
               >
-                내 정보 관리
+                내 계좌 관리
               </span>
             </>
           )}
@@ -249,7 +249,7 @@ const Header = ({ userType }: HeaderProps) => {
                       : "text-gray-700"
                   }`}
                 >
-                  내 정보 관리
+                  내 계좌 관리
                 </span>
               </>
             )}
