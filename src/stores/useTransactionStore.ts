@@ -70,8 +70,24 @@ export const useTransactionStore = create<TransactionStore>((set) => ({
           ...(params.max && { max: params.max }),
           ...(params.keyword && { keyword: params.keyword }),
           ...(params.searchOption && { searchOption: params.searchOption }),
-          ...(params.categoryId && { categoryId: params.categoryId }),
+          ...(params.categoryIds && { categoryIds: params.categoryIds }),
           ...(params.searchOptionAsString && { searchOptionAsString: params.searchOptionAsString })
+        },
+        paramsSerializer: (params) => {
+          const searchParams = new URLSearchParams();
+
+          for (const key in params) {
+            const value = params[key as keyof typeof params];
+            if (Array.isArray(value)) {
+              value.forEach((v) => {
+                searchParams.append(key, String(v));
+              });
+            } else if (value !== undefined && value !== null) {
+              searchParams.append(key, String(value));
+            }
+          }
+
+          return searchParams.toString();
         }
       });
 

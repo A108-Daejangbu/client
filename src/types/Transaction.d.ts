@@ -40,7 +40,7 @@ export interface TransactionReq {
   max?: number; // 최대 금액
   keyword?: string; // 검색 키워드
   searchOption?: SearchOption; // 검색 옵션
-  categoryId?: number; // 카테고리 ID
+  categoryIds?: number[]; // 카테고리 ID
   orderType?: OrderType; // 정렬 방식
   searchOptionAsString?: string; // 검색 옵션 문자열
 }
