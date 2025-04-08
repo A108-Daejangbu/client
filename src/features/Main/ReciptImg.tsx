@@ -9,7 +9,7 @@ import ReactDOM from "react-dom";
 import { useReceiptStore } from "../../stores/useReceiptStore";
 import { createReceipt } from "../../apis/receipt/createReceipt";
 
-const ReciptImg = () => {
+const ReciptImg = ({isManager}: {isManager: boolean}) => {
   const API_IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
 
   const receipts = useReceiptStore((state) => state.receipts);
@@ -126,7 +126,7 @@ const ReciptImg = () => {
     )),
 
     // 업로드 슬라이드
-    <div key="upload-slide" className="inline-block align-top w-full p-2">
+    (isManager ? [<div key="upload-slide" className="inline-block align-top w-full p-2">
       {/* 드래그 앤 드롭을 위한 이벤트 핸들러 적용 */}
       <div
         className="w-full h-[200px] flex items-center justify-center"
@@ -153,7 +153,7 @@ const ReciptImg = () => {
           </label>
         </div>
       </div>
-    </div>,
+    </div>] : [])
   ];
 
   return (

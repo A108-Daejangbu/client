@@ -11,9 +11,10 @@ interface ReciptContentProps {
   date: string;
   balance: string;
   detail: string;
+  isManager: boolean;
 }
 
-const ReciptContent = ({ date, balance, detail }: ReciptContentProps) => {
+const ReciptContent = ({ date, balance, detail, isManager }: ReciptContentProps) => {
   const receipts = useReceiptStore((state) => state.receipts)
   const selectedTransactionId = useReceiptStore((state) => state.selectedTransactionId)
   const recentFilters = useTransactionStore((state) => state.recentFilters)
@@ -155,9 +156,10 @@ const ReciptContent = ({ date, balance, detail }: ReciptContentProps) => {
             <div
               key={item.itemId}
               className="grid grid-cols-3 gap-2 items-center grid-cols-[1.5fr_0.6fr_0.9fr_auto]"
-              onClick={() => setIsEditing(true)} // 하나라도 클릭하면 전체 편집 모드
+              onClick={() => {
+                if(isManager) setIsEditing(true)}} // 하나라도 클릭하면 전체 편집 모드
             >
-              {isEditing ? (
+              {isManager  && isEditing ? (
                 <>
                   <input
                     type="text"
@@ -192,7 +194,7 @@ const ReciptContent = ({ date, balance, detail }: ReciptContentProps) => {
           ))}
 
           {/* ➕ 버튼 */}
-          {isEditing && <button
+          {isManager && isEditing && <button
             className="mt-2 text-xs text-blue-600 hover:text-blue-800 self-end"
             onClick={() => {
               const newItem = {
@@ -225,7 +227,7 @@ const ReciptContent = ({ date, balance, detail }: ReciptContentProps) => {
         <div className="flex items-center">
           <div className="text-12 font-pre-medium text-gray-500">비고</div>
         </div>
-        {isDetailEditing ? (
+        {isManager && isDetailEditing ? (
           <textarea
             value={editedDetail}
             onChange={handleDetailChange}
@@ -235,19 +237,20 @@ const ReciptContent = ({ date, balance, detail }: ReciptContentProps) => {
           />
         ) : (
           <div className="text-14 font-pre-regular text-gray-700 bg-gray-50 p-2 rounded-lg min-h-[40px] break-words whitespace-pre-wrap"
-          onClick={() => setIsDetailEditing(true)}>
+          onClick={() => {
+            if(isManager) setIsDetailEditing(true)}}>
             {editedDetail}
           </div>
         )}
       </div>
 
       {/* 저장 버튼 */}
-      {/* <button className="w-full py-2.5 bg-main200 hover:bg-main100 text-white rounded-lg font-pre-medium transition-all duration-200 text-14 shadow-sm hover:shadow-md active:scale-[0.99] flex items-center justify-center gap-1">
-        <span>변경사항 저장하기</span>
+      {/* {isManager && <button className="w-full py-2.5 bg-main200 hover:bg-main100 text-white rounded-lg font-pre-medium transition-all duration-200 text-14 shadow-sm hover:shadow-md active:scale-[0.99] flex items-center justify-center gap-1">
+        <span>삭제하기</span>
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
         </svg>
-      </button> */}
+      </button>} */}
     </div>
   );
 };
