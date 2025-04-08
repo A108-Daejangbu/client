@@ -1,8 +1,16 @@
 import { useRef, useState } from "react";
 import { FiChevronDown, FiChevronUp, FiSearch } from "react-icons/fi";
 import useDetectClose from "../../hooks/useDetectClose";
+import { useTransactionFilterStore } from "../../stores/useTransactionFilterStore";
+import { SearchOption, TransactionReq } from "../../types/Transaction";
+import { useTransactionStore } from "../../stores/useTransactionStore";
+import { useAccountStore } from "../../stores/useAccountStore";
 
 const SearchBar = () => {
+  const filters = useTransactionFilterStore((state) => state.filters)
+  const fetchTransactions = useTransactionStore((state)=> state.fetchTransactions)
+  const selectedAccountId = useAccountStore((state) => state.selectedAccountId)
+
   const dropMenuList = [
     { label: "입출금명 + 비고", value: "ALL" },
     { label: "입출금명", value: "SUMMARY" },
@@ -24,6 +32,27 @@ const SearchBar = () => {
     setIsDropOpen(!isDropOpen);
   };
 
+  const handleChangeSearchOption = (value: {label: string, value: string}) => {
+    setDrop(value);
+    setInputValue("")
+  }
+
+  const handleTransactionSearch = async() => {
+    if(!dropMenu.value || !inputValue) return;
+    console.log("검색 키워드는: ", inputValue);
+    console.log("검색 옵션은: ", dropMenu.value);
+
+    const payload = {
+      ...filters,
+      accountId: selectedAccountId,
+      searchOption: dropMenu.value as SearchOption,
+      keyword: inputValue.trim(),
+    } as TransactionReq
+    console.log("현재 검색 필터는: ", payload)
+
+    await fetchTransactions(payload)
+  }
+
   return (
     <div className="flex gap-2 items-center w-full justify-end">
       <div ref={dropdownRef} className="relative font-pre-light text-[#666666]">
@@ -40,7 +69,7 @@ const SearchBar = () => {
             {dropMenuList.map((value, idx) => (
               <li
                 key={idx}
-                onClick={() => setDrop(value)}
+                onClick={() => handleChangeSearchOption(value)}
                 className="px-3 py-2 hover:bg-gray hover:bg-opacity-30 cursor-pointer"
               >
                 {value.label}
@@ -57,20 +86,25 @@ const SearchBar = () => {
             type="text"
             className="bg-transparent outline-none w-full placeholder-[#767676] placeholder:font-pre-regular"
             placeholder={isFocused ? "" : "Search"}
+            value={inputValue}
             onFocus={() => setIsFocused(true)}
             onBlur={() => {
               if (!inputValue.trim()) {
                 setIsFocused(false);
               }
             }}
-            onChange={(e) => setInputValue(e.target.value)}
+            onChange={(e) => {
+              setInputValue(e.target.value)
+            }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 inputRef.current?.blur();
+                handleTransactionSearch()
               }
             }}
           />
-          <FiSearch className="text-[#767676] font-pre-semibold" />
+          <FiSearch className="text-[#767676] font-pre-semibold"
+          onClick={() => handleTransactionSearch()} />
         </div>
       </div>
     </div>
