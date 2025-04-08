@@ -4,6 +4,7 @@ import CategoryCard from "./CategoryCard";
 import ReciptModal from "../ReciptModal";
 import ReactDOM from "react-dom";
 import { Transaction } from "../../../types/Transaction";
+import HighImportance from "../../../assets/HighImportance.png";
 
 interface TransactionProp {
   transaction: Transaction;
@@ -19,7 +20,7 @@ const TransactionCard = ({
   onModalToggle,
 }: TransactionProp) => {
   const calcTransactionDate = (date: string): string => {
-    return `${date.substring(2, 4)}.${date.substring(4, 6)}.${date.substring(6, 8)}`;
+    return `${date.substring(2, 4)}.${date.substring(5, 7)}.${date.substring(8, 10)}`;
   };
   const calcTransactipnTime = (time: string): string => {
     let hour = parseInt(time.substring(0, 2));
@@ -31,7 +32,7 @@ const TransactionCard = ({
   };
 
   const calcBalance = (balance: number, type: string): string => {
-    const typeStr = type === "1" ? "+" : "-";
+    const typeStr = type === "DEPOSIT" ? "+" : "-";
     return `${typeStr} ${balance.toLocaleString()}`;
   };
 
@@ -47,10 +48,6 @@ const TransactionCard = ({
           <div className="font-pre-extrabold md:text-16 text-10 pr-2 line-clamp-1 text-ellipsis">
             {transaction.transactionSummary}
           </div>
-          {/* <div className="flex gap-1 text-[10px] text-[#26273A] text-opacity-60 font-pre-medium">
-            <div>{calcTransactionDate(transaction.transactionDate)}</div>
-            <div>{calcTransactipnTime(transaction.transactionDate)}</div>
-          </div> */}
         </div>
         <div className="font-pre-bold md:text-16 text-10">
           {calcBalance(
@@ -79,6 +76,16 @@ const TransactionCard = ({
             className="h-5 w-5 cursor-pointer"
             onClick={onModalToggle}
           />
+          {/* passStatus에 따라 이미지 오버레이 */}
+          {(transaction.passStatus === "NONE" ||
+            transaction.passStatus === "FAIL" ||
+            transaction.passStatus === "WARNING") && (
+            <img
+              src={HighImportance}
+              alt="High Importance"
+              className="absolute top-0 right-0 h-3 w-3 z-50"
+            />
+          )}
           {isModalOpen &&
             ReactDOM.createPortal(
               <div className="fixed right-20 top-[55%] transform -translate-y-1/2 z-50">

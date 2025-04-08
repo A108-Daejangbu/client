@@ -6,30 +6,55 @@ import nextarrow from "../../assets/next_arrow.svg";
 import download from "../../assets/download.svg";
 import CloseIcon from "../../assets/CloseIcons.svg";
 import ReactDOM from "react-dom";
+import { useReceiptStore } from "../../stores/useReceiptStore";
+import { createReceipt } from "../../apis/receipt/createReceipt";
 
-const ReciptImg = () => {
+const ReciptImg = ({isManager}: {isManager: boolean}) => {
+  const API_IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
+
+  const receipts = useReceiptStore((state) => state.receipts);
+  const setReceipts = useReceiptStore((state) => state.setReceipt);
+  const setReceiptsIdx = useReceiptStore((state) => state.setReceiptsIdx);
+  const receiptsIdx = useReceiptStore((state) => state.receiptsIdx);
+  const setIsUploadSlide = useReceiptStore((state) => state.setIsUploadSlide)
+
   // 이미지 Base64 URL을 저장할 배열
   const [images, setImages] = useState<string[]>([]);
   // 현재 슬라이드 인덱스
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [currentIndex, setCurrentIndex] = useState<number>(receiptsIdx);
   // 클릭한 이미지를 크게 보여줄 때 사용 (null이면 모달 비표시)
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   /** 파일 업로드 핸들러 */
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
     const file = e.target.files[0];
-    const reader = new FileReader();
+    const transactionId = useReceiptStore.getState().selectedTransactionId;
+    
+    if(!transactionId) return;
+    
+    try{
+      const receipts = await createReceipt(transactionId, file)
+      const reader = new FileReader();
+      
+      reader.onload = (event) => {
+        if (event.target && typeof event.target.result === "string") {
+          // 새로운 이미지 URL을 배열에 추가
+          setImages((prev) => [...prev, event.target!.result as string]);
+          // 새 슬라이드로 이동 (마지막 이미지가 추가되었으므로 images.length로 이동)
+          setCurrentIndex(images.length);
+        }
+      };
+      reader.readAsDataURL(file);
+      console.log("응답 좀 확인해보자..", receipts)
 
-    reader.onload = (event) => {
-      if (event.target && typeof event.target.result === "string") {
-        // 새로운 이미지 URL을 배열에 추가
-        setImages((prev) => [...prev, event.target!.result as string]);
-        // 새 슬라이드로 이동 (마지막 이미지가 추가되었으므로 images.length로 이동)
-        setCurrentIndex(images.length);
-      }
-    };
-    reader.readAsDataURL(file);
+      // 응답 받은 데이터를 store에 저장 → ReceiptContent에서 보여줌
+      setReceipts([receipts])
+
+    }catch(err){
+      console.error("영수증 업로드 실패:", err);
+    alert("영수증 업로드 중 문제가 발생했습니다.");
+    }
   };
 
   /** 드롭 이벤트: 파일을 읽어 업로드 처리 */
@@ -49,12 +74,20 @@ const ReciptImg = () => {
 
   /** 이전 슬라이드로 이동 */
   const goToPrev = () => {
-    setCurrentIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+    if(currentIndex <= 0) return ;
+    const newIdx = currentIndex -1;
+    setIsUploadSlide(newIdx !== receipts.length);
+    setCurrentIndex(newIdx)
+    if(newIdx < receipts.length) setReceiptsIdx(newIdx)
   };
 
   /** 다음 슬라이드로 이동 */
   const goToNext = () => {
-    setCurrentIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+    if(currentIndex >= slides.length - 1) return;
+    const newIndex = currentIndex + 1;
+    setIsUploadSlide(newIndex !== receipts.length);
+    setCurrentIndex(newIndex)
+    if (newIndex < receipts.length) setReceiptsIdx(newIndex); // 마지막은 업로드 슬라이드
   };
 
   /**
@@ -64,7 +97,7 @@ const ReciptImg = () => {
    */
   const slides = [
     // 이미지 슬라이드들
-    ...images.map((imgSrc, idx) => (
+    ...receipts.map((receipt, idx) => (
       <div
         key={`slide-${idx}`}
         className="inline-block align-top w-full p-2 pt-10"
@@ -74,16 +107,15 @@ const ReciptImg = () => {
           {/* 이미지 & 다운로드 아이콘 */}
           <div className="relative w-full h-full flex items-center justify-center">
             <img
-              src={imgSrc}
+              src={API_IMAGE_URL+receipt.receiptUrl}
               alt={`slide-${idx}`}
               className="max-h-full object-contain"
               // 이미지 클릭 시 모달로 크게 보기
-              onClick={() => setSelectedImage(imgSrc)}
+              onClick={() => setSelectedImage(receipt.receiptUrl!)}
             />
-            {/* 클릭 시 파일 다운로드:
-                download 속성에 파일명 지정하면 receipt-0.jpg 등으로 다운로드됨 */}
+            {/* 클릭 시 파일 다운로드: download 속성에 파일명 지정하면 receipt-0.jpg 등으로 다운로드됨 */}
             <a
-              href={imgSrc}
+              href={API_IMAGE_URL+receipt.receiptUrl}
               download={`receipt-${idx}.jpg`}
               className="absolute top-2 right-2 text-white"
             >
@@ -95,7 +127,7 @@ const ReciptImg = () => {
     )),
 
     // 업로드 슬라이드
-    <div key="upload-slide" className="inline-block align-top w-full p-2">
+    (isManager ? [<div key="upload-slide" className="inline-block align-top w-full p-2">
       {/* 드래그 앤 드롭을 위한 이벤트 핸들러 적용 */}
       <div
         className="w-full h-[200px] flex items-center justify-center"
@@ -109,7 +141,7 @@ const ReciptImg = () => {
 
           {/* 안내 문구 */}
           <p className="text-gray-700 text-[8px] font-pre-medium">
-            영수증을 드래그하여 사진을 업로드해주세요
+            사진을 드래그하여 영수증을 추가로 업로드해주세요
           </p>
 
           {/* 구분선 */}
@@ -122,7 +154,7 @@ const ReciptImg = () => {
           </label>
         </div>
       </div>
-    </div>,
+    </div>] : [])
   ];
 
   return (
@@ -185,7 +217,7 @@ const ReciptImg = () => {
             <div className="relative">
               {/* 업로드된 이미지 크게 표시 (최대 화면 50vw, 40vh) */}
               <img
-                src={selectedImage}
+                src={API_IMAGE_URL+selectedImage}
                 alt="preview"
                 className="max-w-[70vw] max-h-[70vh]"
               />
