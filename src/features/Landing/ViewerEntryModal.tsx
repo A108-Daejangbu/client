@@ -40,7 +40,7 @@ const ViewerEntryModal = ({ onClose }: ViewerEntryModalProps) => {
       
       if (response.status === 200) {
         // 비밀번호가 맞으면 처리할 로직
-        navigate(`/main/${accountId}`);
+        navigate(`/viewer/main/${accountId}`);
         console.log('비밀번호 확인 성공');
         onClose();
       }

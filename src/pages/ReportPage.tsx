@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { useParams } from "react-router-dom";
-import { getMyAllAccounts } from "../apis/manage/getMyAllAccounts";
+// import { getMyAllAccounts } from "../apis/manage/getMyAllAccounts";
 // 데이터 import
 import {
   DataItem,
@@ -138,24 +138,24 @@ function ReportPage() {
   const transactions = useTransactionStore(state => state.transactions);
 
   // accounts가 비어있을 때 계좌 정보를 가져오는 API 호출
-  const setAccounts = useAccountStore((state) => state.setAccounts);
+  // const setAccounts = useAccountStore((state) => state.setAccounts);
 
-  useEffect(() => {
-    // accounts 배열이 비어있을 때만 API 호출
-    if (accounts.length === 0 && accountId) {
-      const fetchAccounts = async () => {
-        try {
-          // getMyAllAccounts API를 import 해야 함
-          const accountData = await getMyAllAccounts();
-          setAccounts(accountData);
-        } catch (error) {
-          console.error("계좌 정보를 가져오는 중 오류가 발생했습니다:", error);
-        }
-      };
+  // useEffect(() => {
+  //   // accounts 배열이 비어있을 때만 API 호출
+  //   if (accounts.length === 0 && accountId) {
+  //     const fetchAccounts = async () => {
+  //       try {
+  //         // getMyAllAccounts API를 import 해야 함
+  //         const accountData = await getMyAllAccounts();
+  //         setAccounts(accountData);
+  //       } catch (error) {
+  //         console.error("계좌 정보를 가져오는 중 오류가 발생했습니다:", error);
+  //       }
+  //     };
       
-      fetchAccounts();
-    }
-  }, [accounts.length, accountId, setAccounts]);
+  //     fetchAccounts();
+  //   }
+  // }, [accounts.length, accountId, setAccounts]);
 
   // 필터링된 데이터를 계산하는 함수를 먼저 선언
   const getFilteredData = useCallback(
