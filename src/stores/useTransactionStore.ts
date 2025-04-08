@@ -51,8 +51,10 @@ export const useTransactionStore = create<TransactionStore>((set) => ({
       if (!params.accountId || !params.pageSize || params.pageNo == null || !params.startDate || !params.endDate) {
         throw new Error('필수 파라미터가 누락되었습니다. (accountId, pageSize, pageNo, startDate, endDate는 필수값입니다.)');
       }
-
-      set({recentFilters: params})
+      
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { searchOption, keyword, ...filteredParams } = params;
+      set({ recentFilters: filteredParams });
 
       const response = await api.get<Transaction[]>('/transaction/auth', {
         params: {
