@@ -91,8 +91,8 @@ const AccountCard = ({ account, bankInfo, onClick }: AccountCardProp) => {
         </div>
         <div className="flex-cols font-pre-semibold">
           <h2 className="text-20 text-white truncate">
-            {account.accountNickname.length >= 13
-              ? account.accountNickname.slice(0, 13) + "..."
+            {account.accountNickname.length >= 12
+              ? account.accountNickname.slice(0, 12) + "..."
               : account.accountNickname}
           </h2>
           <p className="text-[18px] text-white">

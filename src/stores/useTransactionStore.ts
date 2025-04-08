@@ -22,7 +22,7 @@ interface TransactionStore {
   setScore: (score:Score) => void;
 
   // API 요청 메서드
-  fetchTransactions: (params: TransactionReq) => Promise<void>;
+  fetchTransactions: (params: TransactionReq) => Promise<Transaction[]>;
 }
 
 export const useTransactionStore = create<TransactionStore>((set) => ({
@@ -64,26 +64,47 @@ export const useTransactionStore = create<TransactionStore>((set) => ({
           endDate: params.endDate,
           
           // 선택적 파라미터
+          orderType: params.orderType || 'DESC',
           ...(params.type && { type: params.type }),
           ...(params.min && { min: params.min }),
           ...(params.max && { max: params.max }),
           ...(params.keyword && { keyword: params.keyword }),
           ...(params.searchOption && { searchOption: params.searchOption }),
           ...(params.categoryId && { categoryId: params.categoryId }),
-          ...(params.orderType && { orderType: params.orderType }),
           ...(params.searchOptionAsString && { searchOptionAsString: params.searchOptionAsString })
         }
       });
 
-      set({ transactions: response.data });
-    } catch (error) {
-      set({ 
-        error: error instanceof Error ? error.message : '거래내역 조회 중 오류가 발생했습니다.' 
+      const transactions = Array.isArray(response.data) ? response.data : [];
+      
+      set((state) => {
+        // 첫 페이지이거나 accountId가 변경된 경우
+        if (params.pageNo === 0) {
+          return { transactions, error: null };
+        }
+        
+        // 이전 거래내역이 없는 경우 새로운 거래내역만 설정
+        if (!Array.isArray(state.transactions)) {
+          return { transactions, error: null };
+        }
+        
+        // 이전 거래내역과 새로운 거래내역 합치기
+        return { 
+          transactions: [...state.transactions, ...transactions],
+          error: null
+        };
       });
+      
+      return transactions;
+    } catch (error) {
+      console.error('거래내역 조회 실패:', error);
+      set({ 
+        error: error instanceof Error ? error.message : '거래내역 조회 중 오류가 발생했습니다.',
+        transactions: [] // 에러 발생 시 빈 배열로 초기화
+      });
+      return [];
     } finally {
       set({ isLoading: false });
     }
   },
-
-  
 }));

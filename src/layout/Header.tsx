@@ -1,26 +1,25 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Logo from "../assets/Logo.png";
-import { useHeaderType } from "../hooks/useHeaderType";
 import { useMemberStore } from "../stores/useMemberStore";
 
 interface HeaderProps {
-  isLoggedIn?: boolean;
-  userName?: string;
+  userType?: "manager" | "viewer";
 }
 
-const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
+const Header = ({ userType }: HeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [nickname, setNickname] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const headerType = useHeaderType(isLoggedIn);
-  const { getMyNickname, logout, isLoading} = useMemberStore();
+  const { getMyNickname, logout, isLoading } = useMemberStore();
 
   // URL에서 accountId 추출
   const accountId = location.pathname.split('/')[2];
+  const viewerAccountId = location.pathname.split('/')[3];
+  const isManagePage = location.pathname === '/manage';
 
-  // 닉네임 조회
+  // 닉네임 조회 (manager일 때만)
   useEffect(() => {
     const fetchNickname = async () => {
       try {
@@ -31,10 +30,10 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
       }
     };
 
-    if (isLoggedIn) {
+    if (userType === "manager") {
       fetchNickname();
     }
-  }, [isLoggedIn, getMyNickname]);
+  }, [userType, getMyNickname]);
 
   const handleNavigate = (path: string) => {
     navigate(path);
@@ -45,21 +44,20 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
   const handleLogout = async () => {
     try {
       await logout();
+      document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie = "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       alert("로그아웃 되었습니다.");
       navigate("/");
     } catch (error) {
+      document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie = "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       console.error("로그아웃 실패:", error);
+      navigate("/");
     }
   };
 
   // 현재 경로와 일치하는지 확인하여 색상 변경
   const isCurrentPage = (path: string) => {
-    // 동적 라우트인 경우 (accountId가 포함된 경우)
-    if (path.includes(':accountId')) {
-      const pathPattern = path.replace(':accountId', '[0-9]+');
-      const regex = new RegExp(`^${pathPattern}$`);
-      return regex.test(location.pathname);
-    }
     return location.pathname === path;
   };
 
@@ -97,8 +95,8 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
     </svg>
   );
 
-  // 계정 관련 헤더
-  if (headerType === "account") {
+  // 관리 페이지용 간단한 헤더
+  if (isManagePage) {
     return (
       <header className="header flex justify-between items-center">
         <div className="flex absolute left-1/2 transform -translate-x-1/2">
@@ -106,7 +104,7 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
         </div>
         <div className="flex items-center space-x-2 md:space-x-4 ml-auto">
           <span className="font-pre-medium text-13 md:text-16 truncate max-w-[80px] md:max-w-none">
-            {nickname || userName}님
+            {nickname}님
           </span>
           <button
             className="p-1.5 md:p-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -134,7 +132,7 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
 
         {/* 데스크톱 메뉴 */}
         <div className="hidden md:flex space-x-12">
-          {headerType === "manager" && (
+          {userType === "manager" && (
             <>
               <span
                 onClick={() => handleNavigate(`/main/${accountId}`)}
@@ -164,16 +162,16 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
                     : "text-gray-700"
                 }`}
               >
-                내 정보 관리
+                내 계좌 관리
               </span>
             </>
           )}
-          {headerType === "viewer" && (
+          {userType === "viewer" && (
             <>
               <span
-                onClick={() => handleNavigate(`/main/${accountId}`)}
+                onClick={() => handleNavigate(`/viewer/main/${viewerAccountId}`)}
                 className={`font-pre-medium text-16 cursor-pointer hover:text-purple-600 transition-colors ${
-                  isCurrentPage(`/main/${accountId}`)
+                  isCurrentPage(`/viewer/main/${viewerAccountId}`)
                     ? "text-purple-600 font-bold border-b-2 border-purple-600"
                     : "text-gray-700"
                 }`}
@@ -181,9 +179,9 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
                 장부 현황
               </span>
               <span
-                onClick={() => handleNavigate(`/report/${accountId}`)}
+                onClick={() => handleNavigate(`/viewer/report/${viewerAccountId}`)}
                 className={`font-pre-medium text-16 cursor-pointer hover:text-purple-600 transition-colors ${
-                  isCurrentPage(`/report/${accountId}`)
+                  isCurrentPage(`/viewer/report/${viewerAccountId}`)
                     ? "text-purple-600 font-bold border-b-2 border-purple-600"
                     : "text-gray-700"
                 }`}
@@ -199,11 +197,11 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
           <img src={Logo} alt="logo" className="h-7 md:h-10" />
         </div>
 
-        {/* 사용자 정보 영역 */}
-        {headerType === "manager" && (
+        {/* 사용자 정보 영역 (manager일 때만 표시) */}
+        {userType === "manager" && (
           <div className="flex items-center space-x-2 md:space-x-4">
             <span className="font-pre-medium text-13 md:text-16 truncate max-w-[80px] md:max-w-none">
-              {nickname || userName}님
+              {nickname}님
             </span>
             <button
               className="p-1.5 md:p-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -221,7 +219,7 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
       {isMenuOpen && (
         <div className="md:hidden fixed top-16 left-0 right-0 bg-white border-b border-gray-200 shadow-lg z-50">
           <div className="flex flex-col py-2">
-            {headerType === "manager" && (
+            {userType === "manager" && (
               <>
                 <span
                   onClick={() => handleNavigate(`/main/${accountId}`)}
@@ -251,16 +249,16 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
                       : "text-gray-700"
                   }`}
                 >
-                  내 정보 관리
+                  내 계좌 관리
                 </span>
               </>
             )}
-            {headerType === "viewer" && (
+            {userType === "viewer" && (
               <>
                 <span
-                  onClick={() => handleNavigate(`/main/${accountId}`)}
+                  onClick={() => handleNavigate(`/viewer/main/${viewerAccountId}`)}
                   className={`py-3 px-6 font-pre-medium text-14 ${
-                    isCurrentPage(`/main/${accountId}`)
+                    isCurrentPage(`/viewer/main/${viewerAccountId}`)
                       ? "text-purple-600 font-bold"
                       : "text-gray-700"
                   }`}
@@ -268,9 +266,9 @@ const Header = ({ isLoggedIn = false, userName = "" }: HeaderProps) => {
                   장부 현황
                 </span>
                 <span
-                  onClick={() => handleNavigate(`/report/${accountId}`)}
+                  onClick={() => handleNavigate(`/viewer/report/${viewerAccountId}`)}
                   className={`py-3 px-6 font-pre-medium text-14 ${
-                    isCurrentPage(`/report/${accountId}`)
+                    isCurrentPage(`/viewer/report/${viewerAccountId}`)
                       ? "text-purple-600 font-bold"
                       : "text-gray-700"
                   }`}

@@ -4,6 +4,7 @@ import CategoryCard from "./CategoryCard";
 import ReciptModal from "../ReciptModal";
 import ReactDOM from "react-dom";
 import { Transaction } from "../../../types/Transaction";
+import HighImportance from "../../../assets/HighImportance.png";
 
 interface TransactionProp {
   transaction: Transaction;
@@ -75,6 +76,16 @@ const TransactionCard = ({
             className="h-5 w-5 cursor-pointer"
             onClick={onModalToggle}
           />
+          {/* passStatus에 따라 이미지 오버레이 */}
+          {(transaction.passStatus === "NONE" ||
+            transaction.passStatus === "FAIL" ||
+            transaction.passStatus === "WARNING") && (
+            <img
+              src={HighImportance}
+              alt="High Importance"
+              className="absolute top-0 right-0 h-3 w-3 z-50"
+            />
+          )}
           {isModalOpen &&
             ReactDOM.createPortal(
               <div className="fixed right-20 top-[55%] transform -translate-y-1/2 z-50">

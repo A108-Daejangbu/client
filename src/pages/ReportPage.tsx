@@ -1,6 +1,8 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { useParams } from "react-router-dom";
+// import { getMyAllAccounts } from "../apis/manage/getMyAllAccounts";
 // 데이터 import
 import {
   DataItem,
@@ -47,6 +49,7 @@ const TableCell = ({
   content,
   isLastRow,
   isLastColumn,
+  column,
 }: {
   column: string;
   content: string;
@@ -56,6 +59,18 @@ const TableCell = ({
   const cellRef = useRef<HTMLTableCellElement>(null);
   const [isOverflowing, setIsOverflowing] = useState(false);
 
+  // 콤마 추가 처리를 위한 함수
+  const formatNumberWithComma = (value: string): string => {
+    // 숫자인 경우 콤마 추가
+    if (!isNaN(Number(value)) && ['입금', '출금', '잔액'].includes(column)) {
+      return Number(value).toLocaleString('ko-KR');
+    }
+    return value;
+  };
+
+  // 포맷팅된 콘텐츠
+  const formattedContent = formatNumberWithComma(content);
+
   // 텍스트가 오버플로우되는지 체크
   useEffect(() => {
     if (cellRef.current) {
@@ -63,7 +78,7 @@ const TableCell = ({
         cellRef.current.scrollWidth > cellRef.current.clientWidth;
       setIsOverflowing(isTextOverflowing);
     }
-  }, [content]);
+  }, [formattedContent]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (isOverflowing) {
@@ -78,15 +93,19 @@ const TableCell = ({
       className={`px-2 md:px-4 py-1.5 md:py-2 text-center whitespace-nowrap font-pre-regular text-12 md:text-14 text-main200 truncate ${isOverflowing ? "group relative" : ""}`}
       onMouseMove={handleMouseMove}
     >
-      {content}
-      {isOverflowing && <ContentTooltip content={content} />}
+      {formattedContent}
+      {isOverflowing && <ContentTooltip content={formattedContent} />}
       {isLastRow && isLastColumn && <div className="last-row-cell"></div>}
     </td>
   );
 };
 
 function ReportPage() {
-  const accountId = useAccountStore((state) => state.selectedAccountId);
+  // useParams에서 ':accountId' 형식의 URL 파라미터를 가져옴
+  const params = useParams();
+  // URL에서 accountId 추출 - /report/{accountId} 형식 활용
+  const accountId = params.accountId || window.location.pathname.split('/report/')[1];
+  
   const accounts = useAccountStore((state) => state.accounts);
   // 선택된 accountId에 해당하는 계좌 정보 찾기
   const selectedAccount = accounts.find(
@@ -94,6 +113,9 @@ function ReportPage() {
   );
   const [columns, setColumns] = useState<string[]>(initialColumns);
   const [tableData, setTableData] = useState<DataItem[]>(initialData);
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(true);
   const [selectedFilters, setSelectedFilters] = useState<
     Record<string, string[]>
   >({
@@ -108,66 +130,34 @@ function ReportPage() {
 
   // fieldMapping과 columnWidths는 import해서 사용
 
+  // dropdownSections 상태 추가
+  const [dropdownSections, setDropdownSections] = useState(getDropdownSections([]));
+
   // useTransactionStore에서 필요한 상태와 메서드 가져오기
   const fetchTransactions = useTransactionStore(state => state.fetchTransactions);
   const transactions = useTransactionStore(state => state.transactions);
-  // const isLoading = useTransactionStore(state => state.isLoading);
 
-  // 컴포넌트 마운트 시 거래내역 조회
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      try {
-        await fetchTransactions({
-          accountId: 1,
-          pageSize: 10,
-          pageNo: 1,
-          startDate: "20250303",
-          endDate: "20250403",
-        });
-      } catch (error) {
-        console.error("거래내역 조회 실패:", error);
-      }
-    };
+  // accounts가 비어있을 때 계좌 정보를 가져오는 API 호출
+  // const setAccounts = useAccountStore((state) => state.setAccounts);
 
-    fetchInitialData();
-  }, []); // 빈 의존성 배열로 컴포넌트 마운트 시에만 실행
+  // useEffect(() => {
+  //   // accounts 배열이 비어있을 때만 API 호출
+  //   if (accounts.length === 0 && accountId) {
+  //     const fetchAccounts = async () => {
+  //       try {
+  //         // getMyAllAccounts API를 import 해야 함
+  //         const accountData = await getMyAllAccounts();
+  //         setAccounts(accountData);
+  //       } catch (error) {
+  //         console.error("계좌 정보를 가져오는 중 오류가 발생했습니다:", error);
+  //       }
+  //     };
+      
+  //     fetchAccounts();
+  //   }
+  // }, [accounts.length, accountId, setAccounts]);
 
-  // tableData 상태를 transactions로 업데이트하는 부분
-  useEffect(() => {
-    // 날짜와 시간을 기준으로 오름차순 정렬 (과거순)
-    const sortedTransactions = [...transactions].sort((a, b) => {
-      const dateA = new Date(`${a.transactionDate} ${a.transactionTime}`);
-      const dateB = new Date(`${b.transactionDate} ${b.transactionTime}`);
-      return dateA.getTime() - dateB.getTime(); // 과거순 정렬
-    });
-    
-    setTableData(sortedTransactions);
-  }, [transactions]);
-
-  // 컬럼 순서 변경 함수
-  const moveColumn = useCallback((fromIndex: number, toIndex: number) => {
-    setColumns((prevColumns) => {
-      const newColumns = [...prevColumns];
-      const [movedColumn] = newColumns.splice(fromIndex, 1);
-      newColumns.splice(toIndex, 0, movedColumn);
-      return newColumns;
-    });
-  }, []);
-
-  // 컬럼 삭제 함수 추가
-  const handleColumnDelete = useCallback((columnName: string) => {
-    setColumns((prevColumns) =>
-      prevColumns.filter((col) => col !== columnName)
-    );
-  }, []);
-
-  // 컬럼 너비 얻기
-  const getColumnWidth = (column: string): string => {
-    const index = initialColumns.indexOf(column);
-    return index !== -1 ? columnWidths[index] : "14%";
-  };
-
-  // 필터링된 데이터를 계산하는 함수 수정
+  // 필터링된 데이터를 계산하는 함수를 먼저 선언
   const getFilteredData = useCallback(
     (baseData: DataItem[]) => {
       let filteredData = [...baseData];
@@ -180,9 +170,14 @@ function ReportPage() {
 
         filteredData = filteredData.filter((item) => {
           const itemDate = parseDate(item.transactionDate);
+          // 종료일의 다음날 00:00:00으로 설정하여 해당 날짜의 모든 거래가 포함되도록 함
+          const endDate = new Date(selectedDateRange.to);
+          endDate.setDate(endDate.getDate() + 1);
+          endDate.setHours(0, 0, 0, 0);
+          
           return (
             itemDate >= selectedDateRange.from &&
-            itemDate <= selectedDateRange.to
+            itemDate < endDate
           );
         });
       }
@@ -212,17 +207,103 @@ function ReportPage() {
         }
       });
 
-      // 필터링 후 과거순으로 정렬
-      filteredData.sort((a, b) => {
-        const dateA = new Date(`${a.transactionDate} ${a.transactionTime}`);
-        const dateB = new Date(`${b.transactionDate} ${b.transactionTime}`);
-        return dateA.getTime() - dateB.getTime(); // 과거순 정렬
-      });
-
       return filteredData;
     },
     [selectedDateRange, selectedCategories, selectedFilters]
   );
+
+  // tableData 상태를 transactions로 업데이트
+  useEffect(() => {
+    if (!transactions.length) return;
+    
+    // 필터가 적용되지 않은 경우에만 업데이트
+    if (!selectedDateRange && selectedCategories.length === 0 && 
+        selectedFilters.입금.length === 0 && selectedFilters.출금.length === 0) {
+      setTableData(transactions);
+    } else {
+      // 필터가 적용된 경우 getFilteredData 사용
+      const filteredData = getFilteredData(transactions);
+      setTableData(filteredData);
+    }
+  }, [transactions, selectedDateRange, selectedCategories, selectedFilters, getFilteredData]);
+
+  // 거래내역 조회
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!accountId || isLoading) return;
+
+      try {
+        setIsLoading(true);
+        const today = new Date();
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(today.getFullYear() - 1);
+
+        const formatDate = (date: Date) => {
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, '0');
+          const day = String(date.getDate()).padStart(2, '0');
+          return `${year}${month}${day}`;
+        };
+
+        const response = await fetchTransactions({
+          accountId: Number(accountId),
+          pageSize: 30,
+          pageNo: currentPage,
+          startDate: formatDate(oneYearAgo),
+          endDate: formatDate(today),
+          orderType: 'DESC'
+        });
+
+        if (response && response.length > 0) {
+          setHasMore(response.length === 30);
+        } else {
+          setHasMore(false);
+        }
+      } catch (error) {
+        console.error("거래내역 조회 실패:", error);
+        setHasMore(false);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [accountId, currentPage, fetchTransactions]);
+
+  // accountId가 변경될 때 초기화
+  useEffect(() => {
+    if (accountId) {
+      setCurrentPage(0);
+      setHasMore(true);
+      setTableData([]); // 기존 데이터 초기화
+      setSelectedDateRange(null);
+      setSelectedCategories([]);
+      setSelectedFilters({ 입금: [], 출금: [] });
+    }
+  }, [accountId]);
+
+  // 컬럼 순서 변경 함수
+  const moveColumn = useCallback((fromIndex: number, toIndex: number) => {
+    setColumns((prevColumns) => {
+      const newColumns = [...prevColumns];
+      const [movedColumn] = newColumns.splice(fromIndex, 1);
+      newColumns.splice(toIndex, 0, movedColumn);
+      return newColumns;
+    });
+  }, []);
+
+  // 컬럼 삭제 함수 추가
+  const handleColumnDelete = useCallback((columnName: string) => {
+    setColumns((prevColumns) =>
+      prevColumns.filter((col) => col !== columnName)
+    );
+  }, []);
+
+  // 컬럼 너비 얻기
+  const getColumnWidth = (column: string): string => {
+    const index = initialColumns.indexOf(column);
+    return index !== -1 ? columnWidths[index] : "14%";
+  };
 
   // 필터링 처리 함수 수정
   const handleFilter = useCallback((columnName: string, option: string) => {
@@ -265,12 +346,11 @@ function ReportPage() {
     []
   );
 
-  // 필터 변경시 데이터 업데이트 수정
-  useEffect(() => {
-    // initialData 대신 transactions 사용
-    const filteredData = getFilteredData(transactions);
-    setTableData(filteredData);
-  }, [selectedDateRange, selectedCategories, selectedFilters, getFilteredData, transactions]);
+  // 필터 변경시 데이터 업데이트 제거 (위의 useEffect에서 처리)
+  // useEffect(() => {
+  //   const filteredData = getFilteredData(transactions);
+  //   setTableData(filteredData);
+  // }, [selectedDateRange, selectedCategories, selectedFilters, getFilteredData, transactions]);
 
   // 필터 초기화 함수 수정
   const handleResetFilter = useCallback((columnName: string) => {
@@ -360,13 +440,27 @@ function ReportPage() {
     XLSX.writeFile(workbook, fileName);
   }, [tableData, columns, fieldMapping, getDisplayDateRange]);
 
-  // dropdownSections 상태 추가
-  const [dropdownSections, setDropdownSections] = useState(getDropdownSections([]));
-
   // transactions가 업데이트될 때마다 dropdownSections 업데이트
   useEffect(() => {
     setDropdownSections(getDropdownSections(transactions));
   }, [transactions]);
+
+  // 스크롤 이벤트 핸들러 수정
+  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    const threshold = scrollHeight - clientHeight;
+    
+    // 스크롤이 바닥에 도달했고, 로딩 중이 아니며, 더 불러올 데이터가 있는 경우
+    if (!isLoading && hasMore && scrollTop >= threshold - 50) {
+      setCurrentPage(prev => prev + 1);
+    }
+  }, [isLoading, hasMore]);
+
+  // handleResetAllFilters 함수 수정
+  const handleResetAllFilters = useCallback(() => {
+    // 페이지 새로고침 수행
+    window.location.reload();
+  }, []);
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -398,26 +492,35 @@ function ReportPage() {
               </div>
             </div>
 
-            <button
-              onClick={handleDownloadExcel}
-              className="bg-gradient-to-r from-blue to-purple hover:opacity-80 text-white px-3 md:px-6 py-1.5 md:py-2 rounded-lg flex items-center gap-1 md:gap-2 font-pre-bold text-12 md:text-14"
-            >
-              <svg
-                className="w-4 h-4 md:w-5 md:h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleResetAllFilters}
+                className="border border-gray-300 hover:bg-gray-50 text-main200 px-3 md:px-6 py-1.5 md:py-2 rounded-lg font-pre-bold text-12 md:text-14"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                />
-              </svg>
-              <span className="hidden sm:inline">보고서 다운받기</span>
-              <span className="sm:hidden">다운로드</span>
-            </button>
+                필터 초기화
+              </button>
+              
+              <button
+                onClick={handleDownloadExcel}
+                className="bg-gradient-to-r from-blue to-purple hover:opacity-80 text-white px-3 md:px-6 py-1.5 md:py-2 rounded-lg flex items-center gap-1 md:gap-2 font-pre-bold text-12 md:text-14"
+              >
+                <svg
+                  className="w-4 h-4 md:w-5 md:h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                  />
+                </svg>
+                <span className="hidden sm:inline">보고서 다운받기</span>
+                <span className="sm:hidden">다운로드</span>
+              </button>
+            </div>
           </div>
 
           {/* 테이블 컨테이너 */}
@@ -468,7 +571,14 @@ function ReportPage() {
               </div>
 
               {/* 데이터 영역 - 스크롤 가능 */}
-              <div className="overflow-y-auto max-h-[calc(100vh-300px)] md:h-[400px] relative custom-scrollbar min-w-[600px]">
+              <div 
+                className="overflow-y-auto max-h-[calc(100vh-300px)] md:h-[400px] relative custom-scrollbar min-w-[600px] overscroll-none"
+                onScroll={handleScroll}
+                style={{ 
+                  scrollBehavior: 'auto',
+                  overflowAnchor: 'none'
+                }}
+              >
                 <div
                   className="absolute inset-0 pointer-events-none rounded-b-xl bg-white"
                   style={{ zIndex: -1 }}
@@ -490,7 +600,7 @@ function ReportPage() {
                   <tbody className="bg-white">
                     {tableData.map((item, idx) => (
                       <tr
-                        key={item.id}
+                        key={`${item.id}-${item.transactionDate}-${idx}`}
                         className={`hover:bg-gray-50 ${idx === tableData.length - 1 ? "last-row" : ""}`}
                       >
                         {columns.map((column, index) => {
@@ -515,6 +625,16 @@ function ReportPage() {
                     ))}
                   </tbody>
                 </table>
+                {isLoading && (
+                  <div className="text-center py-4">
+                    <p className="text-gray-500">데이터를 불러오는 중...</p>
+                  </div>
+                )}
+                {!hasMore && tableData.length > 0 && (
+                  <div className="text-center py-4">
+                    <p className="text-gray-500">모든 데이터를 불러왔습니다.</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>

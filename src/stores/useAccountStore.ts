@@ -1,12 +1,12 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import type { Account } from "../types/Account";
 
-// zustand store에서 관리할 상태와 메서드 정의
 interface AccountStore {
-  accounts: Account[]; // 전체 계좌 목록
-  selectedAccountId: number | null; // 선택된 계좌 ID (모달 등에서 사용)
+  accounts: Account[]; // 계좌 목록저장하는 배열
+  selectedAccountId: number | null; // 선택된 계좌 ID저장 (모달 등에서 사용)
 
-  // 계좌 목록 초기화 (서버에서 응답받은 데이터 설정)
+  // 서버에서 받아온 전체 계좌 목록으로 store의 accounts 상태를 초기화
   setAccounts: (accounts: Account[]) => void;
 
   // 계좌 추가
@@ -25,42 +25,43 @@ interface AccountStore {
   selectAccount: (accountId: number | null) => void;
 }
 
-// zustand 훅 생성: 상태와 메서드를 포함한 store 정의
-export const useAccountStore = create<AccountStore>((set) => ({
-  accounts: [], // 초기 계좌 목록은 빈 배열로 설정
-  selectedAccountId: null, // 처음에는 선택된 계좌 없음
-
-  // 서버에서 받아온 계좌 목록 전체를 설정하는 함수
-  setAccounts: (accounts) => set({ accounts }),
-
-  // 새 계좌를 목록에 추가하는 함수
-  addAccount: (account) =>
-    set((state) => ({ accounts: [...state.accounts, account] })),
-
-  // 특정 계좌를 계좌 ID로 찾아 목록에서 제거하는 함수
-  removeAccount: (accountId) =>
-    set((state) => ({
-      accounts: state.accounts.filter((acc) => acc.accountId !== accountId),
-    })),
-
-  // 특정 계좌의 정보를 수정하는 함수 (accountId 기준으로 병합)
-  updateAccount: (updated) =>
-    set((state) => ({
-      accounts: state.accounts.map((acc) =>
-        acc.accountId === updated.accountId ? { ...acc, ...updated } : acc
-      ),
-    })),
-
-  // 수입/지출 시 잔액(balance)을 증가/감소시키는 함수
-  updateBalance: (accountId, amount) =>
-    set((state) => ({
-      accounts: state.accounts.map((acc) =>
-        acc.accountId === accountId
-          ? { ...acc, balance: acc.balance + amount }
-          : acc
-      ),
-    })),
-
-  // 특정 계좌를 선택 상태로 설정하는 함수
-  selectAccount: (accountId) => set({ selectedAccountId: accountId }),
-}));
+// persist적용하여 store의 상태 변경이 localStorage("account-storage"라는 키 사용)에 자동으로 동기화
+export const useAccountStore = create<AccountStore>()(
+  persist(
+    // 초기 상태와 상태 변경 함수를 정의하는 콜백 함수
+    (set) => ({
+      accounts: [], //초기계좌목록은 빈 배열
+      selectedAccountId: null,
+      // setAccounts 함수: 서버로부터 받은 계좌 배열을 상태에 저장
+      setAccounts: (accounts) => set({ accounts }),
+      // addAccount 함수: 현재 상태의 계좌 배열에 새로운 계좌를 추가
+      addAccount: (account) =>
+        set((state) => ({ accounts: [...state.accounts, account] })),
+      // removeAccount 함수: accountId가 일치하는 계좌를 제거
+      removeAccount: (accountId) =>
+        set((state) => ({
+          accounts: state.accounts.filter((acc) => acc.accountId !== accountId),
+        })),
+      // updateAccount 함수: accountId가 일치하는 계좌의 정보를 업데이트
+      updateAccount: (updated) =>
+        set((state) => ({
+          accounts: state.accounts.map((acc) =>
+            acc.accountId === updated.accountId ? { ...acc, ...updated } : acc
+          ),
+        })),
+      // updateBalance 함수: accountId에 해당하는 계좌의 balance 값을 amount만큼 변경
+      updateBalance: (accountId, amount) =>
+        set((state) => ({
+          accounts: state.accounts.map((acc) =>
+            acc.accountId === accountId
+              ? { ...acc, balance: acc.balance + amount }
+              : acc
+          ),
+        })),
+      selectAccount: (accountId) => set({ selectedAccountId: accountId }), // selectAccount 함수: 현재 선택된 계좌의 ID를 업데이트
+    }),
+    {
+      name: "account-storage", // localStorage에 저장될 key 이름
+    }
+  )
+);

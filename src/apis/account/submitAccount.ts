@@ -1,17 +1,17 @@
-import axiosClient from "../axiosClient"; // axiosClient 설정
+import axiosClient from "../axiosClient";
 
 interface SubmitAccountRequest {
   accountNickname: string;
-  bankCode: string;
   accountNo: string;
   password: string;
 }
 
 interface SubmitAccountResponse {
+  accountId: number;
   accountNickname: string;
   bankCode: string;
   accountNo: string;
-  accountId: number;
+  password: string;
 }
 
 export const submitAccount = async (

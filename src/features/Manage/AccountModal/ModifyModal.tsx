@@ -32,7 +32,7 @@ const ModifyModal = ({ onClose, account }: ModifyModalProps) => {
 
     let hasError = false;
     if (!isValidAccountName(accountName)) {
-      setAccountNameError("공백 포함 최대 25자 이하로 입력해 주세요.");
+      setAccountNameError("공백 포함 최대 13자 이하로 입력해 주세요.");
       hasError = true;
     } else {
       setAccountNameError("");
