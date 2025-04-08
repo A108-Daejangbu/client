@@ -46,9 +46,10 @@ const ReciptImg = ({isManager}: {isManager: boolean}) => {
         }
       };
       reader.readAsDataURL(file);
+      console.log("응답 좀 확인해보자..", receipts)
 
       // 응답 받은 데이터를 store에 저장 → ReceiptContent에서 보여줌
-      setReceipts(receipts)
+      setReceipts([receipts])
 
     }catch(err){
       console.error("영수증 업로드 실패:", err);
@@ -140,7 +141,7 @@ const ReciptImg = ({isManager}: {isManager: boolean}) => {
 
           {/* 안내 문구 */}
           <p className="text-gray-700 text-[8px] font-pre-medium">
-            영수증을 드래그하여 사진을 업로드해주세요
+            사진을 드래그하여 영수증을 추가로 업로드해주세요
           </p>
 
           {/* 구분선 */}

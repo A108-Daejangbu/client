@@ -6,6 +6,8 @@ import { useTransactionStore } from "../../stores/useTransactionStore";
 import { deleteReceiptItem } from "../../apis/receipt/deleteReceiptItem";
 import { registNewReceiptItem } from "../../apis/receipt/registNewReceiptItem";
 import { updateReceiptItem } from "../../apis/receipt/updateReceiptItem";
+import { deleteReceipt } from "../../apis/receipt/deleteReceipt";
+import { getReceipts } from "../../apis/receipt/getReceipts";
 
 interface ReciptContentProps {
   date: string;
@@ -21,6 +23,9 @@ const ReciptContent = ({ date, balance, detail, isManager }: ReciptContentProps)
   const fetchTransactions = useTransactionStore((state) => state.fetchTransactions)
   const receiptsIdx = useReceiptStore((state) => state.receiptsIdx)
   const isUploadSlide = useReceiptStore((state) => state.isUploadSlide)
+  const setRecetips = useReceiptStore((state) => state.setReceipt)
+  const setReceiptsIdx = useReceiptStore((state) => state.setReceiptsIdx)
+  const setIsUploadSlide = useReceiptStore((state) => state.setIsUploadSlide)
   
   const [isEditing, setIsEditing] = useState(false);
   
@@ -127,6 +132,36 @@ const ReciptContent = ({ date, balance, detail, isManager }: ReciptContentProps)
     }catch(error){
       console.log('삭제 실패: ', error)
       alert('항목 삭제 중 문제가 발생했습니다.. 잠시 후 다시 시도해주세요.')
+    }
+  }
+
+  const handleDeleteReceipt = async(receiptId: number) => {
+    const confirmDelete = window.confirm("정말로 영수증을 삭제하시겠습니까?");
+    if (!confirmDelete) return;
+
+    try{
+      await deleteReceipt(receiptId);
+
+      // 1. 서버에서 영수증 목록 다시 받아오기
+      const updatedReceipts = await getReceipts(selectedTransactionId!);
+
+      // 2. store에 반영
+      setRecetips(updatedReceipts);
+
+      // 3. receiptsIdx 조정
+      if (updatedReceipts.length === 0) {
+        // 아무것도 없을 때
+        setReceiptsIdx(0);
+        setEditedItems([])
+      } else if (receiptsIdx >= updatedReceipts.length) {
+        // 삭제 후 인덱스가 out of bounds일 때
+        setReceiptsIdx(updatedReceipts.length - 1);
+      }
+      
+      // 4. 업로드 슬라이드 상태는 유지
+      setIsUploadSlide(true);
+    }catch(err){
+      console.log("영수증 삭제 중 에러:", err)
     }
   }
 
@@ -244,13 +279,11 @@ const ReciptContent = ({ date, balance, detail, isManager }: ReciptContentProps)
         )}
       </div>
 
-      {/* 저장 버튼 */}
-      {/* {isManager && <button className="w-full py-2.5 bg-main200 hover:bg-main100 text-white rounded-lg font-pre-medium transition-all duration-200 text-14 shadow-sm hover:shadow-md active:scale-[0.99] flex items-center justify-center gap-1">
+      {/* 삭제 버튼 */}
+      {isManager && <button className="w-full py-2.5 bg-main200 hover:bg-main100 text-white rounded-lg font-pre-medium transition-all duration-200 text-14 shadow-sm hover:shadow-md active:scale-[0.99] flex items-center justify-center gap-1"
+      onClick={() => handleDeleteReceipt(receipts[receiptsIdx].receiptId)}>
         <span>삭제하기</span>
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-        </svg>
-      </button>} */}
+      </button>}
     </div>
   );
 };

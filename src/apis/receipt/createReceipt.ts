@@ -1,6 +1,6 @@
 import axiosClient from "../axiosClient";
 
-export const createReceipt = async (transactionId: string, imageFile: File): Promise<Receipt[]> => {
+export const createReceipt = async (transactionId: string, imageFile: File): Promise<Receipt> => {
   try {
     //  필수 파라미터 검증
     if (!transactionId || !imageFile) {
@@ -12,7 +12,7 @@ export const createReceipt = async (transactionId: string, imageFile: File): Pro
     formData.append('transactionHistoryId', transactionId)
     formData.append("image", imageFile)
     
-    const response = await axiosClient.post<Receipt[]>('/receipt/manager/create', formData, {
+    const response = await axiosClient.post<Receipt>('/receipt/manager/create', formData, {
         headers:{
             'Content-Type': 'multipart/form-data'
         }
