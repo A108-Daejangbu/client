@@ -10,6 +10,8 @@ import { endDate, startDate } from "../../../utils/date";
 import { TransactionReq } from "../../../types/Transaction";
 import { useTransactionFilterStore } from "../../../stores/useTransactionFilterStore";
 import { useNavigate } from "react-router-dom";
+import { useReceiptStore } from "../../../stores/useReceiptStore";
+import { getReceipts } from "../../../apis/receipt/getReceipts";
 
 interface TransactionListProps {
   accountId: string | undefined
@@ -33,6 +35,7 @@ const TransactionList = ({accountId} : TransactionListProps) => {
 
   const filters = useTransactionFilterStore((state) => state.filters);
   const resetFilters = useTransactionFilterStore((state) => state.resetFilters);
+  const setRecetips = useReceiptStore((state) => state.setReceipt)
 
   const fetchCategories = useCallback(async (accountId: string) => {
     const data = await getMyCategories(accountId);
@@ -98,9 +101,13 @@ const TransactionList = ({accountId} : TransactionListProps) => {
 
   }, [filters])
 
+  const setSelectedTransactionId = useReceiptStore((state) => state.setSelectedTransactionId)
   const [activeModalId, setActiveModalId] = useState<string | null>(null);
 
-  const handleModalToggle = (transactionId: string) => {
+  const handleModalToggle = async (transactionId: string) => {
+    const data = await getReceipts(transactionId);
+    setRecetips([...data]);
+    setSelectedTransactionId(transactionId)
     setActiveModalId((prev) => (prev === transactionId ? null : transactionId));
   };
 
@@ -114,9 +121,10 @@ const TransactionList = ({accountId} : TransactionListProps) => {
       {/* 타임라인 형식의 transaction card들 */}
       <div className="relative py-3">
         {/* 타임라인 세로선 */}
-        <div className="absolute left-1/2 top-20 h-full w-[1px] bg-[#707070] z-0  hidden md:block" />
+        {transactions.length !== 0 && <div className="absolute left-1/2 top-20 h-full w-[1px] bg-[#707070] z-0  hidden md:block" />}
 
         {/* 거래내역 */}
+        { transactions.length !== 0 ? 
         <div className="flex flex-col md:gap-1 gap-2">
           {transactions.map((tx) => (
             <div
@@ -161,10 +169,11 @@ const TransactionList = ({accountId} : TransactionListProps) => {
               )}
 
               {/* 타임라인 점 */}
-              <div className="absolute left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-main200  hidden md:block" />
+              <div className="absolute left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-main200  hidden md:block" />
             </div>
           ))}
-        </div>
+        </div> : <div className="text-main200 justify-self-center">아직 거래내역이 없습니다.</div>
+        }
       </div>
     </div>
   );
