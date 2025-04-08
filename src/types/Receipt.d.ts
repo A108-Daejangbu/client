@@ -2,7 +2,7 @@
 // 영수증[38]
 interface Receipt{
   receiptId: number;         // 영수증 ID
-  imageUrl?: string;         // 영수증 Url
+  receiptUrl?: string;         // 영수증 Url
   items: ReceiptItem[]; // 상세 품목, null: 상세 품목 삭제
   totalAmount?: number;       // 해당 영수증의 총액
   passStatus?: 'N' | 'P';

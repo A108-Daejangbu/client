@@ -10,6 +10,8 @@ import { useReceiptStore } from "../../stores/useReceiptStore";
 import { createReceipt } from "../../apis/receipt/createReceipt";
 
 const ReciptImg = () => {
+  const API_IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
+
   const receipts = useReceiptStore((state) => state.receipts);
   const setReceipts = useReceiptStore((state) => state.setReceipt);
   const setReceiptsIdx = useReceiptStore((state) => state.setReceiptsIdx);
@@ -104,15 +106,15 @@ const ReciptImg = () => {
           {/* 이미지 & 다운로드 아이콘 */}
           <div className="relative w-full h-full flex items-center justify-center">
             <img
-              src={receipt.imageUrl}
+              src={API_IMAGE_URL+receipt.receiptUrl}
               alt={`slide-${idx}`}
               className="max-h-full object-contain"
               // 이미지 클릭 시 모달로 크게 보기
-              onClick={() => setSelectedImage(receipt.imageUrl!)}
+              onClick={() => setSelectedImage(receipt.receiptUrl!)}
             />
             {/* 클릭 시 파일 다운로드: download 속성에 파일명 지정하면 receipt-0.jpg 등으로 다운로드됨 */}
             <a
-              href={receipt.imageUrl}
+              href={API_IMAGE_URL+receipt.receiptUrl}
               download={`receipt-${idx}.jpg`}
               className="absolute top-2 right-2 text-white"
             >
@@ -214,7 +216,7 @@ const ReciptImg = () => {
             <div className="relative">
               {/* 업로드된 이미지 크게 표시 (최대 화면 50vw, 40vh) */}
               <img
-                src={selectedImage}
+                src={API_IMAGE_URL+selectedImage}
                 alt="preview"
                 className="max-w-[70vw] max-h-[70vh]"
               />
