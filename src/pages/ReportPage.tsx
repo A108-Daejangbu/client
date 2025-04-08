@@ -464,7 +464,7 @@ function ReportPage() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="content bg-white flex justify-center">
+      <div className="report-content bg-white flex justify-center">
         <div className="max-w-[1000px] w-full">
           {/* 헤더 */}
           <div className="mb-[30px]">
@@ -572,7 +572,7 @@ function ReportPage() {
 
               {/* 데이터 영역 - 스크롤 가능 */}
               <div 
-                className="overflow-y-auto max-h-[calc(100vh-300px)] md:h-[400px] relative custom-scrollbar min-w-[600px] overscroll-none"
+                className="overflow-y-auto max-h-[calc(100vh-280px)] md:h-[430px] relative custom-scrollbar min-w-[600px] overscroll-none"
                 onScroll={handleScroll}
                 style={{ 
                   scrollBehavior: 'auto',

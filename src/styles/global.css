@@ -133,6 +133,18 @@ body {
   color: #1e1e1e;
 }
 
+.report-content {
+  flex-grow: 1; /* 콘텐츠 영역이 남은 공간을 차지하도록 설정 */
+  padding-top: 30px; /* 헤더의 높이만큼 패딩을 추가 */
+  padding-bottom: 30px; /* 푸터의 높이만큼 패딩을 추가 */
+  padding-left: 50px; /* 좌측 패딩*/
+  padding-right: 50px; /* 우측 패딩*/
+  width: 100%; /* 너비 100% */
+  max-width: 1440px; /* 최대 너비를 420px로 설정 */
+  box-sizing: border-box; /* 패딩과 보더를 포함한 크기 계산 */
+  color: #1e1e1e;
+}
+
 .modal {
   border-radius: 16px;
   box-shadow: 1.44px 2.16px 20.14px rgba(0, 0, 0, 0.2);
