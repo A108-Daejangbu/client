@@ -18,7 +18,7 @@ export const useReceiptStore = create<ReceiptStore>((set) => ({
     receipts: [], // 초기 계좌 목록은 빈 배열로 설정
     selectedTransactionId: null, // 처음에는 선택된 계좌 없음
     receiptsIdx: 0,
-    isUploadSlide: false,
+    isUploadSlide: true,
 
     setSelectedTransactionId : (transactionId) => {
         set({selectedTransactionId: transactionId})

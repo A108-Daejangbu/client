@@ -32,6 +32,7 @@ const TransactionList = ({accountId} : TransactionListProps) => {
   const categoryList = useTransactionStore((state) => state.categories)
   const setCategories = useTransactionStore((state) => state.setCategories)
   const fetchTransactions = useTransactionStore((state) => state.fetchTransactions)
+  const setIsUploadSlides = useReceiptStore((state) => state.setIsUploadSlide)
 
   const filters = useTransactionFilterStore((state) => state.filters);
   const resetFilters = useTransactionFilterStore((state) => state.resetFilters);
@@ -107,6 +108,7 @@ const TransactionList = ({accountId} : TransactionListProps) => {
   const handleModalToggle = async (transactionId: string) => {
     const data = await getReceipts(transactionId);
     setRecetips([...data]);
+    setIsUploadSlides(true)
     setSelectedTransactionId(transactionId)
     setActiveModalId((prev) => (prev === transactionId ? null : transactionId));
   };

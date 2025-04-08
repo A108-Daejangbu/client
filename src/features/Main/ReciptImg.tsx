@@ -80,7 +80,7 @@ const ReciptImg = () => {
 
   /** 다음 슬라이드로 이동 */
   const goToNext = () => {
-    if(currentIndex > slides.length - 1) return;
+    if(currentIndex >= slides.length - 1) return;
     const newIndex = currentIndex + 1;
     setIsUploadSlide(newIndex !== receipts.length);
     setCurrentIndex(newIndex)

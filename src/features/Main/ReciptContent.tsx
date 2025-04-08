@@ -35,7 +35,7 @@ const ReciptContent = ({ date, balance, detail }: ReciptContentProps) => {
       setEditedItems(receipts[receiptsIdx].items);
       editedItemsRef.current = receipts[receiptsIdx].items;
     }
-  }, [receipts]);
+  }, [receipts, receiptsIdx]);
 
   const handleItemChange = (itemId: number | undefined, field: "name" | "count" | "totalAmount", value: string) => {
     if(!itemId) return;
