@@ -136,7 +136,8 @@ const TransactionList = ({accountId} : TransactionListProps) => {
               {/* 왼쪽 카드 (거래 유형 = 입금(1)) */}
               {tx.transactionType === "DEPOSIT" ? (
                 <>
-                  <div className="md:w-[50%] w-[80%] flex justify-between">
+                  <div className="md:w-[10%]" />
+                  <div className="md:w-[40%] w-[80%] flex justify-end mb-1">
                     <TransactionCard
                       transaction={tx}
                       isInline={true}
@@ -155,7 +156,7 @@ const TransactionList = ({accountId} : TransactionListProps) => {
                 /* 오른쪽 카드 (거래 유형 = 출금(2)) */
                 <>
                   <div className="md:w-[50%] w-[20%]" />
-                  <div className="md:w-[50%] w-[80%] flex justify-between">
+                  <div className="md:w-[40%] w-[70%] flex justify-between mb-1">
                     <div className="flex items-center">
                       <div className="self-center w-8 border-t border-dashed border-main200  hidden md:block" />
                       <GoTriangleRight className="h-3 w-3 text-main200  hidden md:block" />
@@ -167,6 +168,7 @@ const TransactionList = ({accountId} : TransactionListProps) => {
                       onModalToggle={() => handleModalToggle(tx.id.toString())}
                     />
                   </div>
+                  <div className="md:w-[10%]" />
                 </>
               )}
 
