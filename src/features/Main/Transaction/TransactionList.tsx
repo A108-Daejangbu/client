@@ -12,6 +12,7 @@ import { useTransactionFilterStore } from "../../../stores/useTransactionFilterS
 import { useNavigate } from "react-router-dom";
 import { useReceiptStore } from "../../../stores/useReceiptStore";
 import { getReceipts } from "../../../apis/receipt/getReceipts";
+import SearchBar from "../SearchBar";
 
 interface TransactionListProps {
   accountId: string | undefined
@@ -114,6 +115,7 @@ const TransactionList = ({accountId} : TransactionListProps) => {
   return (
     <div className="">
       <TransactionMonthNavi currDate={currDate} setCurrDate={setCurrDate} />
+      <SearchBar />
       <TransactionFiltering 
       categories={categoryList}
       onFilterChange={handleFilterChange} />

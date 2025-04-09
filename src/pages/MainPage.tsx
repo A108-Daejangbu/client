@@ -1,5 +1,4 @@
 import TransactionList from "../features/Main/Transaction/TransactionList";
-import SearchBar from "../features/Main/SearchBar";
 import { useParams } from "react-router-dom";
 import { useAccountStore } from "../stores/useAccountStore";
 import ScoreComponent from "../features/Main/Score/ScoreComponent";
@@ -35,12 +34,8 @@ function MainPage() {
   return (
     // <div className="px-4 md:content md:!pt-0">
     <div className="content !p-2 !px-8 md:!px-[50px]">
-      <div className="w-full py-2">
-        <SearchBar />
-      </div>
-
       {selectedAccount ? (
-        <div className="text-20 md:text-[28px] font-pre-extrabold justify-self-center items-center md:pt-4">
+        <div className="text-20 md:text-[24px] font-pre-extrabold justify-self-center items-center md:pt-2">
           <span>{selectedAccount.accountNickname}</span>
         </div>
       ) : (

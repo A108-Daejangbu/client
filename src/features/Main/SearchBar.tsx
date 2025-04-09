@@ -51,7 +51,7 @@ const SearchBar = () => {
   }
 
   return (
-    <div className="flex gap-2 items-center w-full justify-end">
+    <div className="flex gap-2 items-center w-full justify-end my-2">
       <div ref={dropdownRef} className="relative font-pre-light text-[#666666]">
         {/* 드롭다운 */}
         <button
@@ -75,13 +75,13 @@ const SearchBar = () => {
           </ul>
         )}
       </div>
-      <div className="rounded-3xl justify-start w-2/5 max-w-60 bg-[#F7F6F6]">
+      <div className="rounded-md justify-start w-1/5 max-w-60 bg-[#F7F6F6] text-12">
         {/* 검색 input */}
-        <div className="flex items-center gap-2 py-1 px-4">
+        <div className="flex items-center gap-2 py-[0.35rem] px-4">
           <input
             ref={inputRef}
             type="text"
-            className="bg-transparent outline-none w-full placeholder-[#767676] placeholder:font-pre-regular"
+            className="bg-transparent outline-none w-full placeholder-[#666666] placeholder:font-pre-light"
             placeholder={isFocused ? "" : "Search"}
             value={inputValue}
             onFocus={() => setIsFocused(true)}
