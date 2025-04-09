@@ -2,10 +2,10 @@ import HighImportant from '../../../assets/HighImportance.png'
 import LowImportant from '../../../assets/LowImportance.png'
 
 const TransactionInfo: React.FC<{ score: Score}> = ({ score }) => (
-  <div className="flex items-center px-4 py-2 w-full">
-    <div className="flex items-center justify-center gap-1.5">
-      <img src={score.score < 40 ? HighImportant : LowImportant} alt="!" className="w-4 h-4" />
-      <span className="text-14 text-gray200">미증빙 거래내역 : {score.uncompletedCnt}건</span>
+  <div className="flex items-center justify-center px-4 py-2 md:pt-2 pt-0 w-full z-20">
+    <div className="flex items-center gap-1.5">
+      <img src={score.score < 40 ? HighImportant : LowImportant} alt="!" className="md:w-4 md:h-4 w-2 h-2" />
+      <span className="text-10 md:text-14 text-gray200 justify-self-center">미증빙 거래내역 : {score.uncompletedCnt}건</span>
     </div>
   </div>
 );
