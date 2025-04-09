@@ -38,11 +38,11 @@ const TransactionMonthNavi = ({currDate, setCurrDate}:TransactionMonthNaviProps)
   }
 
   return (
-    <div className="flex md:justify-start justify-center gap-4 items-center md:text-24 text-16 font-pre-semibold">
-      <span className="text-main200 md:w-32 text-right order-2 md:order-1">{getMonthtoEng()}</span>
-      <span className="text-gray200 order-3 md:order-2">{currDate.year}</span>
-      <span className="text-gray200 cursor-pointer order-1 md:order-3" onClick={goToPreMonth}>&lt;</span>
-      <span className="text-gray200 cursor-pointer order-4" onClick={goToNextMonth}>&gt;</span>
+    <div className="flex justify-center gap-4 items-center md:text-24 text-16 font-pre-semibold pt-1">
+      <span className="text-gray200 cursor-pointer" onClick={goToPreMonth}>&lt;</span>
+      <span className="text-main200 text-right">{getMonthtoEng()}</span>
+      <span className="text-gray200">{currDate.year}</span>
+      <span className="text-gray200 cursor-pointer" onClick={goToNextMonth}>&gt;</span>
     </div>
   );
 }

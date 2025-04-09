@@ -49,15 +49,12 @@ function MainPage() {
         </div>
       )}
       <div className="flex flex-col md:flex-row h-auto">
-        <div className="w-full md:w-1/4 justify-items-center">
-          {/* {score && <ScoreComponent 
-            score={score} 
-          />} */}
+        <div className="w-full md:w-1/5 justify-items-center">
           <div className="md:sticky md:top-[100px]">
             {score && <ScoreComponent score={score} />}
           </div>
         </div>
-        <div className="w-full md:w-1/2">
+        <div className="w-full md:w-3/5">
           <TransactionList accountId={accountId} />
         </div>
       </div>
