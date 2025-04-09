@@ -290,7 +290,7 @@ const ReceiptContent = ({ date, balance, detail, isManager }: ReciptContentProps
       {/* 영수증 총합 섹션 */}
       {receipts.length > 0 && isUploadSlide && <div className="flex justify-between items-center border-b border-gray-100 pb-2">
         <div className="text-14 font-pre-medium text-gray-500">영수증 총합</div>
-        <div className="text-14 font-pre-medium text-gray-600">{receiptTotalAmount}원</div>
+        <div className="text-14 font-pre-medium text-gray-600">{receiptTotalAmount.toLocaleString()}원</div>
       </div>}
 
       {/* 총합 섹션 */}
