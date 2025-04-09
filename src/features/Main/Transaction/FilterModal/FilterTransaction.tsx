@@ -48,7 +48,7 @@ const FilterTransaction = ({title, type, setSelectOptions, selectType, selectOrd
 
   return (
     <>
-      <div className="text-main100 font-pre-light text-16 pb-1 tracking-normal">
+      <div className="text-main100 font-pre-light text-14 pb-1 tracking-normal">
         <span>{title}</span>
       </div>
       <div className="flex bg-gray-100 rounded-md p-1 gap-1 mb-4">
@@ -56,7 +56,7 @@ const FilterTransaction = ({title, type, setSelectOptions, selectType, selectOrd
           <button
             key={label}
             onClick={() => handleOption(label)}
-            className={`flex-1 px-4 py-2 text-sm rounded-md font-pre-medium transition-all tracking-widest ${
+            className={`flex-1 px-4 py-2 text-xs rounded-md font-pre-medium transition-all tracking-widest ${
               option === label
                 ? "bg-white text-black shadow-sm"
                 : "text-gray-400"

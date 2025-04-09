@@ -46,7 +46,6 @@ const ReciptImg = ({isManager}: {isManager: boolean}) => {
         }
       };
       reader.readAsDataURL(file);
-      console.log("응답 좀 확인해보자..", receipts)
 
       // 응답 받은 데이터를 store에 저장 → ReceiptContent에서 보여줌
       setReceipts([receipts])
@@ -103,7 +102,7 @@ const ReciptImg = ({isManager}: {isManager: boolean}) => {
         className="inline-block align-top w-full p-2 pt-10"
       >
         {/* 검은색 영역(이미지 표시 부분)*/}
-        <div className="w-full h-[140px] flex items-center justify-center bg-black rounded-md">
+        <div className="w-full h-[155px] flex items-center justify-center bg-black rounded-md">
           {/* 이미지 & 다운로드 아이콘 */}
           <div className="relative w-full h-full flex items-center justify-center">
             <img
@@ -135,20 +134,20 @@ const ReciptImg = ({isManager}: {isManager: boolean}) => {
         onDragLeave={(e) => e.preventDefault()}
         onDrop={handleDrop}
       >
-        <div className="w-[180px] h-[100px] border-2 border-dashed border-[#1849D6] rounded-md text-center flex flex-col items-center gap-1 p-2">
+        <div className="w-[200px] h-[110px] border-2 border-dashed border-[#1849D6] rounded-md text-center flex flex-col items-center gap-1 p-2">
           {/* 폴더 + 업로드 화살표 아이콘 */}
           <img src={uploadImg} alt="uploadImg" className="w-5" />
 
           {/* 안내 문구 */}
-          <p className="text-gray-700 text-[8px] font-pre-medium">
-            사진을 드래그하여 영수증을 추가로 업로드해주세요
+          <p className="text-gray-700 text-12 font-pre-medium">
+            영수증을 추가로 업로드하세요
           </p>
 
           {/* 구분선 */}
           <img src={dividerImg} alt="dividerImg" className="w-[150px]" />
 
           {/* 파일 찾아보기 버튼 */}
-          <label className="cursor-pointer text-[8px] text-[#1849D6] font-pre-medium border-[#1849D6] border rounded-md px-3 py-1">
+          <label className="cursor-pointer text-12 text-[#1849D6] font-pre-medium border-[#1849D6] border rounded-md px-3 py-1">
             파일 찾아보기
             <input type="file" className="hidden" onChange={handleFileChange} />
           </label>

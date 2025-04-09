@@ -39,7 +39,7 @@ const FilterMoney = ({moneyMinMax, setMoneyMinMax}:FilterMoneyProps) => {
 
   return(
     <>
-      <div className="text-main100 text-16 pb-1 font-pre-light flex items-center gap-2">
+      <div className="text-main100 text-14 pb-1 font-pre-light flex items-center gap-2">
         <span>거래 금액 설정</span>
         <RiResetLeftFill className="text-gray200 cursor-pointer"
                 onClick={() => setMoney('remove')} />
@@ -54,7 +54,7 @@ const FilterMoney = ({moneyMinMax, setMoneyMinMax}:FilterMoneyProps) => {
               min:  parseNumber(e.target.value),
             }));
           }}
-          className="border border-gray-100 rounded px-2 py-1 flex-1 text-12 text-end w-16"
+          className="border border-gray-100 rounded px-2 py-1 flex-1 text-10 text-end w-16"
         />
         <span>~</span>
         <input
@@ -66,9 +66,9 @@ const FilterMoney = ({moneyMinMax, setMoneyMinMax}:FilterMoneyProps) => {
               max:  parseNumber(e.target.value),
             }));
           }}
-          className="border border-gray-100 rounded px-2 py-1 flex-1 text-12 text-end w-16"
+          className="border border-gray-100 rounded px-2 py-1 flex-1 text-10 text-end w-16"
         />
-        <button className="text-12 border border-gray-100 text-black rounded px-2 py-1" onClick={() => setMoney('minmax')}>적용</button>
+        <button className="text-10 border border-gray-100 text-black rounded px-2 py-1" onClick={() => setMoney('minmax')}>적용</button>
       </div>
     </>
   )

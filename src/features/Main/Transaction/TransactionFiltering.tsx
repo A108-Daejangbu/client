@@ -75,15 +75,14 @@ const TransactionFiltering = ({categories}: TransactionFilteringProps) => {
       
           {/* 필터링 모달 */}
           {isFilterModalOpen && (
-            // <div className="p-4 border-gray300 max-w-80 border rounded-md mt-1 justify-self-end" ref={filterModalRef}>
             <div
-              className="absolute top-full right-0 p-4 border-gray300 w-80 border rounded-md bg-white shadow-lg z-50 whitespace-nowrap"
+              className="absolute top-full right-0 p-4 border-gray300 w-60 border rounded-md bg-white shadow-lg z-50 whitespace-nowrap"
               ref={filterModalRef}
               onClick={(e) => {
                 e.stopPropagation();
               }}
             >
-              <div className="justify-self-end text-gray200 text-20 cursor-pointer" 
+              <div className="justify-self-end text-gray200 text-16 cursor-pointer" 
                 onClick={() => setIsFilterModalOpen(false)}>
                 <IoClose />
               </div>

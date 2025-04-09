@@ -92,18 +92,18 @@ const FilterPeriod = ({setSelectOptions, dateRange, setDateRange, formatDate, pe
   
   return (
     <div>
-      <div className="text-main100 font-pre-light text-16 flex items-center gap-2 pb-1 ">
+      <div className="text-main100 font-pre-light text-14 flex items-center gap-2 pb-1 ">
         <span>조회 기간</span>
         <RiResetLeftFill className="text-gray200 cursor-pointer"
         onClick={() => handlePeriodClick('이번달')} />
       </div>
       {/* date 설정 토글 */}
-      <div className="flex bg-gray-100 rounded-md p-1 gap-1 mb-4">
+      <div className="flex bg-gray-100 rounded-md p-1 gap-1/2 mb-3">
         {['1개월', '3개월', '직접 설정'].map((label:string) => (
           <button
             key={label}
             onClick={() => handlePeriodClick(label)}
-            className={`flex-1 px-4 py-2 text-sm rounded-md font-pre-medium transition-all tracking-widest ${
+            className={`flex-1 px-3 py-2 text-xs rounded-md font-pre-medium transition-all tracking-widest ${
               periodOption === label
                 ? "bg-white text-black shadow-sm"
                 : "text-gray-400"
@@ -115,26 +115,25 @@ const FilterPeriod = ({setSelectOptions, dateRange, setDateRange, formatDate, pe
       </div>
       {/* 날짜 직접 입력 */}
       {periodOption === "직접 설정" && (
-  <div className="items-center justify-between gap-2 text-xs text-gray-600 mb-4">
-    <div className="justify-center flex">
-      <input
-        type="date"
-        value={dateRange.startPeriod}
-        onChange={(e) => {handleDateChange("start", e.target.value)}}
-        className="border rounded px-2 py-1 flex-1"
-      />
-      <span>~</span>
-      <input
-        type="date"
-        value={dateRange.endPeriod}
-        onChange={(e) => {handleDateChange("end", e.target.value)}}
-        className="border rounded px-2 py-1 flex-1"
-      />
-    </div>
-    {dateError && <p className="text-red-500 justify-self-center pt-1">{dateError}</p>}
-  </div>
-)}
-
+        <div className="items-center justify-between gap-2 text-xs text-gray-600 mb-4">
+          <div className="justify-center flex">
+            <input
+              type="date"
+              value={dateRange.startPeriod}
+              onChange={(e) => {handleDateChange("start", e.target.value)}}
+              className="border rounded px-1 pr-0 py-1 flex-1 text-10"
+            />
+            <span className="px-1/2">~</span>
+            <input
+              type="date"
+              value={dateRange.endPeriod}
+              onChange={(e) => {handleDateChange("end", e.target.value)}}
+              className="border rounded px-1 pr-0 py-1 flex-1 text-10"
+            />
+          </div>
+          {dateError && <p className="text-red-500 justify-self-center pt-1">{dateError}</p>}
+        </div>
+      )}
     </div>
   )
 }
