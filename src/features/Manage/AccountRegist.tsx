@@ -111,16 +111,18 @@ const RegistrationForm = () => {
   };
 
   const inputClassName =
-    "block w-full min-w-0 px-2 py-1.5 border border-gray-300 rounded-lg font-pre-regular text-12 placeholder:text-gray-400 truncate";
+    "block w-full min-w-0 px-2 py-2 border border-gray-300 rounded-lg font-pre-regular text-12 placeholder:text-gray-400 truncate";
 
   return (
     <div className="w-full sm:max-w-md lg:max-w-md text-sm font-pre-medium text-main200 whitespace-nowrap">
-      <h2 className="text-16 font-pre-medium text-left mb-[15px]">계좌 등록</h2>
-      <div className="mb-[40px] border-b"></div>
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <h2 className="text-16 md:text-[20px] font-pre-medium text-left mb-[15px]">
+        계좌 등록
+      </h2>
+      <div className="mb-[60px] border-b"></div>
+      <form onSubmit={handleSubmit} className="space-y-7">
         {/* 계좌명 입력 필드 */}
         <div className="flex items-center gap-4">
-          <label className="w-1/4">계좌명</label>
+          <label className="w-1/4 md:text-[16px]">계좌명</label>
           <div className="relative w-full">
             <input
               type="text"
@@ -140,8 +142,8 @@ const RegistrationForm = () => {
 
         {/* 계좌번호 입력 필드 */}
         <div className="flex items-center gap-4">
-          <label className="w-1/4">계좌번호</label>
-          <div className="relative w-full px-3">
+          <label className="w-1/4 md:text-[16px]">계좌번호</label>
+          <div className="relative w-full px-3 ml-1">
             <input
               type="text"
               className={inputClassName}
@@ -162,7 +164,7 @@ const RegistrationForm = () => {
           <button
             type="button"
             onClick={handleCheckAccountNumber}
-            className="border border-gray-200 rounded-lg px-2 py-1.5 text-12"
+            className="border border-gray-200 rounded-lg px-3 py-2 text-12"
           >
             인증
           </button>
@@ -170,8 +172,8 @@ const RegistrationForm = () => {
 
         {/* 인증번호 입력 및 검증 필드 */}
         <div className="flex items-center gap-4">
-          <label className="w-1/4">인증번호</label>
-          <div className="relative w-full px-3">
+          <label className="w-1/4 md:text-[16px]">인증번호</label>
+          <div className="relative w-full px-3 ml-1">
             <input
               type="text"
               className={inputClassName}
@@ -187,7 +189,7 @@ const RegistrationForm = () => {
           <button
             type="button"
             onClick={handleVerifyCode}
-            className="border border-gray-200 rounded-lg px-2 py-1.5 text-12"
+            className="border border-gray-200 rounded-lg px-3 py-2 text-12"
             disabled={isVerified}
           >
             {isVerified ? "완료" : "확인"}
@@ -196,7 +198,7 @@ const RegistrationForm = () => {
 
         {/* 입장 코드 입력 필드 */}
         <div className="flex items-center gap-4">
-          <label className="w-1/4">입장코드</label>
+          <label className="w-1/4 md:text-[16px]">입장코드</label>
           <div className="relative w-full">
             <input
               type="password"
@@ -218,7 +220,7 @@ const RegistrationForm = () => {
         <div className="flex items-center">
           <button
             type="submit"
-            className="w-full py-1.5 mt-12 rounded-[6.013px] bg-gradient-to-r from-[#7953FF] to-[#4E00CB] shadow-[0px_6.013px_6.239px_0px_rgba(74,58,255,0.28)] text-white text-base tracking-widest"
+            className="w-full py-1.5 mt-[60px] rounded-[6.013px] bg-gradient-to-r from-[#7953FF] to-[#4E00CB] shadow-[0px_6.013px_6.239px_0px_rgba(74,58,255,0.28)] text-white text-base tracking-widest"
           >
             등록
           </button>
