@@ -34,3 +34,10 @@ export interface Account {
   balance: number; // 계좌 잔액
   unCompletedReceipts: number; // 미완료 영수증 개수
 }
+
+interface ViewerAccount {
+  accountId: number;
+  accountNickname: string;
+  accountNo: string;
+  balance: number;
+}

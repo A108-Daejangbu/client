@@ -6,11 +6,13 @@ interface ReceiptStore {
   selectedTransactionId: string | null; // 선택된 계좌 ID
   receiptsIdx: number;
   isUploadSlide: boolean;
+  isLoading: boolean;
 
   setSelectedTransactionId: (transactionId: string) => void;
   setReceipt: (receipts: Receipt[]) => void;
   setReceiptsIdx: (idx:number) => void;
   setIsUploadSlide: (val:boolean) => void;
+  setIsLoading: (bool: boolean) => void;
 }
 
 // zustand 훅 생성: 상태와 메서드를 포함한 store 정의
@@ -19,6 +21,7 @@ export const useReceiptStore = create<ReceiptStore>((set) => ({
     selectedTransactionId: null, // 처음에는 선택된 계좌 없음
     receiptsIdx: 0,
     isUploadSlide: true,
+    isLoading: false,
 
     setSelectedTransactionId : (transactionId) => {
         set({selectedTransactionId: transactionId})
@@ -31,6 +34,9 @@ export const useReceiptStore = create<ReceiptStore>((set) => ({
     },
     setIsUploadSlide: (val) => {
         set({isUploadSlide: val})
+    },
+    setIsLoading: (bool) => {
+        set({isLoading: bool})
     }
 
 }));
