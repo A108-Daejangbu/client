@@ -1,6 +1,5 @@
 import { CiReceipt } from "react-icons/ci";
 import CategoryCard from "./CategoryCard";
-// import { useState } from "react";
 import ReciptModal from "../ReciptModal";
 import ReactDOM from "react-dom";
 import { Transaction } from "../../../types/Transaction";
@@ -49,12 +48,20 @@ const TransactionCard = ({
             {transaction.transactionSummary}
           </div>
         </div>
-        <div className="font-pre-bold text-[18px] md:text-16 text-10">
+        <div className="relative group font-pre-bold text-[18px] md:text-16 text-10">
           {calcBalance(
             transaction.transactionBalance,
             transaction.transactionType
           )}
+          {/* 툴팁: hover 시에만 보임 */}
+          <div className="absolute bottom-full mb-1 left-1/2 -translate-x-1/2 
+                          bg-gray-800 text-white text-[10px] px-2 py-1 rounded-md 
+                          opacity-0 group-hover:opacity-100 transition-opacity duration-200
+                          pointer-events-none z-50 whitespace-nowrap">
+            잔액: {transaction.transactionAfterBalance.toLocaleString()}원
+          </div>
         </div>
+
       </div>
       <div className="flex gap-1 text-12 text-[#26273A] text-opacity-60 font-pre-regular">
         <div>{calcTransactionDate(transaction.transactionDate)}</div>

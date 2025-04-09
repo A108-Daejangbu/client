@@ -5,17 +5,24 @@ import ScoreComponent from "../features/Main/Score/ScoreComponent";
 import { useEffect } from "react";
 import { useTransactionStore } from "../stores/useTransactionStore";
 import { getMyScore } from "../apis/transaction/getMyScore";
+import { getViewerAccountInfo } from "../apis/account/getViewerAccountInfo";
 
 
 function MainPage() {
+
+  const isViewer = location.pathname.startsWith('/viewer/');
     
   const {accountId} = useParams<{accountId: string}>();
-  const accounts = useAccountStore((state) => state.accounts);
+  const accountsForManager = useAccountStore((state) => state.accounts)
+  const accountForViewer = useAccountStore((state) => state.viewerAccount)
+  const setViewerAccount = useAccountStore((state) => state.setViewerAccount)
   
   // 선택된 accountId에 해당하는 계좌 정보 찾기
-  const selectedAccount = accounts.find(
-    (account) => account.accountId === Number(accountId)
-  );
+  const selectedAccount = isViewer
+  ? accountForViewer
+  : accountsForManager.find(
+      (account) => account.accountId === Number(accountId)
+    );
 
   const score = useTransactionStore((state) => state.score)
   const setScore = useTransactionStore((state) => state.setScore)
@@ -30,6 +37,22 @@ function MainPage() {
     if(!accountId) return;
     getScore(accountId);
   }, [])
+
+  // Viewer일 경우 서버에서 계좌 정보 받아오기
+  useEffect(() => {
+    const fetchViewerAccount = async () => {
+      if (isViewer && accountId) {
+        try {
+          const data = await getViewerAccountInfo(accountId);
+          setViewerAccount(data);
+        } catch (error) {
+          console.error("Viewer 계좌 정보 불러오기 실패:", error);
+        }
+      }
+    };
+
+    fetchViewerAccount();
+  }, [isViewer, accountId, setViewerAccount]);
 
   return (
     // <div className="px-4 md:content md:!pt-0">

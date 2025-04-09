@@ -197,6 +197,10 @@ const ReciptContent = ({ date, balance, detail, isManager }: ReciptContentProps)
     }
   }, [receipts, receiptsIdx, isUploadSlide]);
 
+  const totalRounded = Math.round(totalAllReceiptsAmount);
+  const balanceRounded = Math.round(Number(balance));
+  const isMatched = totalRounded === balanceRounded;
+
   return (
     <div className="p-4 flex flex-col h-full gap-4">
       {/* 날짜 섹션 */}
@@ -288,11 +292,11 @@ const ReciptContent = ({ date, balance, detail, isManager }: ReciptContentProps)
         <div className="flex justify-between">
           <div className="text-14 font-pre-medium text-gray-500">총합</div>
           <div className="flex items-center">
-            {receipts.length > 0 && totalAllReceiptsAmount === Number(balance) && <FcApproval size={20} className="pr-1 cursor" title="영수증과 금액이 일치합니다!"/>}
+            {receipts.length > 0 && isMatched && <FcApproval size={20} className="pr-1 cursor" title="영수증과 금액이 일치합니다!"/>}
             <div className="text-16 font-pre-bold text-blue-600">{balance}원</div>
           </div>
         </div>
-        {(receipts.length > 0 && totalAllReceiptsAmount !== Number(balance) && <div className="text-red-500 text-12 justify-self-start font-pre-medium pt-1">영수증과 거래내역의 금액이 다릅니다!</div>)}
+        {(receipts.length > 0 && isMatched && <div className="text-red-500 text-12 justify-self-start font-pre-medium pt-1">영수증과 거래내역의 금액이 다릅니다!</div>)}
       </div>
 
       {/* 비고 섹션 */}

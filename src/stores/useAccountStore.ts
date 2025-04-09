@@ -1,13 +1,16 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { Account } from "../types/Account";
+import type { Account, ViewerAccount } from "../types/Account";
 
 interface AccountStore {
   accounts: Account[]; // 계좌 목록저장하는 배열
+  viewerAccount: ViewerAccount | null;
   selectedAccountId: number | null; // 선택된 계좌 ID저장 (모달 등에서 사용)
 
   // 서버에서 받아온 전체 계좌 목록으로 store의 accounts 상태를 초기화
   setAccounts: (accounts: Account[]) => void;
+
+  setViewerAccount: (account: ViewerAccount) => void;
 
   // 계좌 추가
   addAccount: (account: Account) => void;
@@ -31,9 +34,11 @@ export const useAccountStore = create<AccountStore>()(
     // 초기 상태와 상태 변경 함수를 정의하는 콜백 함수
     (set) => ({
       accounts: [], //초기계좌목록은 빈 배열
+      viewerAccount: null,
       selectedAccountId: null,
       // setAccounts 함수: 서버로부터 받은 계좌 배열을 상태에 저장
       setAccounts: (accounts) => set({ accounts }),
+      setViewerAccount: (account) => set({viewerAccount: account}),
       // addAccount 함수: 현재 상태의 계좌 배열에 새로운 계좌를 추가
       addAccount: (account) =>
         set((state) => ({ accounts: [...state.accounts, account] })),
