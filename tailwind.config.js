@@ -112,5 +112,13 @@ export default {
   		}
   	}
   },
-  plugins: [require("tailwindcss-animate"), require("tailwind-scrollbar-hide")],
+  plugins: [require("tailwindcss-animate"), require("tailwind-scrollbar-hide"),
+	function ({ addUtilities }) {
+		addUtilities({
+		  ".scrollbar-stable": {
+			"scrollbar-gutter": "stable",
+		  },
+		});
+	  },
+  ],
 };

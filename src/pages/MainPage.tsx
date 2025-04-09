@@ -34,6 +34,8 @@ function MainPage() {
   }
 
   useEffect(() => {
+    document.body.classList.add("scrollbar-stable");
+
     if(!accountId) return;
     getScore(accountId);
   }, [])
