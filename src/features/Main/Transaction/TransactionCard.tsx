@@ -42,7 +42,7 @@ const TransactionCard = ({
   };
 
   return (
-    <div className="border md:p-4 md:px-6 p-2 px-4 rounded-xl border-[#E0E8F2] border-opacity-60 md:w-[40em] w-full">
+    <div className="border md:py-2 md:px-6 p-2 px-4 rounded-xl border-[#E0E8F2] border-opacity-60 md:w-[40em] w-full">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <div className="font-pre-extrabold md:text-16 text-[18px] pr-2 line-clamp-1 text-ellipsis">
