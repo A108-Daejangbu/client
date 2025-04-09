@@ -6,9 +6,10 @@ interface CategoryCardProp {
   onSelected?: boolean;  // 선택된 카테고리인지(true -> X 버튼 보이도록)
   isInline?: boolean;    // 말줄임을 사용할 것인지(true -> 요소를 넘어가는 길이면 자르고 ... 붙임)
   callin?: string;       // callin == filter인 경우 filtering하는 상황임을 알림
+  handleClickCard?: boolean;
 }
 
-const CategoryCard = ({category, onDelete, onSelected=false, isInline}: CategoryCardProp) => {
+const CategoryCard = ({category, onDelete, onSelected=false, isInline, handleClickCard=false}: CategoryCardProp) => {
   const removeCategoryId = useTransactionFilterStore((state) => state.removeCategoryId)
   const addCategoryId = useTransactionFilterStore((state) => state.addCategoryId)
 
@@ -29,6 +30,7 @@ const CategoryCard = ({category, onDelete, onSelected=false, isInline}: Category
   const TextColor = ColorPallete[idx].textColor;
 
   const handleCardClick = (e: React.MouseEvent) => {
+    if(handleClickCard) return;
     e.stopPropagation(); // ✅ 모달 닫힘 방지
     if (!onSelected) {
       onDelete?.(category);
@@ -37,12 +39,14 @@ const CategoryCard = ({category, onDelete, onSelected=false, isInline}: Category
   };
 
   const handleDeleteClick = (e: React.MouseEvent) => {
+    if(handleClickCard) return;
     e.stopPropagation();
     onDelete?.(category);
     handleClearSelectedCategory(category.categoryId); // 선택 제거
   };
 
   const handleClearSelectedCategory = (id: number) => {
+    if(handleClickCard) return;
     if(onSelected){ // id에 해당하는 카테고리 삭제
       removeCategoryId(id);
     }else{ // id에 해당하는 카테고리 추가
@@ -60,11 +64,11 @@ const CategoryCard = ({category, onDelete, onSelected=false, isInline}: Category
   const BgColorWithAlpha = hexToRgba(BgColor, 0.2);
 
   return (
-    <div className={`relative flex mt-1 px-2 rounded md:min-h-4 min-h-2 content-center leading-normal items-center ${!onSelected ? 'cursor-pointer' : ''}`}
+    <div className={`relative flex mt-1/2 px-2 rounded md:min-h-4 min-h-2 content-center leading-normal items-center ${!onSelected ? 'cursor-pointer' : ''}`}
     style={{"backgroundColor": BgColorWithAlpha, "color": TextColor}}
     onClick={handleCardClick}>
      <span
-        className={`font-pre-extrabold md:text-14 text-12 ${
+        className={`font-pre-extrabold text-12 ${
           isInline
             ? "inline-block overflow-hidden whitespace-nowrap text-ellipsis max-w-[150px]"
             : ""
@@ -78,11 +82,6 @@ const CategoryCard = ({category, onDelete, onSelected=false, isInline}: Category
       {/* X 버튼 */}
       {onSelected && (
         <button
-          // onClick={(e) => {
-          //   e.stopPropagation();
-          //   onDelete?.(category);
-          //   handleClearSelectedCategory(category.categoryId)
-          // }}
           onClick={handleDeleteClick}
           className="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-red-400 text-white text-[12px] flex items-center justify-center p-0 cursor-pointer">
           <span className="self-center pb-[0.25rem]">x</span>

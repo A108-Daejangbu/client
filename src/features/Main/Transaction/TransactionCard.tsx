@@ -56,19 +56,19 @@ const TransactionCard = ({
           )}
         </div>
       </div>
-      <div className="flex gap-1 md:text-14 text-12 text-[#26273A] text-opacity-60 font-pre-regular">
+      <div className="flex gap-1 text-12 text-[#26273A] text-opacity-60 font-pre-regular">
         <div>{calcTransactionDate(transaction.transactionDate)}</div>
         <div>{calcTransactipnTime(transaction.transactionDate)}</div>
       </div>
-      <div className="md:pt-1 pt-0 whitespace-pre-line text-start md:text-14 text-12 font-pre-regular">
+      <div className="pt-0 whitespace-pre-line text-start text-12 font-pre-regular">
         {transaction.detail}
       </div>
-      <div className="flex justify-between md:pt-1 pt-0 items-center">
+      <div className="flex justify-between pt-0 items-center">
         <div className="pe-3">
           {isInline ? (
-            <CategoryCard category={category} isInline={true} />
+            <CategoryCard category={category} isInline={true} handleClickCard={true} />
           ) : (
-            <CategoryCard category={category} />
+            <CategoryCard category={category} handleClickCard={true} />
           )}
         </div>
         { transaction.transactionType !== "DEPOSIT" && <div className="items-end relative">

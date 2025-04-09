@@ -14,7 +14,7 @@ export const getScoreInfo = (score: number): ScoreInfo => {
   }
   return {
     title: "위험 수준!",
-    status: "누락된 부분을 빠르게 확인하세요!",
+    status: "누락된 부분을 확인하세요!",
     color: '#FF5353'
   };
 };
@@ -23,6 +23,6 @@ export const SCORE_CONFIG = {
   ANGLE: 230,
   START_ANGLE: -115,
   BORDER_WIDTH: 12,
-  SIZE: 180,
+  SIZE: 150,
   PADDING: 30,
 } as const;
