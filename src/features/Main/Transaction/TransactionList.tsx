@@ -60,7 +60,7 @@ const TransactionList = ({accountId} : TransactionListProps) => {
         // 기본 거래내역 조회
         const req: TransactionReq = {
           accountId: Number(accountId),
-          pageSize: 30,
+          pageSize: 100,
           pageNo: 0,
           startDate,
           endDate,
@@ -84,7 +84,7 @@ const TransactionList = ({accountId} : TransactionListProps) => {
       try{
         const req: TransactionReq = {
           accountId: Number(accountId),
-          pageSize: 30,
+          pageSize: 100,
           pageNo: 0,
           startDate: filterOptions.startDate ?? startDate,
           endDate: filterOptions.endDate ?? endDate,

@@ -39,8 +39,6 @@ const SearchBar = () => {
 
   const handleTransactionSearch = async() => {
     if(!dropMenu.value || !inputValue) return;
-    console.log("검색 키워드는: ", inputValue);
-    console.log("검색 옵션은: ", dropMenu.value);
 
     const payload = {
       ...filters,
@@ -48,7 +46,6 @@ const SearchBar = () => {
       searchOption: dropMenu.value as SearchOption,
       keyword: inputValue.trim(),
     } as TransactionReq
-    console.log("현재 검색 필터는: ", payload)
 
     await fetchTransactions(payload)
   }

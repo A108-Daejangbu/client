@@ -60,11 +60,11 @@ const CategoryCard = ({category, onDelete, onSelected=false, isInline}: Category
   const BgColorWithAlpha = hexToRgba(BgColor, 0.2);
 
   return (
-    <div className={`relative flex px-2 rounded md:min-h-4 min-h-2 content-center leading-normal items-center ${!onSelected ? 'cursor-pointer' : ''}`}
+    <div className={`relative flex mt-1 px-2 rounded md:min-h-4 min-h-2 content-center leading-normal items-center ${!onSelected ? 'cursor-pointer' : ''}`}
     style={{"backgroundColor": BgColorWithAlpha, "color": TextColor}}
     onClick={handleCardClick}>
      <span
-        className={`font-pre-extrabold md:text-12 text-8 ${
+        className={`font-pre-extrabold md:text-14 text-12 ${
           isInline
             ? "inline-block overflow-hidden whitespace-nowrap text-ellipsis max-w-[150px]"
             : ""

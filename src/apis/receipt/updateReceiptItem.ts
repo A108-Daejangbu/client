@@ -13,7 +13,6 @@ export const updateReceiptItem = async (item: ReceiptItem) => {
         'amount' : item.totalAmount,
         'count': item.count
     });
-    console.log("수정 완료했슴다~", item)
     return response.data;
   } catch (error) {
     console.error("영수증 항목 수정 에러:", error);

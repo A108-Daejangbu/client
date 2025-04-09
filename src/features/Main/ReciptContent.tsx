@@ -1,4 +1,3 @@
-// import Edit from "../../assets/Edit.png";
 import { useEffect, useRef, useState } from "react";
 import { useReceiptStore } from "../../stores/useReceiptStore";
 import { changeDetail } from "../../apis/receipt/changeDetail";
@@ -8,6 +7,7 @@ import { registNewReceiptItem } from "../../apis/receipt/registNewReceiptItem";
 import { updateReceiptItem } from "../../apis/receipt/updateReceiptItem";
 import { deleteReceipt } from "../../apis/receipt/deleteReceipt";
 import { getReceipts } from "../../apis/receipt/getReceipts";
+import { FcApproval } from "react-icons/fc";
 
 interface ReciptContentProps {
   date: string;
@@ -28,6 +28,7 @@ const ReciptContent = ({ date, balance, detail, isManager }: ReciptContentProps)
   const setIsUploadSlide = useReceiptStore((state) => state.setIsUploadSlide)
   
   const [isEditing, setIsEditing] = useState(false);
+  const [receiptTotalAmount, setReceiptTotalAmount] = useState<number>(0); // 영수증 총합
   
   const [isDetailEditing, setIsDetailEditing] = useState(false);
   const [editedDetail, setEditedDetail] = useState(detail || "");
@@ -35,13 +36,38 @@ const ReciptContent = ({ date, balance, detail, isManager }: ReciptContentProps)
   const [editedItems, setEditedItems] = useState<ReceiptItem[]>([]); // 영수증 상세항목 초기화
   const editedItemsRef = useRef<ReceiptItem[]>([]);
 
+  const totalAllReceiptsAmount = receipts.length > 0
+  ? receipts.reduce((sum, receipt) => {
+      const amount = parseFloat(receipt.totalAmount as unknown as string);
+      return sum + (isNaN(amount) ? 0 : amount);
+    }, 0)
+  : 0;
+
+
 
   useEffect(() => {
     if (receipts.length > 0 && receipts[receiptsIdx].items) {
       setEditedItems(receipts[receiptsIdx].items);
       editedItemsRef.current = receipts[receiptsIdx].items;
+
+      const items = receipts[receiptsIdx].items;
+      const total = items.reduce((sum, item) => {
+        const amount = parseFloat(item.totalAmount as unknown as string);
+        return sum + (isNaN(amount) ? 0 : amount);
+      }, 0);
+
+      setReceiptTotalAmount(Number(total))
     }
   }, [receipts, receiptsIdx]);
+
+  useEffect(() => {
+    const total = editedItems.reduce((sum, item) => {
+      const amount = parseFloat(item.totalAmount as unknown as string);
+      return sum + (isNaN(amount) ? 0 : amount);
+    }, 0);
+    setReceiptTotalAmount(total);
+  }, [editedItems]);
+  
 
   const handleItemChange = (itemId: number | undefined, field: "name" | "count" | "totalAmount", value: string) => {
     if(!itemId) return;
@@ -53,7 +79,7 @@ const ReciptContent = ({ date, balance, detail, isManager }: ReciptContentProps)
       editedItemsRef.current = updated;
       return updated;
     });
-  };
+  }; 
 
   const ReceiptItemsRef = useRef<HTMLDivElement>(null);
 
@@ -175,22 +201,22 @@ const ReciptContent = ({ date, balance, detail, isManager }: ReciptContentProps)
     <div className="p-4 flex flex-col h-full gap-4">
       {/* 날짜 섹션 */}
       <div className="flex justify-between items-center pb-2">
-        <div className="text-12 font-pre-medium text-gray-500">날짜</div>
+        <div className="text-14 font-pre-medium text-gray-500">날짜</div>
         <div className="text-14 font-pre-bold">{date}</div>
       </div>
 
       {/* 상세품목 섹션 */}
       <div className="flex flex-col gap-2">
         <div className="flex items-center">
-          <div className="text-12 font-pre-medium text-gray-500">상세품목</div>
+          <div className="text-14 font-pre-medium text-gray-500">상세품목</div>
         </div>
         {isUploadSlide && <div 
         ref={ReceiptItemsRef}
-        className="flex flex-col gap-2 text-[10px] text-gray-700 bg-gray-50 rounded-lg p-2 text-end">
+        className="flex flex-col gap-2 text-12 font-pre-medium text-gray-700 bg-gray-50 rounded-lg p-2 text-end pr-0">
           {editedItems && editedItems.map((item) => (
             <div
               key={item.itemId}
-              className="grid grid-cols-3 gap-2 items-center grid-cols-[1.5fr_0.6fr_0.9fr_auto]"
+              className="grid grid-cols-3 items-center grid-cols-[1.5fr_0.6fr_0.9fr_auto]"
               onClick={() => {
                 if(isManager) setIsEditing(true)}} // 하나라도 클릭하면 전체 편집 모드
             >
@@ -251,16 +277,28 @@ const ReciptContent = ({ date, balance, detail, isManager }: ReciptContentProps)
         </div>}
       </div>
 
+      {/* 영수증 총합 섹션 */}
+      {isUploadSlide && <div className="flex justify-between items-center border-b border-gray-100 pb-2">
+        <div className="text-14 font-pre-medium text-gray-500">영수증 총합</div>
+        <div className="text-14 font-pre-medium text-gray-600">{receiptTotalAmount}원</div>
+      </div>}
+
       {/* 총합 섹션 */}
-      <div className="flex justify-between items-center border-b border-gray-100 pb-2">
-        <div className="text-12 font-pre-medium text-gray-500">총합</div>
-        <div className="text-16 font-pre-bold text-blue-600">{balance}원</div>
+      <div className="items-center border-b border-gray-100 pb-2">
+        <div className="flex justify-between">
+          <div className="text-14 font-pre-medium text-gray-500">총합</div>
+          <div className="flex items-center">
+            {totalAllReceiptsAmount === Number(balance) && <FcApproval size={20} className="pr-1 cursor" title="영수증과 금액이 일치합니다!"/>}
+            <div className="text-16 font-pre-bold text-blue-600">{balance}원</div>
+          </div>
+        </div>
+        {(totalAllReceiptsAmount !== Number(balance) && <div className="text-red-500 text-12 justify-self-start font-pre-medium pt-1">영수증과 거래내역의 금액이 다릅니다!</div>)}
       </div>
 
       {/* 비고 섹션 */}
       <div className="flex flex-col gap-2 flex-1">
         <div className="flex items-center">
-          <div className="text-12 font-pre-medium text-gray-500">비고</div>
+          <div className="text-14 font-pre-medium text-gray-500">비고</div>
         </div>
         {isManager && isDetailEditing ? (
           <textarea
