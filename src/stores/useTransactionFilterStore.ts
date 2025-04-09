@@ -28,7 +28,7 @@ export const useTransactionFilterStore = create<FilterState>((set) => ({
         startDate: formatDateToString(today.getFullYear(), today.getMonth(), 1),
         endDate: formatDateToString(today.getFullYear(), today.getMonth()+1, 0),
         pageNo: 0,
-        pageSize: 30,
+        pageSize: 100,
       },
     })},
     removeFilter: (key: keyof TransactionReq) => {
