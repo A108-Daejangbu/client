@@ -102,7 +102,7 @@ const TransactionCard = ({
                 <div className="fixed right-[15%] md:right-20 top-[50%] md:top-[55%] transform -translate-y-1/2 z-50">
                   <ReciptModal
                     date={calcTransactionDate(transaction.transactionDate)}
-                    balance={transaction.transactionBalance.toLocaleString()}
+                    balance={transaction.transactionBalance}
                     detail={transaction.detail}
                     onClose={onModalToggle}
                   />

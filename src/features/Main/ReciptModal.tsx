@@ -1,10 +1,10 @@
-import ReciptContent from "./ReciptContent";
+import ReceiptContent from "./ReciptContent";
 import ReciptImg from "./ReciptImg";
 import CloseIcon from "../../assets/CloseIcons.svg";
 import { useReceiptStore } from "../../stores/useReceiptStore";
 interface ReciptModalProps {
   date: string;
-  balance: string;
+  balance: number;
   detail: string;
   onClose: () => void;
 }
@@ -30,12 +30,12 @@ const ReciptModal = ({ date, balance, detail, onClose }: ReciptModalProps) => {
           <div className="animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent" />
         </div>
       )}
-      
+
       <div className="flex-shrink-0">
         <ReciptImg isManager={isManager} />
       </div>
       <div className="flex-1 overflow-y-auto scrollbar-hide">
-        <ReciptContent date={date} balance={balance} detail={detail} isManager={isManager} />
+        <ReceiptContent date={date} balance={balance} detail={detail} isManager={isManager} />
       </div>
     </div>
   );
