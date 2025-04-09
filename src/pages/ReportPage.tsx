@@ -247,7 +247,7 @@ function ReportPage() {
 
         const response = await fetchTransactions({
           accountId: Number(accountId),
-          pageSize: 100,
+          pageSize: 30,
           pageNo: currentPage,
           startDate: formatDate(oneYearAgo),
           endDate: formatDate(today),
