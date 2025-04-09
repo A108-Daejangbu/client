@@ -13,14 +13,13 @@ const ProgressBar: React.FC<{ score: number }> = ({ score }) => {
   
     return (
       <div 
-        className="absolute"
+        className="absolute top-1/2 left-1/2 transform -translate-x-1/2"
         style={{
-          width: SCORE_CONFIG.SIZE,
-          height: SCORE_CONFIG.SIZE,
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)'
+          width: `clamp(140px, 30vw, ${SCORE_CONFIG.SIZE}px)`,
+          height: `clamp(140px, 30vw, ${SCORE_CONFIG.SIZE}px)`,
+          top: 3
         }}
+        
       >
         {/* 배경 트랙 */}
         <div 

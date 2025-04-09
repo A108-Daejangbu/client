@@ -1,5 +1,5 @@
 import React from 'react';
-import { SCORE_CONFIG } from '../../../utils/score';
+// import { SCORE_CONFIG } from '../../../utils/score';
 import ScoreDisplay from './ScoreDisplay';
 import ProgressBar from './ProgressBar';
 import TransactionInfo from './TransactionInfo';
@@ -12,12 +12,7 @@ const ScoreComponent: React.FC<ScoreComponentProps> = ({ score }) => {
   return (
     <div className="flex flex-col items-center p-4">
       <div 
-        className="relative flex items-center justify-center"
-        style={{
-          width: SCORE_CONFIG.SIZE,
-          height: SCORE_CONFIG.SIZE
-        }}
-      >
+        className="relative flex items-center justify-center md:width-[180px] md:height-[180px] width-[120px] height-[120px]">
         <ProgressBar score={score.score} />
         <ScoreDisplay score={score.score} />
       </div>
