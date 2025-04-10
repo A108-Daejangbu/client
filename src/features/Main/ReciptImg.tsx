@@ -8,6 +8,8 @@ import CloseIcon from "../../assets/CloseIcons.svg";
 import ReactDOM from "react-dom";
 import { useReceiptStore } from "../../stores/useReceiptStore";
 import { createReceipt } from "../../apis/receipt/createReceipt";
+import { useTransactionStore } from "../../stores/useTransactionStore";
+import { PassStatus } from "../../types/Transaction";
 
 const ReciptImg = ({isManager}: {isManager: boolean}) => {
   const API_IMAGE_URL = import.meta.env.VITE_IMAGE_URL;
@@ -17,6 +19,7 @@ const ReciptImg = ({isManager}: {isManager: boolean}) => {
   const setReceiptsIdx = useReceiptStore((state) => state.setReceiptsIdx);
   const receiptsIdx = useReceiptStore((state) => state.receiptsIdx);
   const setIsUploadSlide = useReceiptStore((state) => state.setIsUploadSlide)
+  const updatePassStatus = useTransactionStore((state) => state.updatePassStatus);
 
   // 이미지 Base64 URL을 저장할 배열
   const [images, setImages] = useState<string[]>([]);
@@ -34,7 +37,15 @@ const ReciptImg = ({isManager}: {isManager: boolean}) => {
     if(!transactionId) return;
     
     try{
-      const receipts = await createReceipt(transactionId, file)
+      await createReceipt(transactionId, file).then((receipt) => {
+        const newPassStatus = receipt.passStatus as PassStatus;
+        updatePassStatus(Number(transactionId), newPassStatus); // passStatus 업데이트
+        
+        // 응답 받은 데이터를 store에 저장 → ReceiptContent에서 보여줌
+        setReceipts([receipt])
+      })
+
+
       const reader = new FileReader();
       
       reader.onload = (event) => {
@@ -47,8 +58,6 @@ const ReciptImg = ({isManager}: {isManager: boolean}) => {
       };
       reader.readAsDataURL(file);
 
-      // 응답 받은 데이터를 store에 저장 → ReceiptContent에서 보여줌
-      setReceipts([receipts])
 
     }catch(err){
       console.error("영수증 업로드 실패:", err);

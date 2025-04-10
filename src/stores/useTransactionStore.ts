@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Transaction, TransactionReq } from "../types/Transaction";
+import type { PassStatus, Transaction, TransactionReq } from "../types/Transaction";
 import axiosClient from "../apis/axiosClient";
 
 const api = axiosClient
@@ -20,6 +20,7 @@ interface TransactionStore {
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
   setScore: (score:Score) => void;
+  updatePassStatus: (transactionId: number, newStatus: PassStatus ) => void;
 
   // API 요청 메서드
   fetchTransactions: (params: TransactionReq) => Promise<Transaction[]>;
@@ -41,6 +42,13 @@ export const useTransactionStore = create<TransactionStore>((set) => ({
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
   setScore: (score) => set({score}),
+  updatePassStatus: (transactionId, newStatus) => {
+    set((state) => ({
+      transactions: state.transactions.map((tx) => 
+      tx.id === transactionId ?
+    {...tx, passStatus: newStatus} : tx)
+    }))
+  },
 
   // 거래내역 조회 API 요청 메서드
   fetchTransactions: async (params: TransactionReq) => {
