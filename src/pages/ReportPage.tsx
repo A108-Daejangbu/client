@@ -474,7 +474,7 @@ function ReportPage() {
           </div>
 
           {/* Preview 섹션과 다운로드 버튼 */}
-          <div className="mx-4 mb-2 flex justify-between items-center">
+          <div className="mx-4 mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
             <div>
               <h2 className="font-pre-semibold text-20 text-main200">
                 Preview
@@ -492,17 +492,17 @@ function ReportPage() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-row items-center gap-2 w-full sm:w-auto">
               <button
                 onClick={handleResetAllFilters}
-                className="border border-gray-300 hover:bg-gray-50 text-main200 px-3 md:px-6 py-1.5 md:py-2 rounded-lg font-pre-bold text-12 md:text-14"
+                className="flex-1 sm:flex-none border border-gray-300 hover:bg-gray-50 text-main200 px-3 md:px-6 py-1.5 md:py-2 rounded-lg font-pre-bold text-12 md:text-14"
               >
                 필터 초기화
               </button>
               
               <button
                 onClick={handleDownloadExcel}
-                className="bg-gradient-to-r from-blue to-purple hover:opacity-80 text-white px-3 md:px-6 py-1.5 md:py-2 rounded-lg flex items-center gap-1 md:gap-2 font-pre-bold text-12 md:text-14"
+                className="flex-1 sm:flex-none bg-gradient-to-r from-blue to-purple hover:opacity-80 text-white px-3 md:px-6 py-1.5 md:py-2 rounded-lg flex items-center justify-center gap-1 md:gap-2 font-pre-bold text-12 md:text-14"
               >
                 <svg
                   className="w-4 h-4 md:w-5 md:h-5"
