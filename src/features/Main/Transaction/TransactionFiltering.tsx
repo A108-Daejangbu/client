@@ -54,7 +54,7 @@ const TransactionFiltering = ({categories}: TransactionFilteringProps) => {
     <>
       <div className="flex justify-between pt-3 items-end px-1">
         {/* 선택된 카테고리들 */}
-        <div className="flex flex-wrap gap-2 md:max-w-[75%] max-w-[65%]">
+        <div className="flex flex-wrap gap-2 md:max-w-[75%] max-w-[65%] md:pl-20">
           {selectedCategories.map(cat => (
             <CategoryCard key={cat.categoryId} category={cat} onDelete={() => toggleCategory(cat)} onSelected={true} isInline={true} />
           ))}

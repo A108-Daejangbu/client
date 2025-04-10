@@ -69,7 +69,7 @@ function MainPage() {
         </div>
       )}
       <div className="flex flex-col md:flex-row h-auto">
-        <div className="w-full md:w-1/5 justify-items-center">
+        <div className="w-full md:w-1/5 md:justify-items-end justify-items-center">
           <div className="md:sticky md:top-[100px]">
             {score && <ScoreComponent score={score} />}
           </div>
