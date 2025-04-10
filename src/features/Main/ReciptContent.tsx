@@ -64,7 +64,6 @@ const ReceiptContent = ({ date, balance, detail, isManager }: ReciptContentProps
       }, 0);
   
       setAllReceiptTotalAmount(totalAllAmounts);
-      console.log("총 합계는!!: ", totalAllAmounts)
     } else {
       setAllReceiptTotalAmount(0);
     }
@@ -81,6 +80,11 @@ const ReceiptContent = ({ date, balance, detail, isManager }: ReciptContentProps
 
   const handleItemChange = (itemId: number | undefined, field: "name" | "count" | "totalAmount", value: string) => {
     if(!itemId) return;
+
+    if(field === 'count'){
+      const numericValue = parseInt(value, 10);
+      value = isNaN(numericValue) ? "0" : Math.max(numericValue, 0).toString();
+    }
 
     setEditedItems((prev) => {
       const updated = prev.map((item) =>
@@ -241,6 +245,7 @@ const ReceiptContent = ({ date, balance, detail, isManager }: ReciptContentProps
                   <input
                     type="number"
                     value={item.count}
+                    min={0}
                     onChange={(e) => handleItemChange(item.itemId, "count", e.target.value)}
                     className="bg-white border border-gray-300 rounded-md p-1 text-end w-full"
                   />
