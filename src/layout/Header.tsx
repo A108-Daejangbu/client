@@ -15,9 +15,10 @@ const Header = ({ userType }: HeaderProps) => {
   const { getMyNickname, logout, isLoading } = useMemberStore();
 
   // URL에서 accountId 추출
-  const accountId = location.pathname.split('/')[2];
-  const viewerAccountId = location.pathname.split('/')[3];
-  const isManagePage = location.pathname === '/manage';
+  const accountId = location.pathname.split("/")[2];
+  const viewerAccountId = location.pathname.split("/")[3];
+  const isManagePage =
+    location.pathname === "/manage" || location.pathname === "/manage/";
 
   // 닉네임 조회 (manager일 때만)
   useEffect(() => {
@@ -44,13 +45,17 @@ const Header = ({ userType }: HeaderProps) => {
   const handleLogout = async () => {
     try {
       await logout();
-      document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      document.cookie = "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie =
+        "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie =
+        "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       alert("로그아웃 되었습니다.");
       navigate("/");
     } catch (error) {
-      document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      document.cookie = "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie =
+        "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      document.cookie =
+        "refreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       console.error("로그아웃 실패:", error);
       navigate("/");
     }
@@ -169,7 +174,9 @@ const Header = ({ userType }: HeaderProps) => {
           {userType === "viewer" && (
             <>
               <span
-                onClick={() => handleNavigate(`/viewer/main/${viewerAccountId}`)}
+                onClick={() =>
+                  handleNavigate(`/viewer/main/${viewerAccountId}`)
+                }
                 className={`font-pre-medium text-16 cursor-pointer hover:text-purple-600 transition-colors ${
                   isCurrentPage(`/viewer/main/${viewerAccountId}`)
                     ? "text-purple-600 font-bold border-b-2 border-purple-600"
@@ -179,7 +186,9 @@ const Header = ({ userType }: HeaderProps) => {
                 장부 현황
               </span>
               <span
-                onClick={() => handleNavigate(`/viewer/report/${viewerAccountId}`)}
+                onClick={() =>
+                  handleNavigate(`/viewer/report/${viewerAccountId}`)
+                }
                 className={`font-pre-medium text-16 cursor-pointer hover:text-purple-600 transition-colors ${
                   isCurrentPage(`/viewer/report/${viewerAccountId}`)
                     ? "text-purple-600 font-bold border-b-2 border-purple-600"
@@ -256,7 +265,9 @@ const Header = ({ userType }: HeaderProps) => {
             {userType === "viewer" && (
               <>
                 <span
-                  onClick={() => handleNavigate(`/viewer/main/${viewerAccountId}`)}
+                  onClick={() =>
+                    handleNavigate(`/viewer/main/${viewerAccountId}`)
+                  }
                   className={`py-3 px-6 font-pre-medium text-14 ${
                     isCurrentPage(`/viewer/main/${viewerAccountId}`)
                       ? "text-purple-600 font-bold"
@@ -266,7 +277,9 @@ const Header = ({ userType }: HeaderProps) => {
                   장부 현황
                 </span>
                 <span
-                  onClick={() => handleNavigate(`/viewer/report/${viewerAccountId}`)}
+                  onClick={() =>
+                    handleNavigate(`/viewer/report/${viewerAccountId}`)
+                  }
                   className={`py-3 px-6 font-pre-medium text-14 ${
                     isCurrentPage(`/viewer/report/${viewerAccountId}`)
                       ? "text-purple-600 font-bold"
